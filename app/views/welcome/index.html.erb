@@ -1,2 +1,6 @@
-<h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<h1>Hello Stranger</h1>
+<%if controller.controller_name == "welcome"%>
+<p>Fine New Counter <%=@counter.value%>;</p>
+<% end %>
+<p>Rails <%=Rails.version%> / Ruby <%=RUBY_VERSION%>;</p>
+<p>Rendered by <%=controller.controller_name%> / <%=controller.action_name%></p>
