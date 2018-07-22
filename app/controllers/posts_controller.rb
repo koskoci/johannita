@@ -7,7 +7,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @posts.tap { |posts| posts.each { |post| add_image_url_to(post) } } }
+      format.json { render jsonapi: @posts }
     end
   end
 
@@ -15,7 +15,7 @@ class PostsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render json: @post.tap { |post| add_image_url_to(post) } }
+      format.json { render jsonapi: @post }
     end
   end
 
@@ -63,9 +63,5 @@ class PostsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def post_params
       params.require(:post).permit(:title, :content, :image)
-    end
-
-    def add_image_url_to(post)
-      post.image_url = url_for(post.image)
     end
 end
