@@ -35,7 +35,9 @@ gem 'rack-cors'
 gem 'jwt'
 
 group :development, :test do
-  gem 'pry-byebug'
+  gem "guard-rspec"
+  gem "pry-byebug"
+  gem 'rspec-rails', '~> 3.7'
 end
 
 group :development do
