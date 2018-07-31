@@ -31,3 +31,5 @@
 
 en:
   hello: "Hello world"
+  authenticate_user_command:
+    invalid_credentials: "User credentials invalid!"
