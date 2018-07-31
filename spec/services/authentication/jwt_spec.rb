@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Jwt do
+RSpec.describe Authentication::Jwt do
   subject { described_class }
 
   let(:payload) { { "one" => "two" } }
