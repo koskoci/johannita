@@ -1,5 +1,5 @@
 module Authentication
-  class Authenticate < Base
+  class AuthenticateCommand < BaseCommand
     private
 
     attr_reader :email, :password

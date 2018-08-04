@@ -1,7 +1,5 @@
 module Authentication
-  class Base
-    class NotImplementedError < StandardError; end
-
+  class BaseCommand
     attr_reader :result
 
     def self.call(*args)
