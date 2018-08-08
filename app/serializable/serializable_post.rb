@@ -5,6 +5,6 @@ class SerializablePost < JSONAPI::Serializable::Resource
   attribute :created_at
   attribute :updated_at
   attribute :image_url do
-    @url_helpers.url_for(@object.image)
+    @url_helpers.url_for(@object.image) if @object.image.attached?
   end
 end
