@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  deserializable_resource :post, only: [:create, :update]
   before_action :set_post, only: [:show, :edit, :update, :destroy]
 
   # GET /posts
@@ -30,6 +31,8 @@ class PostsController < ApplicationController
 
   # POST /posts
   def create
+    authorize! :create
+
     @post = Post.new(post_params)
 
     if @post.save
@@ -41,6 +44,8 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
+    authorize! :update
+
     if @post.update(post_params)
       redirect_to @post, notice: 'Post was successfully updated.'
     else
