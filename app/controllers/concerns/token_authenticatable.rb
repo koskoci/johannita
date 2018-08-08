@@ -1,4 +1,4 @@
-class NotAuthorizedException < StandardError; end
+class NotAuthneticatedException < StandardError; end
 
 module TokenAuthenticatable
   extend ActiveSupport::Concern
@@ -8,13 +8,13 @@ module TokenAuthenticatable
 
     before_action :authenticate_user
 
-    rescue_from NotAuthorizedException, with: -> { render json: { error: 'Not Authorized' }, status: 401 }
+    rescue_from NotAuthneticatedException, with: -> { render json: { error: 'Not Authenticated' }, status: 401 }
   end
 
   private
 
   def authenticate_user
     @current_user = Authentication::DecodeAuthenticationCommand.call(request.headers).result
-    raise NotAuthorizedException unless @current_user
+    raise NotAuthneticatedException unless @current_user
   end
 end
