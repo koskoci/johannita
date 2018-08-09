@@ -5,12 +5,16 @@ module Authentication
     end
 
     def self.decode(token)
-      body, = JWT.decode(
-        token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256'
-      )
-      HashWithIndifferentAccess.new(body)
-    rescue JWT::ExpiredSignature
-      nil
+      begin
+        body, = JWT.decode(
+          token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256'
+        )
+        HashWithIndifferentAccess.new(body)
+      rescue JWT::ExpiredSignature
+        { error: :expired }
+      rescue JWT::VerificationError
+        { error: :signature_invalid }
+      end
     end
   end
 end

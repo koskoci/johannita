@@ -14,7 +14,7 @@ module TokenAuthenticatable
   private
 
   def authenticate_user
-    @current_user = Authentication::DecodeAuthenticationCommand.call(request.headers).result
-    raise NotAuthneticatedException unless @current_user
+    command = Authentication::DecodeAuthenticationCommand.call(request.headers)
+    command.errors || @current_user = command.result
   end
 end
