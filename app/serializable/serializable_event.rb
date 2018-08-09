@@ -5,4 +5,5 @@ class SerializableEvent < JSONAPI::Serializable::Resource
   attribute :date
   attribute :created_at
   attribute :updated_at
+  has_many :participants
 end
