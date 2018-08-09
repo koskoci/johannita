@@ -10,10 +10,9 @@ module Authentication
           token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256'
         )
         HashWithIndifferentAccess.new(body)
-      rescue JWT::ExpiredSignature
-        { error: :expired }
-      rescue JWT::VerificationError
-        { error: :signature_invalid }
+      rescue => e
+        return { error: :expired } if e.class.name == "JWT::ExpiredSignature"
+        { error: e.message }
       end
     end
   end
