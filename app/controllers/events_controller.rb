@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   deserializable_resource :event, only: [:create, :update]
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply]
 
   # GET /events
   def index
@@ -17,6 +17,16 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render jsonapi: @event }
+    end
+  end
+
+  # POST /events/1/apply
+  def apply
+    @event.participants << participant unless already_added?
+
+    respond_to do |format|
+      format.html
+      format.json { render jsonapi: @event, include: [participants: [:user] ] }
     end
   end
 
@@ -68,5 +78,13 @@ class EventsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def event_params
       params.require(:event).permit(:title, :category, :date)
+    end
+
+    def already_added?
+      @event.participants.where(user_id: current_user.id, event_id: @event.id).present?
+    end
+
+    def participant
+      @_participant ||= Participant.new(user_id: current_user.id, event_id: @event.id)
     end
 end
