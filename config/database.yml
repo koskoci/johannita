@@ -82,4 +82,4 @@ production:
   <<: *default
   database: johannita_production
   username: johannita
-  password: <%= ENV['JOHANNITA_DATABASE_PASSWORD'] %>
+  # password: <%= ENV['JOHANNITA_DATABASE_PASSWORD'] %>
