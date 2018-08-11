@@ -25,7 +25,7 @@ set :rvm_use_path, '/etc/profile.d/rvm.sh'
 # Some plugins already add folders to shared_dirs like `mina/rails` add `public/assets`, `vendor/bundle` and many more
 # run `mina -d` to see all folders and files already included in `shared_dirs` and `shared_files`
 # set :shared_dirs, fetch(:shared_dirs, []).push('public/assets')
-set :shared_files, fetch(:shared_files, []).push('config/database.yml', 'config/secrets.yml')
+set :shared_files, fetch(:shared_files, []).push('config/database.yml', 'config/secrets.yml', '.env.production')
 
 # This task is the environment that is loaded for all remote run commands, such as
 # `mina deploy` or `mina rake`.
@@ -41,22 +41,7 @@ end
 task :setup do
 
   in_path(fetch(:shared_path)) do
-
     command %[mkdir -p config]
-
-    # Create database.yml for Postgres if it doesn't exist
-    path_database_yml = "config/database.yml"
-    database_yml = %[production:
-  database: johannita_production
-  adapter: postgresql
-  pool: 5
-  timeout: 5000]
-    command %[test -e #{path_database_yml} || echo "#{database_yml}" > #{path_database_yml}]
-
-    # Create secrets.yml if it doesn't exist
-    path_secrets_yml = "config/secrets.yml"
-    secrets_yml = %[production:\n  secret_key_base:\n    #{`bundle exec rake secret`.strip}]
-    command %[test -e #{path_secrets_yml} || echo "#{secrets_yml}" > #{path_secrets_yml}]
 
     # Remove others-permission for config directory
     command %[chmod -R o-rwx config]
@@ -82,7 +67,6 @@ task :deploy do
       command "sudo service johannita restart"
     end
   end
-
   # you can use `run :local` to run tasks on local machine before of after the deploy scripts
 end
 
