@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   deserializable_resource :event, only: [:create, :update]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply, :confirm]
 
   # GET /events
   def index
@@ -8,7 +8,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @events }
+      format.json { render jsonapi: @events, include: [participants: [:user] ] }
     end
   end
 
@@ -16,13 +16,29 @@ class EventsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event }
+      format.json { render jsonapi: @event, include: [participants: [:user] ] }
     end
   end
 
   # POST /events/1/apply
   def apply
     @event.participants << participant unless already_added?
+
+    respond_to do |format|
+      format.html
+      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+    end
+  end
+
+  # PATCH /events/1/confirm
+  def confirm
+    authorize! :confirm
+    redirect_to(@event, notice: 'Event already confirmed') and return if @event.confirmed
+
+    @event.update_attribute(:confirmed, true)
+    @event.participants.includes(:user).each do |participant|
+      EventConfirmedMailer.with(user: participant.user, event: @event).inform_participant.deliver_now
+    end
 
     respond_to do |format|
       format.html
