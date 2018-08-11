@@ -35,5 +35,3 @@ en:
   decode_authentication_command:
     token_missing: "Authentication token missing!"
     token_invalid: "Authentication token invalid!"
-    token_expired: "Authentication token expired!"
-    signature_invalid: "Token signature invalid!"

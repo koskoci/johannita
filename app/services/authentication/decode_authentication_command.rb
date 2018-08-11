@@ -36,9 +36,7 @@ module Authentication
     def token_contents
       @_token_contents ||= begin
         decoded = Jwt.decode(token)
-        errors.add(:token, I18n.t('decode_authentication_command.token_expired')) if decoded[errors] == :expired
-        errors.add(:token, I18n.t('decode_authentication_command.signature_invalid')) if decoded[errors] == :signature_invalid
-        decoded
+        decoded.tap { errors.add(:token, decoded[:error]) if decoded[:error] }
       end
     end
 

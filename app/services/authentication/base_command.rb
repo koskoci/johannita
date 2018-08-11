@@ -17,7 +17,7 @@ module Authentication
     end
 
     def errors
-      @errors ||= ActiveModel::Errors.new(self)
+      @_errors ||= ActiveModel::Errors.new(self)
     end
 
     private

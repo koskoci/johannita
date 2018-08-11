@@ -11,7 +11,6 @@ module Authentication
         )
         HashWithIndifferentAccess.new(body)
       rescue => e
-        return { error: :expired } if e.class.name == "JWT::ExpiredSignature"
         { error: e.message }
       end
     end
