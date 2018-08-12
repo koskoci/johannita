@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     member do
       post 'apply'
       patch 'confirm'
+      patch 'cancel'
     end
   end
   resources :posts

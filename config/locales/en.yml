@@ -37,3 +37,5 @@ en:
     token_invalid: "Authentication token invalid!"
   event_confirmed_mailer:
     subject: "This event has been confirmed"
+  event_cancelled_mailer:
+    subject: "This event has been cancelled"

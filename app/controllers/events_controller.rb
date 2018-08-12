@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   deserializable_resource :event, only: [:create, :update]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply, :confirm]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply, :confirm, :cancel]
 
   # GET /events
   def index
@@ -33,11 +33,27 @@ class EventsController < ApplicationController
   # PATCH /events/1/confirm
   def confirm
     authorize! :confirm
-    redirect_to(@event, notice: 'Event already confirmed') and return if @event.confirmed
+    redirect_to(@event, notice: 'Event already confirmed') and return if @event.status == "confirmed"
 
-    @event.update_attribute(:confirmed, true)
+    @event.update_attribute(:status, "confirmed")
     @event.participants.includes(:user).each do |participant|
-      EventConfirmedMailer.with(user: participant.user, event: @event).inform_participant.deliver_now
+      EventConfirmedMailer.with(user: participant.user, event: @event).call.deliver_now
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+    end
+  end
+
+  # PATCH /events/1/cancel
+  def cancel
+    authorize! :cancel
+    redirect_to(@event, notice: 'Event already cancelled') and return if @event.status == "cancelled"
+
+    @event.update_attribute(:status, "cancelled")
+    @event.participants.includes(:user).each do |participant|
+      EventCancelledMailer.with(user: participant.user, event: @event).call.deliver_now
     end
 
     respond_to do |format|

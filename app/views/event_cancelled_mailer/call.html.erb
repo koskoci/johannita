@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Kedves <%= @user.first_name %>!</h1>
+    <p>Sajnalattal ertesitunk, hogy az alabbi esemeny, amire jelentkeztel, az alabbi idopontban nem kerul megrendezesre:</p>
+    <p><%= @event.date %> <%= @event.title %></p>
+    <p>Elnezesedet kerjuk es kerjuk, jelentkezz egy masik alkalomra.</p>
+  </body>
+</html>
