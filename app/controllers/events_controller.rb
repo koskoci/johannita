@@ -8,7 +8,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @events, include: [participants: [:user] ] }
+      format.json { render jsonapi: @events }
     end
   end
 
@@ -16,7 +16,7 @@ class EventsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+      format.json { render jsonapi: @event, include: :participants }
     end
   end
 
@@ -26,7 +26,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+      format.json { render jsonapi: @event, include: :participants }
     end
   end
 
@@ -42,7 +42,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+      format.json { render jsonapi: @event, include: :participants }
     end
   end
 
@@ -58,7 +58,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: [participants: [:user] ] }
+      format.json { render jsonapi: @event, include: :participants }
     end
   end
 
@@ -104,7 +104,7 @@ class EventsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_event
-      @event = Event.find(params[:id])
+      @event = Event.includes(:users).find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
