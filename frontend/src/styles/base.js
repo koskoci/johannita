@@ -21,87 +21,60 @@ export const FooterContainer = styled.div`
   p {
     margin: 2px 0;
   }
-`
+`;
 
-export const HeaderContainer = styled.div`
-  width: 100%;
+export const Overlay = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0, 0.4);
+  left: 0;
+  top: 0;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const StyledInput = styled.input`
+  color: #212121;
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+  display: block;
   text-align: center;
-  padding: 10px 0;
+  padding: 8px 12px;
+  margin: 5px auto 20px;
 `;
 
-export const LogoContainer = styled.div`
-  height: 50px;
-  width: 120px;
-  margin: 20px auto 0;
-`;
-
-export const Logo = styled.img`
-  float: left;
-  height: 50px;
-`;
-
-export const LogoText = styled.p`
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  font-size: 14px;
-`;
-
-export const Menu = styled.ul`
-  list-style: none;
-  margin: 40px 0 0 0;
-  padding: 0;
-
-  li {
-    display: inline-block;
-
-    a {
-      text-decoration: none;
-      color: black;
-      font-size: 14px;
-      text-transform: uppercase;
-      padding: 10px;
-
-      &:hover, &.active {
-        color: red;
-        font-weight: bold;
-      }
-    }
-  }
-`;
-
-export const PostContainer = styled.div`
-  margin: 20px 0;
-  padding: 0;
-
-  &::after {
-    content: '';
-    display: block;
-    clear: both;
-  }
-`;
-
-export const PostThumb = styled.img`
-  float: left;
-  margin-right: 20px;
-`;
-
-export const PostData = styled.div`
-  float: left;
-`;
-
-export const PostTitle = styled.a`
-  margin: 0;
-  color: red;
-  text-decoration: none;
+export const StyledButton = styled.button`
+  background-color: #1ce5b1;
+  border: 0;
+  border-radius: 3px;
   font-weight: bold;
-`
+  color: #FAFAFA;
+  padding: 10px 20px;
+  cursor: pointer;
+`;
 
-export const PostDate = styled.p`
-  margin: 2px 0;
-  font-size: 13px;
-`
+export const OverlayContent = styled.div`
+  width: 320px;
+  background-color: white;
+  text-align: center;
+  padding: 40px 25px;
+  box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
 
-export const PostContent = styled.div`
-  margin-top: 15px;
+  label {
+    font-size: 14px;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+  }
+
+  h3 {
+    margin-top: 0;
+  }
 `;

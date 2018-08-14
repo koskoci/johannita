@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { PostContainer, PostThumb, PostData, PostTitle, PostDate, PostContent } from '../styles/base';
+import { PostContainer, PostThumb, PostData, PostTitle, PostDate, PostContent } from '../../styles/posts';
 
 const dateConfig = { year: 'numeric', month: 'long', day: 'numeric' };
 
