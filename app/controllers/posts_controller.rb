@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
-  deserializable_resource :post, only: [:create, :update]
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  deserializable_resource :post, only: [:create]#, :update]
+  before_action :set_post, only: [:show, :edit, :update, :destroy, :select_image, :upload_image]
 
   # GET /posts
   def index
@@ -59,6 +59,22 @@ class PostsController < ApplicationController
     redirect_to posts_url, notice: 'Post was successfully destroyed.'
   end
 
+  # GET /posts/1/images
+  def select_image
+  end
+
+  # PATCH /posts/1/images
+  def upload_image
+    Post.transaction do
+      @post.image.purge
+      if @post.update(image: params[:post][:image])
+        redirect_to @post, notice: 'Post was successfully updated.'
+      else
+        render :edit
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
@@ -67,6 +83,6 @@ class PostsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def post_params
-      params.require(:post).permit(:title, :content, :image)
+      params.require(:post).permit(:title, :content)
     end
 end

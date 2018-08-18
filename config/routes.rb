@@ -6,7 +6,12 @@ Rails.application.routes.draw do
       patch 'cancel'
     end
   end
-  resources :posts
+  resources :posts do
+    member do
+      get 'select_image'
+      patch 'upload_image'
+    end
+  end
   resource :auth, only: %i[create]
   root 'welcome#index'
 end
