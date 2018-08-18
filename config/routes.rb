@@ -10,8 +10,10 @@ Rails.application.routes.draw do
     member do
       get 'select_image'
       patch 'upload_image'
+      delete 'delete_image'
     end
   end
+
   resource :auth, only: %i[create]
   root 'welcome#index'
 end

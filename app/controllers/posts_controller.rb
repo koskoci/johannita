@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  deserializable_resource :post, only: [:create]#, :update]
+  # deserializable_resource :post, only: [:create, :update]
   before_action :set_post, only: [:show, :edit, :update, :destroy, :select_image, :upload_image]
 
   # GET /posts
@@ -65,14 +65,18 @@ class PostsController < ApplicationController
 
   # PATCH /posts/1/images
   def upload_image
-    Post.transaction do
-      @post.image.purge
-      if @post.update(image: params[:post][:image])
-        redirect_to @post, notice: 'Post was successfully updated.'
-      else
-        render :edit
-      end
+    if @post.images.attach(params[:post][:image])
+      redirect_to @post, notice: 'Post was successfully updated.'
+    else
+      render :edit
     end
+  end
+
+  # DELETE /posts/1/images/:id
+  def delete_image
+    image = ActiveStorage::Attachment.find(params[:id])
+    image.purge
+    redirect_back(fallback_location: posts_url)
   end
 
   private
