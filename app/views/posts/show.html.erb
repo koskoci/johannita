@@ -13,10 +13,10 @@
 <% if @post.images.attached? %>
   <p>
     <strong>Images:</strong>
-    <% @post.images.each do |image| %>
+    <% @post.images_attachments.each do |image| %>
       <br>
       <%= image_tag image %>
-      <%= link_to 'Remove', delete_image_post_url(image), method: :delete %>
+      <%= link_to 'Remove', attachment_url(image.id), method: :delete %>
     <% end %>
   </p>
 <% end %>

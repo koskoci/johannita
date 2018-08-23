@@ -9,11 +9,11 @@ Rails.application.routes.draw do
   resources :posts do
     member do
       get 'select_image'
-      patch 'upload_image'
-      delete 'delete_image'
+      post 'images'
     end
   end
 
-  resource :auth, only: %i[create]
   root 'welcome#index'
+  resource :auth, only: %i[create]
+  resources :attachments, only: %i[destroy]
 end

@@ -59,24 +59,18 @@ class PostsController < ApplicationController
     redirect_to posts_url, notice: 'Post was successfully destroyed.'
   end
 
-  # GET /posts/1/images
+  # GET /posts/1/select_image
   def select_image
+    # Server-side rendering for testing purposes
   end
 
-  # PATCH /posts/1/images
-  def upload_image
+  # POST /posts/1/images
+  def images
     if @post.images.attach(params[:post][:image])
       redirect_to @post, notice: 'Post was successfully updated.'
     else
       render :edit
     end
-  end
-
-  # DELETE /posts/1/images/:id
-  def delete_image
-    image = ActiveStorage::Attachment.find(params[:id])
-    image.purge
-    redirect_back(fallback_location: posts_url)
   end
 
   private

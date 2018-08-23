@@ -1,6 +1,6 @@
 <h1>Upload image</h1>
 
-<%= form_with(model: @post, url: upload_image_post_path, local: true) do |form| %>
+<%= form_with(model: @post, url: image_post_path, local: true) do |form| %>
   <div class="field">
     <%= form.label :image %>
     <%= form.file_field :image %>
