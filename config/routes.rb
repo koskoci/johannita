@@ -16,4 +16,5 @@ Rails.application.routes.draw do
   root 'welcome#index'
   resource :auth, only: %i[create]
   resources :attachments, only: %i[destroy]
+  resources :users, except: %i[new edit create]
 end

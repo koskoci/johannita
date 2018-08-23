@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  deserializable_resource :event, only: [:create, :update]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :apply, :confirm, :cancel]
+  deserializable_resource :event, only: %i[create update]
+  before_action :set_event, only: %i[show edit update destroy apply confirm cancel]
 
   # GET /events
   def index
@@ -32,7 +32,8 @@ class EventsController < ApplicationController
 
   # PATCH /events/1/confirm
   def confirm
-    authorize! :confirm
+    authorize!
+
     redirect_to(@event, notice: 'Event already confirmed') and return if @event.status == "confirmed"
 
     @event.update_attribute(:status, "confirmed")
@@ -48,7 +49,8 @@ class EventsController < ApplicationController
 
   # PATCH /events/1/cancel
   def cancel
-    authorize! :cancel
+    authorize!
+
     redirect_to(@event, notice: 'Event already cancelled') and return if @event.status == "cancelled"
 
     @event.update_attribute(:status, "cancelled")
@@ -73,7 +75,7 @@ class EventsController < ApplicationController
 
   # POST /events
   def create
-    authorize! :create
+    authorize!
 
     @event = Event.new(event_params)
 
@@ -86,7 +88,7 @@ class EventsController < ApplicationController
 
   # PATCH/PUT /events/1
   def update
-    authorize! :update
+    authorize!
 
     if @event.update(event_params)
       redirect_to @event, notice: 'Event was successfully updated.'

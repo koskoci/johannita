@@ -7,8 +7,8 @@ module AdminAuthorizable
     rescue_from NotPermittedException, with: -> { render json: { error: 'Not Permitted' }, status: :forbidden }
   end
 
-  def authorize!(action)
-    raise NotPermittedException if action != :read && !current_user.admin?
+  def authorize!
+    raise NotPermittedException unless current_user.admin?
     true
   end
 end

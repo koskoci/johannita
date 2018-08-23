@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
-  deserializable_resource :post, only: [:create, :update]
-  before_action :set_post, only: [:show, :edit, :update, :destroy, :select_image, :upload_image]
+  deserializable_resource :post, only: %i[create update]
+  before_action :set_post, only: %i[show edit update destroy select_image upload_image]
 
   # GET /posts
   def index
@@ -31,7 +31,7 @@ class PostsController < ApplicationController
 
   # POST /posts
   def create
-    authorize! :create
+    authorize!
 
     @post = Post.new(post_params)
 
@@ -44,7 +44,7 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    authorize! :update
+    authorize!
 
     if @post.update(post_params)
       redirect_to @post, notice: 'Post was successfully updated.'
