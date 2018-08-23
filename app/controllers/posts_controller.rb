@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  # deserializable_resource :post, only: [:create, :update]
+  deserializable_resource :post, only: [:create, :update]
   before_action :set_post, only: [:show, :edit, :update, :destroy, :select_image, :upload_image]
 
   # GET /posts
@@ -16,7 +16,7 @@ class PostsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @post }
+      format.json { render jsonapi: @post, include: :images, expose: {attachment_type: "images"} }
     end
   end
 
