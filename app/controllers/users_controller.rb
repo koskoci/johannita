@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 
   # GET /users/1
   def show
-    authorize! unless its_me
+    authorize! unless params[:id] == "me"
 
     respond_to do |format|
       format.html
@@ -26,12 +26,12 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    authorize! unless its_me
+    authorize! unless params[:id] == "me"
 
     if @user.update(user_params)
-      redirect_to @user, notice: 'User was successfully updated.'
+      redirect_to @user
     else
-      render :edit
+      render json: { error: @user.errors }, status: 400
     end
   end
 
@@ -39,27 +39,24 @@ class UsersController < ApplicationController
   def destroy
     authorize!
 
-    @user.destroy
-    redirect_to users_url, notice: 'User was successfully destroyed.'
+    if @user.destroy
+      redirect_to users_url
+    else
+      render json: { error: @user.errors }, status: 400
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = params[:id] == "me" ? current_user : User.find(params[:id])
+      raise ActiveRecord::RecordNotFound unless @user
     end
 
     # Only allow a trusted parameter "white list" through.
     def user_params
       params
         .require(:user)
-        .permit(
-          :first_name, :last_name, :email, :pav,
-          :pav_date, :driving_licence, :driving_licence_date
-        )
-    end
-
-    def its_me
-      current_user.id == params[:id].to_i
+        .permit(:first_name, :last_name, :email, :pav_until, :driving_licence_since, :password)
     end
   end
