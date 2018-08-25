@@ -6,5 +6,7 @@ class SerializableEvent < JSONAPI::Serializable::Resource
   attribute :created_at
   attribute :updated_at
   attribute :status
-  has_many :participants
+  has_many :participants do
+    linkage always: true
+  end
 end
