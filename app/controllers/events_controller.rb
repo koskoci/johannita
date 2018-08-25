@@ -8,7 +8,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @events }
+      format.json { render status: 200, jsonapi: @events }
     end
   end
 
@@ -16,7 +16,7 @@ class EventsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: :participants }
+      format.json { render status: 200, jsonapi: @event, include: :participants }
     end
   end
 
@@ -26,7 +26,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: :participants }
+      format.json { render status: 200, jsonapi: @event, include: :participants }
     end
   end
 
@@ -43,7 +43,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: :participants }
+      format.json { render status: 200, jsonapi: @event, include: :participants }
     end
   end
 
@@ -60,7 +60,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @event, include: :participants }
+      format.json { render status: 200, jsonapi: @event, include: :participants }
     end
   end
 
@@ -71,9 +71,9 @@ class EventsController < ApplicationController
     @event = Event.new(event_params)
 
     if @event.save
-      redirect_to @event, notice: 'Event was successfully created.'
+      render status: 201, jsonapi: @event
     else
-      render :new
+      render status: 400, json: { error: @event.errors }
     end
   end
 
@@ -82,16 +82,10 @@ class EventsController < ApplicationController
     authorize!
 
     if @event.update(event_params)
-      redirect_to @event, notice: 'Event was successfully updated.'
+      render status: 200, jsonapi: @event
     else
-      render :edit
+      render status: 400, json: { error: @event.errors }
     end
-  end
-
-  # DELETE /events/1
-  def destroy
-    @event.destroy
-    redirect_to events_url, notice: 'Event was successfully destroyed.'
   end
 
   private
