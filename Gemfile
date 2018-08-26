@@ -37,7 +37,8 @@ gem 'jwt'
 
 group :development, :test do
   gem "guard-rspec"
-  gem "pry-rails"
+  gem "pry"
+  gem "pry-byebug"
   gem 'rspec-rails', '~> 3.7'
 end
 
