@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       patch 'cancel'
     end
   end
-  resources :posts do
+  resources :posts, except: %i[new edit] do
     member do
       get 'select_image'
       post 'images'

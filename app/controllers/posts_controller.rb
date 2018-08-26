@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   deserializable_resource :post, only: %i[create update]
-  before_action :set_post, only: %i[show edit update destroy select_image upload_image]
+  before_action :set_post, only: %i[show edit update destroy select_image images]
 
   # GET /posts
   def index
@@ -8,7 +8,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @posts }
+      format.json { render status: 200, jsonapi: @posts }
     end
   end
 
@@ -16,17 +16,8 @@ class PostsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @post, include: :images, expose: {attachment_type: "images"} }
+      format.json { render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"} }
     end
-  end
-
-  # GET /posts/new
-  def new
-    @post = Post.new
-  end
-
-  # GET /posts/1/edit
-  def edit
   end
 
   # POST /posts
@@ -36,9 +27,9 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
 
     if @post.save
-      redirect_to @post, notice: 'Post was successfully created.'
+      render status: 201, jsonapi: @post
     else
-      render :new
+      render status: 400, json: { error: @post.errors }
     end
   end
 
@@ -47,16 +38,21 @@ class PostsController < ApplicationController
     authorize!
 
     if @post.update(post_params)
-      redirect_to @post, notice: 'Post was successfully updated.'
+      render status: 200, jsonapi: @post
     else
-      render :edit
+      render status: 400, json: { error: @post.errors }
     end
   end
 
   # DELETE /posts/1
   def destroy
-    @post.destroy
-    redirect_to posts_url, notice: 'Post was successfully destroyed.'
+    authorize!
+
+    if @post.destroy
+      render status: 204
+    else
+      render status: 400, json: { error: @post.errors }
+    end
   end
 
   # GET /posts/1/select_image
@@ -67,16 +63,16 @@ class PostsController < ApplicationController
   # POST /posts/1/images
   def images
     if @post.images.attach(params[:post][:image])
-      redirect_to @post, notice: 'Post was successfully updated.'
+      render status: 201, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
     else
-      render :edit
+      render status: 400, json: { error: @post.errors }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.with_attached_images.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
