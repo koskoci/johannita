@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   deserializable_resource :user, only: %i[update]
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, only: %i[show update destroy curriculum_vitaes]
 
   # GET /users
   def index
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render jsonapi: @user }
+      format.json { render status: 200, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"} }
     end
   end
 
@@ -46,10 +46,22 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /users/1/select_curriculum_vitae
+  def select_curriculum_vitae
+    # Server-side rendering for testing purposes
+  end
+
+  # POST /users/1/curriculum_vitaes
+  def curriculum_vitaes
+    @user.curriculum_vitae.attach(params[:curriculum_vitae])
+
+    render status: 201, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"}
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = params[:id] == "me" ? current_user : User.find(params[:id])
+      @user = params[:id] == "me" ? current_user.with_attached_curriculum_vitae : User.with_attached_curriculum_vitae.find(params[:id])
       raise ActiveRecord::RecordNotFound unless @user
     end
 

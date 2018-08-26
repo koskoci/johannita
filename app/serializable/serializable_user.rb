@@ -5,4 +5,5 @@ class SerializableUser < JSONAPI::Serializable::Resource
   attribute :email
   attribute :pav_until
   attribute :driving_licence_since
+  has_one :curriculum_vitae
 end
