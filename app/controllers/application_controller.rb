@@ -5,8 +5,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery unless: -> { request.format.json? }
 
   def jsonapi_class
-    super.merge(
-      'ActiveStorage::Attachment': SerializableAttachment
-    )
+    super.merge({
+      'ActiveStorage::Attachment': SerializableAttachment,
+      'ActiveStorage::Attached::One': SerializableAttachment
+    })
   end
 end
