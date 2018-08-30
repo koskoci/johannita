@@ -46,15 +46,11 @@ RSpec.describe User, :type => :model do
 
   context "when it has a cv attached" do
     let(:user) { User.create(minimum_params) }
-    let(:file_hash) do
-      {
-        io: File.open(Rails.root.join('spec', 'fixtures', 'pdf.pdf')),
-        filename: 'pdf.pdf',
-        content_type: 'application/pdf'
-      }
+    let(:pdf_fixture) do
+      fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
     end
 
-    before { user.curriculum_vitae.attach(file_hash) }
+    before { user.curriculum_vitae.attach(pdf_fixture) }
 
     it "has an attached CV" do
       cv = user.curriculum_vitae
