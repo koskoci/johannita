@@ -24,12 +24,12 @@ module Authentication
     end
 
     def token
-      return authorization_header.split(' ').last if authorization_header.present?
+      return authentication_header.split(' ').last if authentication_header.present?
       errors.add(:token, I18n.t('decode_authentication_command.token_missing'))
       nil
     end
 
-    def authorization_header
+    def authentication_header
       headers['Authorization']
     end
 
