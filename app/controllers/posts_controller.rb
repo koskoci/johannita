@@ -6,17 +6,15 @@ class PostsController < ApplicationController
   def index
     @posts = Post.all
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @posts }
-    end
+    render status: 200, jsonapi: @posts
   end
 
   # GET /posts/1
   def show
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"} }
+    if @post
+      render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
+    else
+      render status: 404, json: { error: I18n.t('posts.not_found') }
     end
   end
 
@@ -37,6 +35,8 @@ class PostsController < ApplicationController
   def update
     authorize!
 
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
+
     if @post.update(post_params)
       render status: 200, jsonapi: @post
     else
@@ -48,8 +48,10 @@ class PostsController < ApplicationController
   def destroy
     authorize!
 
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
+
     if @post.destroy
-      render status: 204
+      render status: 204, json: {}
     else
       render status: 400, json: { error: @post.errors }
     end
@@ -62,6 +64,10 @@ class PostsController < ApplicationController
 
   # POST /posts/1/images
   def images
+    authorize!
+
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
+
     if @post.images.attach(params[:post][:image])
       render status: 201, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
     else
@@ -72,7 +78,8 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.with_attached_images.find(params[:id])
+      id = params[:id]
+      @post = Post.with_attached_images.find(id) if Post.exists?(id)
     end
 
     # Only allow a trusted parameter "white list" through.

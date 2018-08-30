@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = params[:id] == "me" ? current_user.with_attached_curriculum_vitae : User.with_attached_curriculum_vitae.find(params[:id])
+      @user = params[:id] == "me" ? current_user : User.find(params[:id])
       raise ActiveRecord::RecordNotFound unless @user
     end
 
