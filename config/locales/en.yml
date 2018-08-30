@@ -39,3 +39,5 @@ en:
     subject: "This event has been confirmed"
   event_cancelled_mailer:
     subject: "This event has been cancelled"
+  posts:
+    not_found: "This post does not exist"
