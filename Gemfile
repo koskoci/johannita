@@ -36,10 +36,15 @@ gem 'rack-cors'
 gem 'jwt'
 
 group :development, :test do
-  gem "guard-rspec"
   gem "pry"
   gem "pry-byebug"
+  gem "factory_bot_rails"
+end
+
+group :test do
+  gem "guard-rspec"
   gem 'rspec-rails', '~> 3.7'
+  gem "jsonapi-rspec"
 end
 
 group :development do
