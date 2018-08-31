@@ -1,21 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe PostsController, :type => :request do
-  let(:user) { create(:user, id: 1) }
+  let(:current_user) { create(:user, id: 1) }
 
   before do
-    user
+    current_user
   end
-
 
   describe 'GET /posts' do
     before do
-      create(:post, id: 1, title: "foo", content: "bar")
-      create(:post, id: 2, title: "fee", content: "baz")
+      create_list(:post, 2)
     end
 
     it "sends a list of posts", :aggregate_failures do
-      get '/posts', headers: get_headers(user)
+      get '/posts', headers: get_headers(current_user)
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
@@ -25,13 +23,15 @@ RSpec.describe PostsController, :type => :request do
   end
 
   describe 'GET /posts/:id' do
+    let(:headers) { get_headers(current_user) }
+
     context "when the post exists" do
       before do
-        create(:post, id: 1, title: "foo", content: "bar")
+        create(:post, id: 1)
       end
 
       it "sends a single post", :aggregate_failures do
-        get '/posts/1', headers: get_headers(user)
+        get '/posts/1', headers: headers
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
@@ -41,7 +41,7 @@ RSpec.describe PostsController, :type => :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/posts/1337', headers: get_headers(user)
+        get '/posts/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"
@@ -50,6 +50,8 @@ RSpec.describe PostsController, :type => :request do
   end
 
   describe 'POST /posts' do
+    subject { post '/posts', params: body.to_json, headers: headers }
+
     let(:body) do
       {
         "data": {
@@ -61,10 +63,11 @@ RSpec.describe PostsController, :type => :request do
         }
       }
     end
+    let(:headers) { post_headers(current_user) }
 
     context "when current user is not an admin" do
       it "returns 403" do
-        post '/posts', params: body.to_json, headers: post_headers(user)
+        subject
 
         expect(response.status).to eq 403
         expect(json_response['error']).to eq "Not Permitted"
@@ -72,21 +75,21 @@ RSpec.describe PostsController, :type => :request do
     end
 
     context "when current user is an admin" do
-      let(:user) { create(:user, admin: true) }
+      let(:current_user) { create(:user, admin: true) }
 
       it "returns 201" do
-        post '/posts', params: body.to_json, headers: post_headers(user)
+        subject
 
         expect(response.status).to eq 201
       end
 
       it "creates a Post in the database" do
-        expect { post '/posts', params: body.to_json, headers: post_headers(user) }
+        expect { subject }
           .to change(Post, :count).by(+1)
       end
 
       it "returns the created Post" do
-        post '/posts', params: body.to_json, headers: post_headers(user)
+        subject
 
         expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
         expect(json_response['data']).to have_type("posts")
@@ -96,6 +99,8 @@ RSpec.describe PostsController, :type => :request do
   end
 
   describe 'PATCH /posts/:id' do
+    subject { patch '/posts/1', params: body.to_json, headers: headers }
+
     let(:body) do
       {
         "data": {
@@ -106,36 +111,35 @@ RSpec.describe PostsController, :type => :request do
         }
       }
     end
-    let(:user) { create(:user, admin: true) }
+    let(:current_user) { create(:user, admin: true) }
     let(:post) { create(:post, id: 1) }
-    let(:headers) { post_headers(user) }
+    let(:headers) { post_headers(current_user) }
 
     before do
-      user
+      current_user
       post
     end
 
     it "returns 200" do
-      patch '/posts/1', params: body.to_json, headers: headers
+      subject
 
       expect(response.status).to eq 200
     end
 
     it "does not create a new Post in the database" do
-      expect { patch '/posts/1', params: body.to_json, headers: headers }
-        .not_to change(Post, :count)
+      expect { subject }.not_to change(Post, :count)
     end
 
     it "changes the Post in the database" do
-      expect { patch '/posts/1', params: body.to_json, headers: headers }
+      expect { subject }
         .to change { Post.find(1).title }
         .from("My post").to("Updated post title")
-      expect { patch '/posts/1', params: body.to_json, headers: headers }
+      expect { subject }
         .not_to change { Post.find(1).content }
     end
 
     it "returns the updated Post" do
-      patch '/posts/1', params: body.to_json, headers: headers
+      subject
 
       expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
       expect(json_response['data']).to have_type("posts")
@@ -143,10 +147,10 @@ RSpec.describe PostsController, :type => :request do
     end
 
     context "when current user is not an admin" do
-      let(:user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       it "returns 403" do
-        patch '/posts/1', params: body.to_json, headers: post_headers(user)
+        subject
 
         expect(response.status).to eq 403
         expect(json_response['error']).to eq "Not Permitted"
@@ -155,7 +159,7 @@ RSpec.describe PostsController, :type => :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/posts/1337', params: body.to_json, headers: post_headers(user)
+        patch '/posts/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"
@@ -164,31 +168,32 @@ RSpec.describe PostsController, :type => :request do
   end
 
   describe 'DELETE /posts/:id' do
-    let(:user) { create(:user, admin: true) }
+    subject { delete '/posts/1', headers: headers }
+
+    let(:current_user) { create(:user, admin: true) }
     let(:post) { create(:post, id: 1) }
-    let(:headers) { get_headers(user) }
+    let(:headers) { get_headers(current_user) }
 
     before do
-      user
+      current_user
       post
     end
 
     it "returns 204" do
-      delete '/posts/1', headers: headers
+      subject
 
       expect(response.status).to eq 204
     end
 
     it "deletes the Post from the database" do
-      expect { delete '/posts/1', headers: headers }
-        .to change(Post, :count).by(-1)
+      expect { subject }.to change(Post, :count).by(-1)
     end
 
     context "when current user is not an admin" do
-      let(:user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       it "returns 403" do
-        delete '/posts/1', headers: headers
+        subject
 
         expect(response.status).to eq 403
         expect(json_response['error']).to eq "Not Permitted"
@@ -208,16 +213,16 @@ RSpec.describe PostsController, :type => :request do
   describe 'POST /posts/:id/images' do
     subject { post '/posts/1/images', params: body, headers: headers }
 
-    let(:user) { create(:user, admin: true) }
+    let(:current_user) { create(:user, admin: true) }
     let(:my_post) { create(:post, id: 1) }
-    let(:headers) { post_headers(user) }
+    let(:headers) { post_headers(current_user) }
     let(:body) { { "post": { "image": image_fixture } } }
     let(:image_fixture) do
       fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
     end
 
     before do
-      user
+      current_user
       my_post
     end
 
@@ -232,7 +237,7 @@ RSpec.describe PostsController, :type => :request do
     end
 
     context "when current user is not an admin", :aggregate_failures do
-      let(:user) { create(:user) }
+      let(:current_user) { create(:user) }
 
       it "returns 403" do
         subject
