@@ -4,7 +4,7 @@ module AdminAuthorizable
   extend ActiveSupport::Concern
 
   included do
-    rescue_from NotPermittedException, with: -> { render json: { error: 'Not Permitted' }, status: :forbidden }
+    rescue_from NotPermittedException, with: -> { render status: 403, json: { error: 'Not Permitted' } }
   end
 
   def authorize!

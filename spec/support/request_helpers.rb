@@ -5,7 +5,7 @@ module Request
       token = Authentication::Jwt.encode(payload)
 
       {
-        'Authentication': "Bearer #{token}",
+        'Authorization': "Bearer #{token}",
         'Accept': 'application/json'
       }
     end
@@ -15,7 +15,7 @@ module Request
       token = Authentication::Jwt.encode(payload)
 
       {
-        'Authentication': "Bearer #{token}",
+        'Authorization': "Bearer #{token}",
         'Accept': 'application/json',
         'Content-Type': 'application/vnd.api+json'
       }

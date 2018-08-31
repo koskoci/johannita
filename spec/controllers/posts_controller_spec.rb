@@ -231,7 +231,7 @@ RSpec.describe PostsController, :type => :request do
       expect { subject }.to change(ActiveStorage::Attachment, :count).by(1)
     end
 
-    context "when current user is not an admin" do
+    context "when current user is not an admin", :aggregate_failures do
       let(:user) { create(:user) }
 
       it "returns 403" do

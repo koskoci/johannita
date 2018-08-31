@@ -8,7 +8,7 @@ module TokenAuthenticatable
 
     before_action :authenticate_user
 
-    rescue_from NotAuthneticatedException, with: -> { render json: { error: command.errors }, status: 401 }
+    rescue_from NotAuthneticatedException, with: -> { render status: 401, json: { error: command.errors } }
   end
 
   private
