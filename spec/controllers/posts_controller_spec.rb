@@ -66,12 +66,7 @@ RSpec.describe PostsController, :type => :request do
     let(:headers) { post_headers(current_user) }
 
     context "when current user is not an admin" do
-      it "returns 403" do
-        subject
-
-        expect(response.status).to eq 403
-        expect(json_response['error']).to eq "Not Permitted"
-      end
+      it_behaves_like "returns 403 unauthorized with error message"
     end
 
     context "when current user is an admin" do
@@ -149,12 +144,7 @@ RSpec.describe PostsController, :type => :request do
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
-      it "returns 403" do
-        subject
-
-        expect(response.status).to eq 403
-        expect(json_response['error']).to eq "Not Permitted"
-      end
+      it_behaves_like "returns 403 unauthorized with error message"
     end
 
     context "when the post does not exist" do
@@ -192,12 +182,7 @@ RSpec.describe PostsController, :type => :request do
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
-      it "returns 403" do
-        subject
-
-        expect(response.status).to eq 403
-        expect(json_response['error']).to eq "Not Permitted"
-      end
+      it_behaves_like "returns 403 unauthorized with error message"
     end
 
     context "when the post does not exist" do
@@ -239,12 +224,7 @@ RSpec.describe PostsController, :type => :request do
     context "when current user is not an admin", :aggregate_failures do
       let(:current_user) { create(:user) }
 
-      it "returns 403" do
-        subject
-
-        expect(response.status).to eq 403
-        expect(json_response['error']).to eq "Not Permitted"
-      end
+      it_behaves_like "returns 403 unauthorized with error message"
     end
 
     context "when the post does not exist" do
