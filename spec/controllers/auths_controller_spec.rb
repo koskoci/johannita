@@ -5,7 +5,7 @@ RSpec.describe AuthsController, :type => :request do
 
   context "when the user exists" do
     before do
-      create(:user, id: 1)
+      create(:user, id: 1, email: "foo@bar.com", password: "abc")
       allow(Authentication::Jwt).to receive(:encode).and_return(token)
     end
 
@@ -18,7 +18,7 @@ RSpec.describe AuthsController, :type => :request do
 
     context "when the password is incorrect" do
       it "rejects the user", :aggregate_failures do
-        post '/auth?user=fee@baz.com&password=123'
+        post '/auth?user=foo_1@bar.com&password=123'
 
         expect(response.status).to eq 401
         expect(json_response['error']).to eq({ "base" => ["User credentials invalid!"] })

@@ -1,11 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe PostsController, :type => :request do
-  let(:current_user) { create(:user, id: 1) }
+  let(:current_user) { create(:user) }
 
-  before do
-    current_user
-  end
+  before { current_user }
 
   describe 'GET /posts' do
     before do
@@ -30,12 +28,36 @@ RSpec.describe PostsController, :type => :request do
         create(:post, id: 1)
       end
 
-      it "sends a single post", :aggregate_failures do
-        get '/posts/1', headers: headers
+      context "when there is no attachment" do
+        it "sends a single post", :aggregate_failures do
+          get '/posts/1', headers: headers
 
-        expect(response.status).to eq 200
-        expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
-        expect(json_response['data']).to have_type("posts")
+          expect(response.status).to eq 200
+          expect(json_response['data']).to have_type("posts")
+          expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
+          expect(json_response['data']).to have_relationship(:images)
+        end
+      end
+
+      context "when there is an attachment" do
+        let(:image_fixture) do
+          fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
+        end
+
+        before do
+          Post.find(1).images.attach(image_fixture)
+        end
+
+        it "sends a single post", :aggregate_failures do
+          get '/posts/1', headers: headers
+
+          expect(response.status).to eq 200
+          expect(json_response['data']).to have_type("posts")
+          expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
+          expect(json_response['data']).to have_relationship(:images)
+          expect(json_response['included'])
+            .to include(have_type('images').and have_attributes(:id, :url, :content_type, :byte_size))
+        end
       end
     end
 

@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   deserializable_resource :post, only: %i[create update]
-  before_action :set_post, only: %i[show edit update destroy select_image images]
+  before_action :set_post, only: %i[show update destroy select_image images]
 
   # GET /posts
   def index
@@ -11,11 +11,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1
   def show
-    if @post
-      render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
-    else
-      render status: 404, json: { error: I18n.t('posts.not_found') }
-    end
+    render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
   end
 
   # POST /posts
@@ -35,8 +31,6 @@ class PostsController < ApplicationController
   def update
     authorize!
 
-    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
-
     if @post.update(post_params)
       render status: 200, jsonapi: @post
     else
@@ -47,8 +41,6 @@ class PostsController < ApplicationController
   # DELETE /posts/1
   def destroy
     authorize!
-
-    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
 
     if @post.destroy
       render status: 204, json: {}
@@ -66,8 +58,6 @@ class PostsController < ApplicationController
   def images
     authorize!
 
-    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(params[:id])
-
     if @post.images.attach(params[:post][:image])
       render status: 201, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
     else
@@ -76,14 +66,18 @@ class PostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      id = params[:id]
-      @post = Post.with_attached_images.find(id) if Post.exists?(id)
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def post_params
-      params.require(:post).permit(:title, :content)
-    end
+  def set_post
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(id)
+
+    @post = Post.with_attached_images.find(id)
+  end
+
+  def post_params
+    params.require(:post).permit(:title, :content)
+  end
+
+  def id
+    params[:id]
+  end
 end

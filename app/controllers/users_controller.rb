@@ -8,30 +8,24 @@ class UsersController < ApplicationController
 
     @users = User.all
 
-    respond_to do |format|
-      format.html
-      format.json { render jsonapi: @users }
-    end
+    render status: 200, jsonapi: @users
   end
 
   # GET /users/1
   def show
-    authorize! unless params[:id] == "me"
+    authorize! unless id == "me"
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"} }
-    end
+    render status: 200, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"}
   end
 
   # PATCH/PUT /users/1
   def update
-    authorize! unless params[:id] == "me"
+    authorize! unless id == "me"
 
     if @user.update(user_params)
-      redirect_to @user
+      render status: 200, jsonapi: @user
     else
-      render json: { error: @user.errors }, status: 400
+      render status: 400, json: { error: @user.errors }
     end
   end
 
@@ -40,9 +34,9 @@ class UsersController < ApplicationController
     authorize!
 
     if @user.destroy
-      redirect_to users_url
+      render status: 204, json: {}
     else
-      render json: { error: @user.errors }, status: 400
+      render status: 400, json: { error: @user.errors }
     end
   end
 
@@ -53,22 +47,28 @@ class UsersController < ApplicationController
 
   # POST /users/1/curriculum_vitaes
   def curriculum_vitaes
-    @user.curriculum_vitae.attach(params[:curriculum_vitae])
+    authorize! unless id == "me"
 
-    render status: 201, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"}
+    @user.curriculum_vitae.attach(params[:user][:curriculum_vitae])
+    render status: 201, jsonapi: @user, include: :curriculum_vitaes, expose: {attachment_type: "curriculum_vitae"}
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = params[:id] == "me" ? current_user : User.find(params[:id])
-      raise ActiveRecord::RecordNotFound unless @user
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def user_params
-      params
-        .require(:user)
-        .permit(:first_name, :last_name, :email, :pav_until, :driving_licence_since, :password)
-    end
+  def set_user
+    @user = current_user and return if id == "me"
+    render status: 404, json: { error: I18n.t('users.not_found') } and return unless User.exists?(id)
+
+    @user = User.with_attached_curriculum_vitae.find(id)
   end
+
+  def user_params
+    params
+      .require(:user)
+      .permit(:first_name, :last_name, :email, :pav_until, :driving_licence_since, :password)
+  end
+
+  def id
+    params[:id]
+  end
+end

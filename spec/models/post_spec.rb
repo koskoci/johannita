@@ -11,15 +11,15 @@ RSpec.describe Post, :type => :model do
   end
 
   context "when it has images attached" do
-    let(:user) { Post.create(params) }
+    let(:post) { Post.create(params) }
     let(:image_fixture) do
       fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
     end
 
-    before { user.images.attach(image_fixture) }
+    before { post.images.attach(image_fixture) }
 
     it "has an attached image" do
-      images = user.images
+      images = post.images
       expect(images).to be_an_instance_of(ActiveStorage::Attached::Many)
       expect(images.attached?).to be true
       expect(images.count).to eq 1

@@ -41,3 +41,5 @@ en:
     subject: "This event has been cancelled"
   posts:
     not_found: "This post does not exist"
+  users:
+    not_found: "This user does not exist"
