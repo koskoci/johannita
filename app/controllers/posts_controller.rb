@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1
   def show
-    render status: 200, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
+    render status: 200, jsonapi: @post, include: :images
   end
 
   # POST /posts
@@ -59,7 +59,7 @@ class PostsController < ApplicationController
     authorize!
 
     if @post.images.attach(params[:post][:image])
-      render status: 201, jsonapi: @post, include: :images, expose: {attachment_type: "images"}
+      render status: 201, jsonapi: @post, include: :images
     else
       render status: 400, json: { error: @post.errors }
     end
