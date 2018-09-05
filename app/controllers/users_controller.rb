@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   deserializable_resource :user, only: %i[update]
-  before_action :set_user, only: %i[show update destroy curriculum_vitaes]
+  before_action :set_user, only: %i[show update destroy curriculum_vitaes cover_letters]
 
   # GET /users
   def index
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   def show
     authorize! unless id == "me"
 
-    render status: 200, jsonapi: @user, include: :curriculum_vitae, expose: {attachment_type: "curriculum_vitaes"}
+    render status: 200, jsonapi: @user, include: %i[curriculum_vitae cover_letter]
   end
 
   # PATCH/PUT /users/1
@@ -50,7 +50,15 @@ class UsersController < ApplicationController
     authorize! unless id == "me"
 
     @user.curriculum_vitae.attach(params[:user][:curriculum_vitae])
-    render status: 201, jsonapi: @user, include: :curriculum_vitaes, expose: {attachment_type: "curriculum_vitae"}
+    render status: 201, jsonapi: @user, include: %i[curriculum_vitae cover_letter]
+  end
+
+  # POST /users/1/cover_letters
+  def cover_letters
+    authorize! unless id == "me"
+
+    @user.cover_letter.attach(params[:user][:cover_letter])
+    render status: 201, jsonapi: @user, include: %i[curriculum_vitae cover_letter]
   end
 
   private

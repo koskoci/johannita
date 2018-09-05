@@ -59,4 +59,20 @@ RSpec.describe User, :type => :model do
       expect(cv.filename).to eq "pdf.pdf"
     end
   end
+
+  context "when it has a cover_letter attached" do
+    let(:user) { User.create(minimum_params) }
+    let(:pdf_fixture) do
+      fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
+    end
+
+    before { user.cover_letter.attach(pdf_fixture) }
+
+    it "has an attached CV" do
+      cover_letter = user.cover_letter
+      expect(cover_letter).to be_an_instance_of(ActiveStorage::Attached::One)
+      expect(cover_letter.attached?).to be true
+      expect(cover_letter.filename).to eq "pdf.pdf"
+    end
+  end
 end

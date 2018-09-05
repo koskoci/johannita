@@ -25,8 +25,8 @@ RSpec.describe UsersController, :type => :request do
         expect(response.status).to eq 200
         expect(json_response['data'].count).to eq(3)
         expect(json_response['data']).to all have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-        expect(json_response['data']).to all have_relationship(:curriculum_vitae)
-        expect(json_response['data']).to all have_type("users")
+        expect(json_response['data']).to all have_relationships('curriculum_vitae', 'cover_letter')
+        expect(json_response['data']).to all have_type('users')
       end
     end
   end
@@ -46,34 +46,37 @@ RSpec.describe UsersController, :type => :request do
       context "when current user is an admin" do
         let(:current_user) { create(:user, admin: true) }
 
-        xcontext "when there is no attachment" do
+        xcontext "when at least one of the attachments is missing" do
           it "sends a single user", :aggregate_failures do
             subject
 
             expect(response.status).to eq 200
             expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-            expect(json_response['data']).to have_relationship(:curriculum_vitae)
-            expect(json_response['data']).to have_type("users")
+            expect(json_response['data']).to have_relationships(:curriculum_vitae, :cover_letter)
+            expect(json_response['data']).to have_type('users')
           end
         end
 
-        context "when there is an attachment" do
+        context "when there is both a cover letter and a cv" do
           let(:pdf_fixture) do
             fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
           end
 
-          before { User.find(1).curriculum_vitae.attach(pdf_fixture) }
+          before do
+            User.find(1).curriculum_vitae.attach(pdf_fixture)
+            User.find(1).cover_letter.attach(pdf_fixture)
+          end
 
           it "sends a single user", :aggregate_failures do
             subject
 
             expect(response.status).to eq 200
             expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-            expect(json_response['data']).to have_relationship(:curriculum_vitae)
-            expect(json_response['data']).to have_type("users")
-            expect(json_response['data']).to have_relationship(:curriculum_vitae)
+            expect(json_response['data']).to have_type('users')
+            expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
             expect(json_response['included'])
               .to include(have_type('curriculum_vitaes').and have_attributes(:id, :url, :content_type, :byte_size))
+              .and include(have_type('cover_letters').and have_attributes(:id, :url, :content_type, :byte_size))
           end
         end
       end
@@ -102,28 +105,31 @@ RSpec.describe UsersController, :type => :request do
         subject
 
         expect(response.status).to eq 200
-        expect(json_response['data']).to have_type("users")
+        expect(json_response['data']).to have_type('users')
         expect(json_response['data']).to have_id("1000")
         expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-        expect(json_response['data']).to have_relationship(:curriculum_vitae)
+        expect(json_response['data']).to have_relationships(:curriculum_vitae, :cover_letter)
       end
     end
 
-    context "when there is an attachment" do
+    context "when there is both a cover letter and a cv" do
       let(:pdf_fixture) do
         fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
       end
 
-      before { User.find(1000).curriculum_vitae.attach(pdf_fixture) }
+      before do
+        User.find(1000).curriculum_vitae.attach(pdf_fixture)
+        User.find(1000).cover_letter.attach(pdf_fixture)
+      end
 
       it "sends a single user", :aggregate_failures do
         subject
 
         expect(response.status).to eq 200
-        expect(json_response['data']).to have_type("users")
+        expect(json_response['data']).to have_type('users')
         expect(json_response['data']).to have_id("1000")
         expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-        expect(json_response['data']).to have_relationship(:curriculum_vitae)
+        expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
         expect(json_response['included'])
           .to include(have_type('curriculum_vitaes').and have_attributes(:id, :url, :content_type, :byte_size))
       end
@@ -170,10 +176,10 @@ RSpec.describe UsersController, :type => :request do
     it "returns the updated User" do
       subject
 
-      expect(json_response['data']).to have_type("users")
+      expect(json_response['data']).to have_type('users')
       expect(json_response['data']).to have_id("1")
       expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-      expect(json_response['data']).to have_relationship(:curriculum_vitae)
+      expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
     end
 
     context "when current user is not an admin" do
@@ -231,10 +237,10 @@ RSpec.describe UsersController, :type => :request do
     it "returns the updated User" do
       subject
 
-      expect(json_response['data']).to have_type("users")
+      expect(json_response['data']).to have_type('users')
       expect(json_response['data']).to have_id("1")
       expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-      expect(json_response['data']).to have_relationship(:curriculum_vitae)
+      expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
     end
   end
 
@@ -290,6 +296,7 @@ RSpec.describe UsersController, :type => :request do
     before do
       current_user
       user
+      User.find(1).cover_letter.attach(pdf_fixture)
     end
 
     it "returns 201" do
@@ -300,7 +307,7 @@ RSpec.describe UsersController, :type => :request do
 
     it 'attaches the file' do
       expect { subject }.to change(ActiveStorage::Attachment, :count).by(1)
-      # and change { User.find(1).curriculum_vitae.attached? }.from(false).to(true)
+        .and change { User.find(1).curriculum_vitae.attached? }.from(false).to(true)
     end
 
     context "when current user is not an admin" do
@@ -312,6 +319,50 @@ RSpec.describe UsersController, :type => :request do
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
         post '/users/1337/curriculum_vitaes', params: body.to_json, headers: headers
+
+        expect(response.status).to eq 404
+        expect(json_response['error']).to eq "This user does not exist"
+      end
+    end
+  end
+
+  describe 'POST /users/:id/cover_letters' do
+    subject { post '/users/1/cover_letters', params: body, headers: headers }
+
+    let(:current_user) { create(:user, admin: true) }
+    let(:user) { create(:user, id: 1) }
+    let(:headers) { post_headers(current_user) }
+    let(:body) { { "user": { "cover_letter": pdf_fixture } } }
+    let(:pdf_fixture) do
+      fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
+    end
+
+    before do
+      current_user
+      user
+      User.find(1).curriculum_vitae.attach(pdf_fixture)
+    end
+
+    it "returns 201" do
+      subject
+
+      expect(response.status).to eq 201
+    end
+
+    it 'attaches the file' do
+      expect { subject }.to change(ActiveStorage::Attachment, :count).by(1)
+        .and change { User.find(1).cover_letter.attached? }.from(false).to(true)
+    end
+
+    context "when current user is not an admin" do
+      let(:current_user) { create(:user) }
+
+      it_behaves_like "returns 403 unauthorized with error message"
+    end
+
+    context "when the user does not exist" do
+      it "returns 404", :aggregate_failures do
+        post '/users/1337/cover_letters', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"
