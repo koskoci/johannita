@@ -40,11 +40,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET /users/1/select_curriculum_vitae
-  def select_curriculum_vitae
-    # Server-side rendering for testing purposes
-  end
-
   # POST /users/1/curriculum_vitaes
   def curriculum_vitaes
     authorize! unless id == "me"

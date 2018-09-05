@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   deserializable_resource :post, only: %i[create update]
-  before_action :set_post, only: %i[show update destroy select_image images]
+  before_action :set_post, only: %i[show update destroy images]
 
   # GET /posts
   def index
@@ -47,11 +47,6 @@ class PostsController < ApplicationController
     else
       render status: 400, json: { error: @post.errors }
     end
-  end
-
-  # GET /posts/1/select_image
-  def select_image
-    # Server-side rendering for testing purposes
   end
 
   # POST /posts/1/images

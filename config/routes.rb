@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   end
   resources :posts, except: %i[new edit] do
     member do
-      get 'select_image'
       post 'images'
     end
   end
@@ -18,9 +17,7 @@ Rails.application.routes.draw do
   resources :attachments, only: %i[destroy]
   resources :users, except: %i[new edit create] do
     member do
-      get 'select_curriculum_vitae'
       post 'curriculum_vitaes'
-      get 'select_cover_letter'
       post 'cover_letters'
     end
   end
