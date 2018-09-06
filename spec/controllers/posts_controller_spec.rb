@@ -48,7 +48,7 @@ RSpec.describe PostsController, :type => :request do
           Post.find(1).images.attach(image_fixture)
         end
 
-        it "sends a single post", :aggregate_failures do
+        it "sends a single post with all included images", :aggregate_failures do
           get '/posts/1', headers: headers
 
           expect(response.status).to eq 200
