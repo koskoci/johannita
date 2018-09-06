@@ -12,4 +12,11 @@ FactoryBot.define do
     title { "My post" }
     content { "This is where I talk about everything that needs to be talked about." }
   end
+
+  factory :event do
+    title { "My event"}
+    category { "Elsosegely-tanfolyam"}
+    date { "2019/1/1" }
+    status { "posted" }
+  end
 end

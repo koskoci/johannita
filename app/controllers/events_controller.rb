@@ -2,21 +2,38 @@ class EventsController < ApplicationController
   deserializable_resource :event, only: %i[create update]
   before_action :set_event, only: %i[show edit update destroy apply confirm cancel]
 
-  # GET /events
   def index
     @events = Event.all
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @events }
-    end
+    render status: 200, jsonapi: @events
   end
 
   # GET /events/1
   def show
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @event, include: :participants }
+    render status: 200, jsonapi: @event, include: :participants
+  end
+
+    # POST /events
+  def create
+    authorize!
+
+    @event = Event.new(event_params)
+
+    if @event.save
+      render status: 201, jsonapi: @event
+    else
+      render status: 400, json: { error: @event.errors }
+    end
+  end
+
+  # PATCH/PUT /events/1
+  def update
+    authorize!
+
+    if @event.update(event_params)
+      render status: 200, jsonapi: @event
+    else
+      render status: 400, json: { error: @event.errors }
     end
   end
 
@@ -64,44 +81,27 @@ class EventsController < ApplicationController
     end
   end
 
-  # POST /events
-  def create
-    authorize!
-
-    @event = Event.new(event_params)
-
-    if @event.save
-      render status: 201, jsonapi: @event
-    else
-      render status: 400, json: { error: @event.errors }
-    end
-  end
-
-  # PATCH/PUT /events/1
-  def update
-    authorize!
-
-    if @event.update(event_params)
-      render status: 200, jsonapi: @event
-    else
-      render status: 400, json: { error: @event.errors }
-    end
-  end
-
   private
-    def set_event
-      @event = Event.includes(:users).find(params[:id])
-    end
 
-    def event_params
-      params.require(:event).permit(:title, :category, :date)
-    end
+  def set_event
+    render status: 404, json: { error: I18n.t('events.not_found') } and return unless Event.exists?(id)
 
-    def already_added?
-      @event.participants.where(user_id: current_user.id, event_id: @event.id).present?
-    end
+    @event = Event.includes(:users).find(id)
+  end
 
-    def participant
-      @_participant ||= Participant.new(user_id: current_user.id, event_id: @event.id)
-    end
+  def event_params
+    params.require(:event).permit(:title, :category, :date)
+  end
+
+  def already_added?
+    @event.participants.where(user_id: current_user.id, event_id: @event.id).present?
+  end
+
+  def participant
+    @_participant ||= Participant.new(user_id: current_user.id, event_id: @event.id)
+  end
+
+  def id
+    params[:id]
+  end
 end

@@ -43,3 +43,5 @@ en:
     not_found: "This post does not exist"
   users:
     not_found: "This user does not exist"
+  events:
+    not_found: "This event does not exist"
