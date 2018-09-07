@@ -39,46 +39,37 @@ class EventsController < ApplicationController
 
   # POST /events/1/apply
   def apply
-    @event.participants << participant unless already_added?
+    @event.participants << current_participant unless already_applied?
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @event, include: :participants }
-    end
+    render status: 200, jsonapi: @event, include: :participants
   end
 
   # PATCH /events/1/confirm
   def confirm
     authorize!
 
-    redirect_to(@event, notice: 'Event already confirmed') and return if @event.status == "confirmed"
+    render status: 200, jsonapi: @event and return if @event.status == "confirmed"
 
     @event.update_attribute(:status, "confirmed")
     @event.participants.includes(:user).each do |participant|
       EventConfirmedMailer.with(user: participant.user, event: @event).call.deliver_now
     end
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @event, include: :participants }
-    end
+    render status: 200, jsonapi: @event
   end
 
   # PATCH /events/1/cancel
   def cancel
     authorize!
 
-    redirect_to(@event, notice: 'Event already cancelled') and return if @event.status == "cancelled"
+    render status: 200, jsonapi: @event and return if @event.status == "cancelled"
 
     @event.update_attribute(:status, "cancelled")
     @event.participants.includes(:user).each do |participant|
       EventCancelledMailer.with(user: participant.user, event: @event).call.deliver_now
     end
 
-    respond_to do |format|
-      format.html
-      format.json { render status: 200, jsonapi: @event, include: :participants }
-    end
+    render status: 200, jsonapi: @event
   end
 
   private
@@ -93,11 +84,11 @@ class EventsController < ApplicationController
     params.require(:event).permit(:title, :category, :date)
   end
 
-  def already_added?
+  def already_applied?
     @event.participants.where(user_id: current_user.id, event_id: @event.id).present?
   end
 
-  def participant
+  def current_participant
     @_participant ||= Participant.new(user_id: current_user.id, event_id: @event.id)
   end
 
