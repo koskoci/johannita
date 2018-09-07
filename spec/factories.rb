@@ -18,5 +18,6 @@ FactoryBot.define do
     category { "Elsosegely-tanfolyam"}
     date { "2019/1/1" }
     status { "posted" }
+    apply_by { "2018/11/1" }
   end
 end

@@ -16,7 +16,7 @@ RSpec.describe EventsController, :type => :request do
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_type("events")
-      expect(json_response['data']).to all have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+      expect(json_response['data']).to all have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to all have_relationship(:participants)
     end
   end
@@ -37,7 +37,7 @@ RSpec.describe EventsController, :type => :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("events")
-          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
           expect(json_response['data']).to have_relationship(:participants)
         end
       end
@@ -55,7 +55,7 @@ RSpec.describe EventsController, :type => :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("events")
-          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
           expect(json_response['included'])
@@ -112,7 +112,7 @@ RSpec.describe EventsController, :type => :request do
         subject
 
         expect(json_response['data']).to have_type("events")
-        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['data']['id']).not_to be nil
       end
@@ -162,7 +162,7 @@ RSpec.describe EventsController, :type => :request do
     it "returns the updated Event" do
       subject
 
-      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to have_type("events")
       expect(json_response['data']).to have_id("1")
     end
@@ -199,7 +199,7 @@ RSpec.describe EventsController, :type => :request do
 
       expect(response.status).to eq 200
       expect(json_response['data']).to have_type("events")
-      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
       expect(json_response['included'])
@@ -219,7 +219,7 @@ RSpec.describe EventsController, :type => :request do
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("events")
-        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status)
+        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
         expect(json_response['included'])
