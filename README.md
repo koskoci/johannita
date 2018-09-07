@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/koskoci/johannita/badge.svg?branch=master)](https://coveralls.io/github/koskoci/johannita?branch=master)
+
 Johannita Segito szolgalat web app
 
 Regi [wordpress site](http://johannitak.hu/segito-szolgalat)

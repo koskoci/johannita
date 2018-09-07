@@ -46,6 +46,7 @@ group :test do
   gem 'rspec-rails', '~> 3.7'
   gem "jsonapi-rspec"
   gem 'simplecov', require: false
+  gem 'coveralls', require: false
 end
 
 group :development do

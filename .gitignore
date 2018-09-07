@@ -29,3 +29,5 @@
 
 .env.development
 coverage
+
+.coveralls.yml
