@@ -17,7 +17,10 @@ class EventsController < ApplicationController
   def create
     authorize!
 
-    @event = Event.new(event_params)
+    @event = Event.new(event_params.except(:category))
+
+    verify_event_category_exists; return if performed?
+    update_category
 
     if @event.save
       render status: 201, jsonapi: @event
@@ -30,7 +33,14 @@ class EventsController < ApplicationController
   def update
     authorize!
 
-    if @event.update(event_params)
+    @event.update_columns(event_params.except(:category).to_h)
+
+    if event_params[:category]
+      verify_event_category_exists; return if performed?
+      update_category
+    end
+
+    if @event.save
       render status: 200, jsonapi: @event
     else
       render status: 400, json: { error: @event.errors }
@@ -77,7 +87,7 @@ class EventsController < ApplicationController
   def set_event
     render status: 404, json: { error: I18n.t('events.not_found') } and return unless Event.exists?(id)
 
-    @event = Event.includes(:users).find(id)
+    @event = Event.includes(:users, :event_category).find(id)
   end
 
   def event_params
@@ -94,5 +104,13 @@ class EventsController < ApplicationController
 
   def id
     params[:id]
+  end
+
+  def update_category
+    @event.event_category = EventCategory.find_by(category: event_params[:category])
+  end
+
+  def verify_event_category_exists
+    render status: 400, json: { error: I18n.t('event_categories.not_found') } and return unless EventCategory.where(category: event_params[:category]).exists?
   end
 end

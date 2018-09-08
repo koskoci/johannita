@@ -45,3 +45,5 @@ en:
     not_found: "This user does not exist"
   events:
     not_found: "This event does not exist"
+  event_categories:
+    not_found: "This event category does not exist"

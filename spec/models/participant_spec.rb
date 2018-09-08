@@ -2,11 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Participant, :type => :model do
   let(:params) { { event_id: 1, user_id: 1 } }
-  let(:user_params) { { password: "abc", email: "foo@bar.com", first_name: "Foo", last_name: "Bar" } }
 
   before do
-    Event.create(id: 1)
-    User.create(user_params.merge(id: 1))
+    create(:event, id: 1)
+    create(:user, id: 1)
   end
 
   it "is valid with valid params" do

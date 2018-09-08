@@ -15,9 +15,14 @@ FactoryBot.define do
 
   factory :event do
     title { "My event"}
-    category { "Elsosegely-tanfolyam"}
     date { "2019/1/1" }
     status { "posted" }
     apply_by { "2018/11/1" }
+    association :event_category, factory: :event_category
+  end
+
+  factory :event_category do
+    last_date { "2018-01-01" }
+    category { "Elsosegely-tanfolyam"}
   end
 end

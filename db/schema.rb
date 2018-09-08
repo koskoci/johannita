@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_07_190009) do
+ActiveRecord::Schema.define(version: 2018_09_08_071910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,14 +36,22 @@ ActiveRecord::Schema.define(version: 2018_09_07_190009) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "event_categories", force: :cascade do |t|
+    t.date "last_date"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "events", force: :cascade do |t|
     t.string "title"
-    t.string "category"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "posted"
     t.date "apply_by"
+    t.bigint "event_category_id"
+    t.index ["event_category_id"], name: "index_events_on_event_category_id"
   end
 
   create_table "participants", force: :cascade do |t|
@@ -74,6 +82,7 @@ ActiveRecord::Schema.define(version: 2018_09_07_190009) do
     t.date "driving_licence_since"
   end
 
+  add_foreign_key "events", "event_categories"
   add_foreign_key "participants", "events"
   add_foreign_key "participants", "users"
 end

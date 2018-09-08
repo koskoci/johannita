@@ -1,7 +1,9 @@
 class SerializableEvent < JSONAPI::Serializable::Resource
   type 'events'
   attribute :title
-  attribute :category
+  attribute :category do
+    @object.event_category.category
+  end
   attribute :date
   attribute :created_at
   attribute :updated_at
