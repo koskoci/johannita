@@ -21,4 +21,6 @@ Rails.application.routes.draw do
       post 'cover_letters'
     end
   end
+
+  resources :event_categories, except: %i[new edit]
 end

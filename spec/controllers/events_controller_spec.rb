@@ -83,12 +83,15 @@ RSpec.describe EventsController, :type => :request do
           "type": "events",
           "attributes": {
             "title": "First event title",
-            "content": "First event content"
+            "content": "First event content",
+            "category": "Elsosegely-tanfolyam"
           }
         }
       }
     end
     let(:headers) { post_headers(current_user) }
+
+    before { create(:event_category) }
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -113,8 +116,31 @@ RSpec.describe EventsController, :type => :request do
 
         expect(json_response['data']).to have_type("events")
         expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+        expect(json_response['data']).to have_attribute(:category).with_value("Elsosegely-tanfolyam")
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['data']['id']).not_to be nil
+      end
+
+      context "when the event category does not exist" do
+        let(:body) do
+          {
+            "data": {
+              "type": "events",
+              "attributes": {
+                "title": "First event title",
+                "content": "First event content",
+                "category": "Zsakpakolo-tanfolyam"
+              }
+            }
+          }
+        end
+
+        it "returns 400 with an error message" do
+        subject
+
+        expect(response.status).to eq 400
+        expect(json_response['error']).to eq "This event category does not exist"
+        end
       end
     end
   end
@@ -128,6 +154,7 @@ RSpec.describe EventsController, :type => :request do
           "type": "events",
           "attributes": {
             "title": "Updated event title",
+            "category": "Mentoapolo-tanfolyam",
           }
         }
       }
@@ -135,10 +162,12 @@ RSpec.describe EventsController, :type => :request do
     let(:current_user) { create(:user, admin: true) }
     let(:event) { create(:event, id: 1) }
     let(:headers) { post_headers(current_user) }
+    let(:another_event_category) { create(:event_category, category: "Mentoapolo-tanfolyam") }
 
     before do
       current_user
       event
+      another_event_category
     end
 
     it "returns 200" do
@@ -156,13 +185,14 @@ RSpec.describe EventsController, :type => :request do
         .to change { Event.find(1).title }
         .from("My event").to("Updated event title")
       expect { subject }
-        .not_to change { Event.find(1).category }
+        .not_to change { Event.find(1).apply_by }
     end
 
     it "returns the updated Event" do
       subject
 
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+      expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
       expect(json_response['data']).to have_type("events")
       expect(json_response['data']).to have_id("1")
     end
@@ -181,7 +211,28 @@ RSpec.describe EventsController, :type => :request do
         expect(json_response['error']).to eq "This event does not exist"
       end
     end
-  end
+
+    context "when the event category does not exist" do
+      let(:body) do
+        {
+          "data": {
+            "type": "events",
+            "attributes": {
+              "title": "Updated event title",
+              "category": "Zsakpakolo-tanfolyam",
+            }
+          }
+        }
+      end
+
+      it "returns 400 with an error message" do
+        subject
+
+        expect(response.status).to eq 400
+        expect(json_response['error']).to eq "This event category does not exist"
+        end
+      end
+    end
 
   describe 'POST /events/:id/apply' do
     subject { post '/events/1/apply', headers: headers }
