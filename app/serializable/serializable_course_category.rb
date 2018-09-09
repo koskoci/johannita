@@ -1,5 +1,5 @@
-class SerializableEventCategory < JSONAPI::Serializable::Resource
-  type 'event_categories'
+class SerializableCourseCategory < JSONAPI::Serializable::Resource
+  type 'course_categories'
   attribute :category
   attribute :last_date
   attribute :created_at

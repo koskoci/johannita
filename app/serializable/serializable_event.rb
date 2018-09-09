@@ -2,7 +2,7 @@ class SerializableEvent < JSONAPI::Serializable::Resource
   type 'events'
   attribute :title
   attribute :category do
-    @object.event_category.category
+    @object.course_category.category
   end
   attribute :date
   attribute :created_at

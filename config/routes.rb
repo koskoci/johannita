@@ -22,5 +22,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :event_categories, except: %i[new edit]
+  resources :course_categories, except: %i[new edit]
 end

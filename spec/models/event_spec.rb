@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Event, :type => :model do
-  let(:params) { { title: "foo", event_category: event_category, date: Date.parse("2000-01-01"), status: "cancelled" } }
-  let(:event_category) { create(:event_category) }
+  let(:params) { { title: "foo", course_category: course_category, date: Date.parse("2000-01-01"), status: "cancelled" } }
+  let(:course_category) { create(:course_category) }
 
   it "is valid with valid the params" do
     user = Event.new(params)
     expect(user).to be_valid
     expect(user.title).to eq "foo"
-    expect(user.event_category).to eq event_category
+    expect(user.course_category).to eq course_category
     expect(user.date).to eq Date.parse("2000-01-01")
     expect(user.status).to eq "cancelled"
   end
@@ -28,7 +28,7 @@ RSpec.describe Event, :type => :model do
   end
 
   it "belongs to an event category" do
-    assc = described_class.reflect_on_association(:event_category)
+    assc = described_class.reflect_on_association(:course_category)
     expect(assc.macro).to eq :belongs_to
   end
 

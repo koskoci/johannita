@@ -91,7 +91,7 @@ RSpec.describe EventsController, :type => :request do
     end
     let(:headers) { post_headers(current_user) }
 
-    before { create(:event_category) }
+    before { create(:course_category) }
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -162,12 +162,12 @@ RSpec.describe EventsController, :type => :request do
     let(:current_user) { create(:user, admin: true) }
     let(:event) { create(:event, id: 1) }
     let(:headers) { post_headers(current_user) }
-    let(:another_event_category) { create(:event_category, category: "Mentoapolo-tanfolyam") }
+    let(:another_course_category) { create(:course_category, category: "Mentoapolo-tanfolyam") }
 
     before do
       current_user
       event
-      another_event_category
+      another_course_category
     end
 
     it "returns 200" do
