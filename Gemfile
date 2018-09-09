@@ -45,6 +45,7 @@ group :test do
   gem "guard-rspec"
   gem 'rspec-rails', '~> 3.7'
   gem "jsonapi-rspec"
+  gem 'shoulda-matchers', '~> 3.1'
   gem 'simplecov', require: false
   gem 'coveralls', require: false
 end

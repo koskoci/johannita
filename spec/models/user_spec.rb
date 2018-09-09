@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe User, :type => :model do
   let(:minimum_params) { { password: "abc", email: "foo@bar.com", first_name: "Foo", last_name: "Bar" } }
 
+  it { should validate_presence_of(:first_name) }
+  it { should validate_presence_of(:last_name) }
+  it { should validate_presence_of(:password) }
+  it { should validate_presence_of(:email) }
+  it { should have_secure_password }
+
   it "is valid with minimum params" do
     expect(User.new(minimum_params)).to be_valid
-  end
-
-  %i[password email first_name last_name].each do |attribute|
-    it "is not valid without #{attribute}" do
-      expect(User.new(minimum_params.reject { |k, _| k == attribute })).not_to be_valid
-    end
   end
 
   context "validates email" do
