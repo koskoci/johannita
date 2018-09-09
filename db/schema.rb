@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_09_162414) do
+ActiveRecord::Schema.define(version: 2018_09_09_170238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 2018_09_09_162414) do
     t.integer "prerequisite_course_category_id"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "course_events", force: :cascade do |t|
     t.string "title"
     t.date "date"
     t.datetime "created_at", null: false
@@ -53,15 +53,15 @@ ActiveRecord::Schema.define(version: 2018_09_09_162414) do
     t.string "status", default: "posted"
     t.date "apply_by"
     t.bigint "course_category_id"
-    t.index ["course_category_id"], name: "index_events_on_course_category_id"
+    t.index ["course_category_id"], name: "index_course_events_on_course_category_id"
   end
 
   create_table "participants", force: :cascade do |t|
-    t.bigint "event_id", null: false
+    t.bigint "course_event_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["event_id"], name: "index_participants_on_event_id"
+    t.index ["course_event_id"], name: "index_participants_on_course_event_id"
     t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 2018_09_09_162414) do
     t.date "driving_licence_since"
   end
 
-  add_foreign_key "events", "course_categories"
-  add_foreign_key "participants", "events"
+  add_foreign_key "course_events", "course_categories"
+  add_foreign_key "participants", "course_events"
   add_foreign_key "participants", "users"
 end

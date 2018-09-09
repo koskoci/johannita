@@ -13,8 +13,8 @@ FactoryBot.define do
     content { "This is where I talk about everything that needs to be talked about." }
   end
 
-  factory :event do
-    title { "My event"}
+  factory :course_event do
+    title { "My course_event"}
     date { "2019/1/1" }
     status { "posted" }
     apply_by { "2018/11/1" }

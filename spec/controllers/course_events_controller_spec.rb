@@ -1,42 +1,42 @@
 require 'rails_helper'
 
-RSpec.describe EventsController, :type => :request do
+RSpec.describe CourseEventsController, :type => :request do
   let(:current_user) { create(:user) }
 
   before { current_user }
 
-  describe 'GET /events' do
+  describe 'GET /course_events' do
     before do
-      create_list(:event, 2)
+      create_list(:course_event, 2)
     end
 
-    it "sends a list of events", :aggregate_failures do
-      get '/events', headers: get_headers(current_user)
+    it "sends a list of course_events", :aggregate_failures do
+      get '/course_events', headers: get_headers(current_user)
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
-      expect(json_response['data']).to all have_type("events")
+      expect(json_response['data']).to all have_type("course_events")
       expect(json_response['data']).to all have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to all have_relationship(:participants)
     end
   end
 
-  describe 'GET /events/:id' do
+  describe 'GET /course_events/:id' do
     let(:headers) { get_headers(current_user) }
 
-    context "when the event exists" do
-      let(:event) { create(:event, id: 1) }
+    context "when the course_event exists" do
+      let(:course_event) { create(:course_event, id: 1) }
 
       before do
-        event
+        course_event
       end
 
       context "when there is no attachment" do
-        it "sends a single event", :aggregate_failures do
-          get '/events/1', headers: headers
+        it "sends a single course_event", :aggregate_failures do
+          get '/course_events/1', headers: headers
 
           expect(response.status).to eq 200
-          expect(json_response['data']).to have_type("events")
+          expect(json_response['data']).to have_type("course_events")
           expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
           expect(json_response['data']).to have_relationship(:participants)
         end
@@ -46,15 +46,15 @@ RSpec.describe EventsController, :type => :request do
         let(:other_user) { create(:user) }
 
         before do
-          Participant.create(event: event, user: other_user)
-          Participant.create(event: event, user: current_user)
+          Participant.create(course_event: course_event, user: other_user)
+          Participant.create(course_event: course_event, user: current_user)
         end
 
-        it "sends a single event with all included participants", :aggregate_failures do
-          get '/events/1', headers: headers
+        it "sends a single course_event with all included participants", :aggregate_failures do
+          get '/course_events/1', headers: headers
 
           expect(response.status).to eq 200
-          expect(json_response['data']).to have_type("events")
+          expect(json_response['data']).to have_type("course_events")
           expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
@@ -64,26 +64,26 @@ RSpec.describe EventsController, :type => :request do
       end
     end
 
-    context "when the event does not exist" do
+    context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/events/1337', headers: headers
+        get '/course_events/1337', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event does not exist"
+        expect(json_response['error']).to eq "This course_event does not exist"
       end
     end
   end
 
-  describe 'POST /events' do
-    subject { post '/events', params: body.to_json, headers: headers }
+  describe 'POST /course_events' do
+    subject { post '/course_events', params: body.to_json, headers: headers }
 
     let(:body) do
       {
         "data": {
-          "type": "events",
+          "type": "course_events",
           "attributes": {
-            "title": "First event title",
-            "content": "First event content",
+            "title": "First course_event title",
+            "content": "First course_event content",
             "category": "Elsosegely-tanfolyam"
           }
         }
@@ -106,29 +106,29 @@ RSpec.describe EventsController, :type => :request do
         expect(response.status).to eq 201
       end
 
-      it "creates a Event in the database" do
+      it "creates a CourseEvent in the database" do
         expect { subject }
-          .to change(Event, :count).by(+1)
+          .to change(CourseEvent, :count).by(+1)
       end
 
-      it "returns the created Event" do
+      it "returns the created CourseEvent" do
         subject
 
-        expect(json_response['data']).to have_type("events")
+        expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
         expect(json_response['data']).to have_attribute(:category).with_value("Elsosegely-tanfolyam")
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['data']['id']).not_to be nil
       end
 
-      context "when the event category does not exist" do
+      context "when the course_event category does not exist" do
         let(:body) do
           {
             "data": {
-              "type": "events",
+              "type": "course_events",
               "attributes": {
-                "title": "First event title",
-                "content": "First event content",
+                "title": "First course_event title",
+                "content": "First course_event content",
                 "category": "Zsakpakolo-tanfolyam"
               }
             }
@@ -139,34 +139,34 @@ RSpec.describe EventsController, :type => :request do
         subject
 
         expect(response.status).to eq 400
-        expect(json_response['error']).to eq "This event category does not exist"
+        expect(json_response['error']).to eq "This course_event category does not exist"
         end
       end
     end
   end
 
-  describe 'PATCH /events/:id' do
-    subject { patch '/events/1', params: body.to_json, headers: headers }
+  describe 'PATCH /course_events/:id' do
+    subject { patch '/course_events/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
         "data": {
-          "type": "events",
+          "type": "course_events",
           "attributes": {
-            "title": "Updated event title",
+            "title": "Updated course_event title",
             "category": "Mentoapolo-tanfolyam",
           }
         }
       }
     end
     let(:current_user) { create(:user, admin: true) }
-    let(:event) { create(:event, id: 1) }
+    let(:course_event) { create(:course_event, id: 1) }
     let(:headers) { post_headers(current_user) }
     let(:another_course_category) { create(:course_category, category: "Mentoapolo-tanfolyam") }
 
     before do
       current_user
-      event
+      course_event
       another_course_category
     end
 
@@ -176,24 +176,24 @@ RSpec.describe EventsController, :type => :request do
       expect(response.status).to eq 200
     end
 
-    it "does not create a new Event in the database" do
-      expect { subject }.not_to change(Event, :count)
+    it "does not create a new CourseEvent in the database" do
+      expect { subject }.not_to change(CourseEvent, :count)
     end
 
-    it "changes the Event in the database" do
+    it "changes the CourseEvent in the database" do
       expect { subject }
-        .to change { Event.find(1).title }
-        .from("My event").to("Updated event title")
+        .to change { CourseEvent.find(1).title }
+        .from("My course_event").to("Updated course_event title")
       expect { subject }
-        .not_to change { Event.find(1).apply_by }
+        .not_to change { CourseEvent.find(1).apply_by }
     end
 
-    it "returns the updated Event" do
+    it "returns the updated CourseEvent" do
       subject
 
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
-      expect(json_response['data']).to have_type("events")
+      expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_id("1")
     end
 
@@ -203,22 +203,22 @@ RSpec.describe EventsController, :type => :request do
       it_behaves_like "returns 403 unauthorized with error message"
     end
 
-    context "when the event does not exist" do
+    context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/events/1337', params: body.to_json, headers: headers
+        patch '/course_events/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event does not exist"
+        expect(json_response['error']).to eq "This course_event does not exist"
       end
     end
 
-    context "when the event category does not exist" do
+    context "when the course_event category does not exist" do
       let(:body) do
         {
           "data": {
-            "type": "events",
+            "type": "course_events",
             "attributes": {
-              "title": "Updated event title",
+              "title": "Updated course_event title",
               "category": "Zsakpakolo-tanfolyam",
             }
           }
@@ -229,27 +229,27 @@ RSpec.describe EventsController, :type => :request do
         subject
 
         expect(response.status).to eq 400
-        expect(json_response['error']).to eq "This event category does not exist"
+        expect(json_response['error']).to eq "This course_event category does not exist"
         end
       end
     end
 
-  describe 'POST /events/:id/apply' do
-    subject { post '/events/1/apply', headers: headers }
+  describe 'POST /course_events/:id/apply' do
+    subject { post '/course_events/1/apply', headers: headers }
 
     let(:headers) { post_headers(current_user) }
-    let(:event) { create(:event, id: 1) }
+    let(:course_event) { create(:course_event, id: 1) }
 
     before do
       current_user
-      event
+      course_event
     end
 
-    it "returns 200 plus the event with participants" do
+    it "returns 200 plus the course_event with participants" do
       subject
 
       expect(response.status).to eq 200
-      expect(json_response['data']).to have_type("events")
+      expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
@@ -263,13 +263,13 @@ RSpec.describe EventsController, :type => :request do
     end
 
     context "when the same participant already exists" do
-      before { Participant.create(event: event, user: current_user) }
+      before { Participant.create(course_event: course_event, user: current_user) }
 
-      it "returns 200 plus the event with participants" do
+      it "returns 200 plus the course_event with participants" do
         subject
 
         expect(response.status).to eq 200
-        expect(json_response['data']).to have_type("events")
+        expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
@@ -278,48 +278,48 @@ RSpec.describe EventsController, :type => :request do
       end
     end
 
-    context "when the event does not exist" do
+    context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/events/1337/apply', headers: headers
+        post '/course_events/1337/apply', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event does not exist"
+        expect(json_response['error']).to eq "This course_event does not exist"
       end
     end
   end
 
-  describe 'PATCH /events/:id/confirm' do
-    subject { patch '/events/1/confirm', headers: headers }
+  describe 'PATCH /course_events/:id/confirm' do
+    subject { patch '/course_events/1/confirm', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
-    let(:event) { create(:event, id: 1) }
+    let(:course_event) { create(:course_event, id: 1) }
     let(:mailer) { instance_double(EventConfirmedMailer, call: OpenStruct.new(deliver_now: true)) }
 
     before do
-      Participant.create(event: event, user: current_user)
+      Participant.create(course_event: course_event, user: current_user)
     end
 
-    it "returns 200 plus the event without participants" do
+    it "returns 200 plus the course_event without participants" do
       subject
 
       expect(response.status).to eq 200
-      expect(json_response['data']).to have_type("events")
+      expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_attribute(:status).with_value("confirmed")
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included']).to be nil
     end
 
-    it "changes the status of the event in the database" do
+    it "changes the status of the course_event in the database" do
       expect { subject }
-        .to change { Event.find(1).status }
+        .to change { CourseEvent.find(1).status }
           .from("posted").to("confirmed")
     end
 
     it "uses the correct mailer" do
       allow(EventConfirmedMailer)
-        .to receive(:with).with(user: current_user, event: event)
+        .to receive(:with).with(user: current_user, event: course_event)
         .and_return(mailer)
 
       expect(mailer).to receive(:call).once
@@ -328,31 +328,31 @@ RSpec.describe EventsController, :type => :request do
     end
 
     context "when the status is already confirmed" do
-      let(:event) { create(:event, id: 1, status: "confirmed") }
+      let(:course_event) { create(:course_event, id: 1, status: "confirmed") }
 
-      it "returns 200 plus the event without participants" do
+      it "returns 200 plus the course_event without participants" do
         subject
 
         expect(response.status).to eq 200
-        expect(json_response['data']).to have_type("events")
+        expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attribute(:status).with_value("confirmed")
         expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included']).to be nil
       end
 
-      it "does not change the status of the event in the database" do
+      it "does not change the status of the course_event in the database" do
         expect { subject }
-          .not_to change { Event.find(1).status }
+          .not_to change { CourseEvent.find(1).status }
       end
     end
 
-    context "when the event does not exist" do
+    context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/events/1337/apply', headers: headers
+        post '/course_events/1337/apply', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event does not exist"
+        expect(json_response['error']).to eq "This course_event does not exist"
       end
     end
 
@@ -363,38 +363,38 @@ RSpec.describe EventsController, :type => :request do
     end
   end
 
-  describe 'PATCH /events/:id/cancel' do
-    subject { patch '/events/1/cancel', headers: headers }
+  describe 'PATCH /course_events/:id/cancel' do
+    subject { patch '/course_events/1/cancel', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
-    let(:event) { create(:event, id: 1) }
+    let(:course_event) { create(:course_event, id: 1) }
     let(:mailer) { instance_double(EventCancelledMailer, call: OpenStruct.new(deliver_now: true)) }
 
     before do
-      Participant.create(event: event, user: current_user)
+      Participant.create(course_event: course_event, user: current_user)
     end
 
-    it "returns 200 plus the event without participants" do
+    it "returns 200 plus the course_event without participants" do
       subject
 
       expect(response.status).to eq 200
-      expect(json_response['data']).to have_type("events")
+      expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_attribute(:status).with_value("cancelled")
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included']).to be nil
     end
 
-    it "changes the status of the event in the database" do
+    it "changes the status of the course_event in the database" do
       expect { subject }
-        .to change { Event.find(1).status }
+        .to change { CourseEvent.find(1).status }
           .from("posted").to("cancelled")
     end
 
     it "uses the correct mailer" do
       allow(EventCancelledMailer)
-        .to receive(:with).with(user: current_user, event: event)
+        .to receive(:with).with(user: current_user, event: course_event)
         .and_return(mailer)
 
       expect(mailer).to receive(:call).once
@@ -403,31 +403,31 @@ RSpec.describe EventsController, :type => :request do
     end
 
     context "when the status is already cancelled" do
-      let(:event) { create(:event, id: 1, status: "cancelled") }
+      let(:course_event) { create(:course_event, id: 1, status: "cancelled") }
 
-      it "returns 200 plus the event without participants" do
+      it "returns 200 plus the course_event without participants" do
         subject
 
         expect(response.status).to eq 200
-        expect(json_response['data']).to have_type("events")
+        expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attribute(:status).with_value("cancelled")
         expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included']).to be nil
       end
 
-      it "does not change the status of the event in the database" do
+      it "does not change the status of the course_event in the database" do
         expect { subject }
-          .not_to change { Event.find(1).status }
+          .not_to change { CourseEvent.find(1).status }
       end
     end
 
-    context "when the event does not exist" do
+    context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/events/1337/apply', headers: headers
+        post '/course_events/1337/apply', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event does not exist"
+        expect(json_response['error']).to eq "This course_event does not exist"
       end
     end
 

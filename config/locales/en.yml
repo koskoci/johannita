@@ -43,7 +43,7 @@ en:
     not_found: "This post does not exist"
   users:
     not_found: "This user does not exist"
-  events:
-    not_found: "This event does not exist"
+  course_events:
+    not_found: "This course_event does not exist"
   course_categories:
-    not_found: "This event category does not exist"
+    not_found: "This course_event category does not exist"

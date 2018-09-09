@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: events
+# Table name: course_events
 #
 #  id                 :bigint(8)        not null, primary key
 #  apply_by           :date
@@ -13,14 +13,14 @@
 #
 # Indexes
 #
-#  index_events_on_course_category_id  (course_category_id)
+#  index_course_events_on_course_category_id  (course_category_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (course_category_id => course_categories.id)
 #
 
-class Event < ApplicationRecord
+class CourseEvent < ApplicationRecord
   has_many :participants
   has_many :users, through: :participants
   belongs_to :course_category

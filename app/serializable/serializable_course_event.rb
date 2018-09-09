@@ -1,5 +1,5 @@
-class SerializableEvent < JSONAPI::Serializable::Resource
-  type 'events'
+class SerializableCourseEvent < JSONAPI::Serializable::Resource
+  type 'course_events'
   attribute :title
   attribute :category do
     @object.course_category.category

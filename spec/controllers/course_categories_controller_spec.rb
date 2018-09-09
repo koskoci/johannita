@@ -42,7 +42,7 @@ RSpec.describe CourseCategoriesController, :type => :request do
         get '/course_categories/1337', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event category does not exist"
+        expect(json_response['error']).to eq "This course_event category does not exist"
       end
     end
   end
@@ -149,7 +149,7 @@ RSpec.describe CourseCategoriesController, :type => :request do
         patch '/course_categories/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event category does not exist"
+        expect(json_response['error']).to eq "This course_event category does not exist"
       end
     end
   end
@@ -187,7 +187,7 @@ RSpec.describe CourseCategoriesController, :type => :request do
         delete '/course_categories/1337', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This event category does not exist"
+        expect(json_response['error']).to eq "This course_event category does not exist"
       end
     end
   end

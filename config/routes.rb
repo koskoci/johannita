@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :events, except: %i[new edit destroy] do
+  resources :course_events, except: %i[new edit destroy] do
     member do
       post 'apply'
       patch 'confirm'

@@ -1,22 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe Participant, :type => :model do
-  let(:params) { { event_id: 1, user_id: 1 } }
+  let(:params) { { course_event_id: 1, user_id: 1 } }
 
   before do
-    create(:event, id: 1)
+    create(:course_event, id: 1)
     create(:user, id: 1)
   end
 
   it "is valid with valid params" do
     user = Participant.create(params)
     expect(user).to be_valid
-    expect(user.event_id).to eq 1
+    expect(user.course_event_id).to eq 1
     expect(user.user_id).to eq 1
   end
 
-  it "belongs to an event" do
-    assc = described_class.reflect_on_association(:event)
+  it "belongs to an course_event" do
+    assc = described_class.reflect_on_association(:course_event)
     expect(assc.macro).to eq :belongs_to
   end
 

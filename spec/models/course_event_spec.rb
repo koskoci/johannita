@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Event, :type => :model do
+RSpec.describe CourseEvent, :type => :model do
   let(:params) { { title: "foo", course_category: course_category, date: Date.parse("2000-01-01"), status: "cancelled" } }
   let(:course_category) { create(:course_category) }
 
   it "is valid with valid the params" do
-    user = Event.new(params)
+    user = CourseEvent.new(params)
     expect(user).to be_valid
     expect(user.title).to eq "foo"
     expect(user.course_category).to eq course_category
@@ -14,7 +14,7 @@ RSpec.describe Event, :type => :model do
   end
 
   it "defaults to status: 'posted'" do
-    expect(Event.new.status).to eq "posted"
+    expect(CourseEvent.new.status).to eq "posted"
   end
 
   it "has many participants" do
@@ -27,16 +27,16 @@ RSpec.describe Event, :type => :model do
     expect(assc.macro).to eq :has_many
   end
 
-  it "belongs to an event category" do
+  it "belongs to an course_event category" do
     assc = described_class.reflect_on_association(:course_category)
     expect(assc.macro).to eq :belongs_to
   end
 
-  context "if event category is missing" do
+  context "if course_event category is missing" do
     let(:params) { { title: "foo", date: Date.parse("2000-01-01"), status: "cancelled" } }
 
     it "is invalid" do
-      expect(Event.new(params)).not_to be_valid
+      expect(CourseEvent.new(params)).not_to be_valid
     end
   end
 end
