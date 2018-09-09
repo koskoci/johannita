@@ -1,5 +1,5 @@
 class CourseCategoriesController < ApplicationController
-  deserializable_resource :post, only: %i[create update]
+  deserializable_resource :course_category, only: %i[create update]
   before_action :set_post, only: %i[show update destroy images]
 
   # GET /course_categories
@@ -58,7 +58,7 @@ class CourseCategoriesController < ApplicationController
   end
 
   def course_category_params
-    params.require(:post).permit(:category, :last_date)
+    params.require(:course_category).permit(:category, :last_date)
   end
 
   def id
