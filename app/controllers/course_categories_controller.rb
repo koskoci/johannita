@@ -63,7 +63,7 @@ class CourseCategoriesController < ApplicationController
   end
 
   def course_category_params
-    params.require(:course_category).permit(:category, :last_date)
+    params.require(:course_category).permit(:category)
   end
 
   def id
