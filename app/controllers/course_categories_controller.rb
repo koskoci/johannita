@@ -1,16 +1,19 @@
 class CourseCategoriesController < ApplicationController
   deserializable_resource :course_category, only: %i[create update]
-  before_action :set_post, only: %i[show update destroy images]
+  before_action :set_course_category, only: %i[show update destroy images]
 
   # GET /course_categories
   def index
-    @course_categories = CourseCategory.all
+    @course_categories = CourseCategory.includes(:course_events).each { |e| update_last_date(e) }
 
+    course_category_ids = CourseEvent.where(status: CourseEvent::ACTIVE_STATUSES).pluck(:course_category_id).uniq
     render status: 200, jsonapi: @course_categories
   end
 
   # GET /course_categories/1
   def show
+    update_last_date(@course_category)
+
     render status: 200, jsonapi: @course_category, include: :images
   end
 
@@ -30,6 +33,8 @@ class CourseCategoriesController < ApplicationController
   # PATCH/PUT /course_categories/1
   def update
     authorize!
+
+    update_last_date(@course_category)
 
     if @course_category.update(course_category_params)
       render status: 200, jsonapi: @course_category
@@ -51,7 +56,7 @@ class CourseCategoriesController < ApplicationController
 
   private
 
-  def set_post
+  def set_course_category
     render status: 404, json: { error: I18n.t('course_categories.not_found') } and return unless CourseCategory.exists?(id)
 
     @course_category = CourseCategory.find(id)
@@ -63,5 +68,15 @@ class CourseCategoriesController < ApplicationController
 
   def id
     params[:id]
+  end
+
+  def update_last_date(course_category)
+    last_date = course_category
+      .course_events
+      .where(status: CourseEvent::ACTIVE_STATUSES)
+      .order(:date)
+      .last
+      &.date
+    course_category.update(last_date: last_date)
   end
 end

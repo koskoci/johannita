@@ -22,7 +22,7 @@ FactoryBot.define do
   end
 
   factory :course_category do
-    last_date { "2018-01-01" }
-    category { "Elsosegely-tanfolyam"}
+    category { "kismama"}
+    title { "First aid course for new parents" }
   end
 end
