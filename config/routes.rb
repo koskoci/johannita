@@ -23,4 +23,5 @@ Rails.application.routes.draw do
   end
 
   resources :course_categories, except: %i[new edit]
+  resources :participants, only: %i[index update]
 end

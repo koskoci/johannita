@@ -47,3 +47,6 @@ en:
     not_found: "This course event does not exist"
   course_categories:
     not_found: "This course category does not exist"
+  participants:
+    course_event_id_missing: "Please specify course event"
+    not_found: "This participant does not exist"

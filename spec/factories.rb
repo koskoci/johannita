@@ -25,4 +25,11 @@ FactoryBot.define do
     category { "kismama"}
     title { "First aid course for new parents" }
   end
+
+  factory :participant do
+    attended { nil }
+    passed { nil }
+    association :course_event, factory: :course_event
+    association :user, factory: :user
+  end
 end
