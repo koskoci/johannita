@@ -7,4 +7,5 @@ class SerializableParticipant < JSONAPI::Serializable::Resource
   attribute :name do
     "#{@object.user.last_name} #{@object.user.first_name}"
   end
+  attributes :attended, :passed
 end

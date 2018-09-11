@@ -59,7 +59,7 @@ RSpec.describe CourseEventsController, :type => :request do
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
           expect(json_response['included'])
-            .to include(have_type('participants').and have_attributes(:name, :email))
+            .to include(have_type('participants').and have_attributes(:name, :email, :attended, :passed))
         end
       end
     end
@@ -255,7 +255,7 @@ RSpec.describe CourseEventsController, :type => :request do
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
       expect(json_response['included'])
-        .to include(have_type('participants').and have_attributes(:name, :email))
+        .to include(have_type('participants').and have_attributes(:name, :email, :attended, :passed))
     end
 
     it "creates an Participant in the database" do
@@ -275,7 +275,7 @@ RSpec.describe CourseEventsController, :type => :request do
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
         expect(json_response['included'])
-          .to include(have_type('participants').and have_attributes(:name, :email))
+          .to include(have_type('participants').and have_attributes(:name, :email, :attended, :passed))
       end
     end
 

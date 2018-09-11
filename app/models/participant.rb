@@ -3,6 +3,8 @@
 # Table name: participants
 #
 #  id              :bigint(8)        not null, primary key
+#  attended        :boolean
+#  passed          :boolean
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  course_event_id :bigint(8)        not null
