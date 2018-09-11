@@ -21,10 +21,10 @@ RSpec.describe ParticipantsController, :type => :request do
       subject { get '/participants?course_event_id=1', headers: get_headers(current_user) }
 
       context "when the course_event does not exist" do
-        it "returns 404 with an error message" do
+        it "returns 400 with an error message" do
           subject
 
-          expect(response.status).to eq 404
+          expect(response.status).to eq 400
           expect(json_response['error']).to eq "This course event does not exist"
         end
       end
@@ -33,6 +33,17 @@ RSpec.describe ParticipantsController, :type => :request do
         let(:course_event) { create :course_event, id: 1 }
 
         before { course_event }
+
+        context "when the course event is cancelled" do
+          let(:course_event) { create :course_event, id: 1, status: "cancelled" }
+
+          it "returns 400 with an error message" do
+            subject
+
+            expect(response.status).to eq 400
+            expect(json_response['error']).to eq "This course event has been cancelled"
+          end
+        end
 
         context "when there are no participants" do
           it "returns an empty list" do
@@ -124,6 +135,18 @@ RSpec.describe ParticipantsController, :type => :request do
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This participant does not exist"
+      end
+    end
+
+    context "when the course event is cancelled" do
+      let(:participant) { create :participant, id: 1, course_event: course_event }
+      let(:course_event) { create :course_event, id: 1, status: "cancelled" }
+
+      it "returns 400 with an error message" do
+        subject
+
+        expect(response.status).to eq 400
+        expect(json_response['error']).to eq "This course event has been cancelled"
       end
     end
   end
