@@ -4,7 +4,9 @@ class CourseCategoriesController < ApplicationController
 
   # GET /course_categories
   def index
-    @course_categories = CourseCategory.includes(:course_events).each { |e| update_last_date(e) }
+    @course_categories = CourseCategory.includes(:course_events).each do |e|
+      CourseCategories::UpdateLastDate.new(e).call
+    end
 
     course_category_ids = CourseEvent.where(status: CourseEvent::ACTIVE_STATUSES).pluck(:course_category_id).uniq
     render status: 200, jsonapi: @course_categories
@@ -12,7 +14,7 @@ class CourseCategoriesController < ApplicationController
 
   # GET /course_categories/1
   def show
-    update_last_date(@course_category)
+    CourseCategories::UpdateLastDate.new(@course_category).call
 
     render status: 200, jsonapi: @course_category, include: :images
   end
@@ -34,7 +36,7 @@ class CourseCategoriesController < ApplicationController
   def update
     authorize!
 
-    update_last_date(@course_category)
+    CourseCategories::UpdateLastDate.new(@course_category).call
 
     if @course_category.update(course_category_params)
       render status: 200, jsonapi: @course_category
@@ -63,20 +65,10 @@ class CourseCategoriesController < ApplicationController
   end
 
   def course_category_params
-    params.require(:course_category).permit(:category)
+    params.require(:course_category).permit(:category, :title, :prerequisite_course_category_id)
   end
 
   def id
     params[:id]
-  end
-
-  def update_last_date(course_category)
-    last_date = course_category
-      .course_events
-      .where(status: CourseEvent::ACTIVE_STATUSES)
-      .order(:date)
-      .last
-      &.date
-    course_category.update(last_date: last_date)
   end
 end
