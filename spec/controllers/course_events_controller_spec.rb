@@ -6,17 +6,33 @@ RSpec.describe CourseEventsController, :type => :request do
   before { current_user }
 
   describe 'GET /course_events' do
+    subject { get '/course_events', headers: get_headers(current_user) }
+
+    let(:course_event) { create(:course_event) }
+    let(:another_course_event) { create(:course_event) }
+    let(:service_object) { instance_double(CourseEvents::CanApply, call: true) }
+
     before do
-      create_list(:course_event, 2)
+      course_event
+      another_course_event
+    end
+
+    it "uses the correct service for can_apply", :aggregate_failures do
+      expect(CourseEvents::CanApply).to receive(:new).with(current_user, course_event).and_return(service_object)
+      expect(CourseEvents::CanApply).to receive(:new).with(current_user, another_course_event).and_return(service_object)
+
+      subject
+
+      expect(json_response['data']).to all have_attribute(:can_apply).with_value(true)
     end
 
     it "sends a list of course_events", :aggregate_failures do
-      get '/course_events', headers: get_headers(current_user)
+      subject
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_type("course_events")
-      expect(json_response['data']).to all have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+      expect(json_response['data']).to all have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
       expect(json_response['data']).to all have_relationship(:participants)
     end
   end
@@ -25,19 +41,30 @@ RSpec.describe CourseEventsController, :type => :request do
     let(:headers) { get_headers(current_user) }
 
     context "when the course_event exists" do
+      subject { get '/course_events/1', headers: headers }
+
       let(:course_event) { create(:course_event, id: 1) }
+      let(:service_object) { instance_double(CourseEvents::CanApply, call: true) }
 
       before do
         course_event
       end
 
+      it "uses the correct service for can_apply", :aggregate_failures do
+        expect(CourseEvents::CanApply).to receive(:new).with(current_user, course_event).and_return(service_object)
+
+        subject
+
+        expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
+      end
+
       context "when there is no attachment" do
         it "sends a single course_event", :aggregate_failures do
-          get '/course_events/1', headers: headers
+          subject
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("course_events")
-          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
           expect(json_response['data']).to have_relationship(:participants)
         end
       end
@@ -51,11 +78,11 @@ RSpec.describe CourseEventsController, :type => :request do
         end
 
         it "sends a single course_event with all included participants", :aggregate_failures do
-          get '/course_events/1', headers: headers
+          subject
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("course_events")
-          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+          expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
           expect(json_response['included'])
@@ -116,7 +143,8 @@ RSpec.describe CourseEventsController, :type => :request do
         subject
 
         expect(json_response['data']).to have_type("course_events")
-        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
+        expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
         expect(json_response['data']).to have_attribute(:category).with_value("kismama")
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['data']['id']).not_to be nil
@@ -192,8 +220,9 @@ RSpec.describe CourseEventsController, :type => :request do
     it "returns the updated CourseEvent" do
       subject
 
-      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
       expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
+      expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
       expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_id("1")
     end
@@ -231,9 +260,9 @@ RSpec.describe CourseEventsController, :type => :request do
 
         expect(response.status).to eq 400
         expect(json_response['error']).to eq "This course category does not exist"
-        end
       end
     end
+  end
 
   describe 'POST /course_events/:id/apply' do
     subject { post '/course_events/1/apply', headers: headers }
@@ -251,7 +280,7 @@ RSpec.describe CourseEventsController, :type => :request do
 
       expect(response.status).to eq 200
       expect(json_response['data']).to have_type("course_events")
-      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+      expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
       expect(json_response['included'])
@@ -271,7 +300,7 @@ RSpec.describe CourseEventsController, :type => :request do
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("course_events")
-        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by)
+        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
         expect(json_response['included'])

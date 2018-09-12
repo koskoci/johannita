@@ -27,4 +27,9 @@ class CourseEvent < ApplicationRecord
 
   VALID_STATUSES = %w[posted cancelled confirmed]
   ACTIVE_STATUSES = VALID_STATUSES.reject { |e| e == "cancelled" }
+
+  def can_apply(user)
+    return unless user
+    CourseEvents::CanApply.new(user, self).call
+  end
 end

@@ -9,6 +9,9 @@ class SerializableCourseEvent < JSONAPI::Serializable::Resource
   attribute :updated_at
   attribute :status
   attribute :apply_by
+  attribute :can_apply do
+    @object.can_apply(@user)
+  end
   has_many :participants do
     linkage always: true
   end

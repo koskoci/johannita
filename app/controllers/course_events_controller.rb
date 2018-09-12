@@ -5,15 +5,15 @@ class CourseEventsController < ApplicationController
   def index
     @course_events = CourseEvent.all
 
-    render status: 200, jsonapi: @course_events
+    render status: 200, jsonapi: @course_events, expose: { user: current_user }
   end
 
   # GET /course_events/1
   def show
-    render status: 200, jsonapi: @course_event, include: :participants
+    render status: 200, jsonapi: @course_event, include: :participants, expose: { user: current_user }
   end
 
-    # POST /course_events
+  # POST /course_events
   def create
     authorize!
 
@@ -23,7 +23,7 @@ class CourseEventsController < ApplicationController
     update_category
 
     if @course_event.save
-      render status: 201, jsonapi: @course_event
+      render status: 201, jsonapi: @course_event, expose: { user: current_user }
     else
       render status: 400, json: { error: @course_event.errors }
     end
@@ -41,7 +41,7 @@ class CourseEventsController < ApplicationController
     end
 
     if @course_event.save
-      render status: 200, jsonapi: @course_event
+      render status: 200, jsonapi: @course_event, expose: { user: current_user }
     else
       render status: 400, json: { error: @course_event.errors }
     end

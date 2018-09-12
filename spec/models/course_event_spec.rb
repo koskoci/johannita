@@ -3,14 +3,16 @@ require 'rails_helper'
 RSpec.describe CourseEvent, :type => :model do
   let(:params) { { title: "foo", course_category: course_category, date: Date.parse("2000-01-01"), status: "cancelled" } }
   let(:course_category) { create(:course_category) }
+  let(:user) { create(:user) }
+
+  subject { CourseEvent.new(params) }
 
   it "is valid with valid the params" do
-    user = CourseEvent.new(params)
-    expect(user).to be_valid
-    expect(user.title).to eq "foo"
-    expect(user.course_category).to eq course_category
-    expect(user.date).to eq Date.parse("2000-01-01")
-    expect(user.status).to eq "cancelled"
+    expect(subject).to be_valid
+    expect(subject.title).to eq "foo"
+    expect(subject.course_category).to eq course_category
+    expect(subject.date).to eq Date.parse("2000-01-01")
+    expect(subject.status).to eq "cancelled"
   end
 
   it "defaults to status: 'posted'" do
@@ -32,11 +34,21 @@ RSpec.describe CourseEvent, :type => :model do
     expect(assc.macro).to eq :belongs_to
   end
 
+  it "uses the correct service to calculate can_apply" do
+    allow(CourseEvents::CanApply)
+      .to receive(:new).with(user, subject)
+      .and_call_original
+
+    expect_any_instance_of(CourseEvents::CanApply).to receive(:call).once
+
+    subject.can_apply(user)
+  end
+
   context "if course_event category is missing" do
     let(:params) { { title: "foo", date: Date.parse("2000-01-01"), status: "cancelled" } }
 
     it "is invalid" do
-      expect(CourseEvent.new(params)).not_to be_valid
+      expect(subject).not_to be_valid
     end
   end
 end
