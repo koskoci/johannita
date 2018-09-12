@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ParticipantsController, :type => :request do
+RSpec.describe ParticipantsController, type: :request do
   let(:current_user) { create(:user, admin: true) }
 
   before { current_user }

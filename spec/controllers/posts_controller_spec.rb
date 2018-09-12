@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PostsController, :type => :request do
+RSpec.describe PostsController, type: :request do
   let(:current_user) { create(:user) }
 
   before { current_user }

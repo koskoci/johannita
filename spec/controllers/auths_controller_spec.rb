@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AuthsController, :type => :request do
+RSpec.describe AuthsController, type: :request do
   let(:token) { Authentication::Jwt.encode(user_id: 1, exp: 24.years.from_now.to_i) }
 
   context "when the user exists" do
