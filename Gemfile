@@ -34,6 +34,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'jsonapi-rails'
 gem 'rack-cors'
 gem 'jwt'
+gem 'sidekiq'
 
 group :development, :test do
   gem "pry"
@@ -48,6 +49,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'simplecov', require: false
   gem 'coveralls', require: false
+  gem 'bullet'
 end
 
 group :development do
