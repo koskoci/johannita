@@ -1,12 +1,7 @@
 require 'mina/rails'
 require 'mina/git'
 require 'mina/rvm'
-
-# Basic settings:
-#   domain       - The hostname to SSH to.
-#   deploy_to    - Path to deploy into.
-#   repository   - Git repo to clone from. (needed by mina/git)
-#   branch       - Branch name to deploy. (needed by mina/git)
+require 'mina_sidekiq/tasks'
 
 set :application_name, 'johannita'
 set :domain, '206.189.55.142'
@@ -39,24 +34,25 @@ end
 # Put any custom commands you need to run at setup
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
-
   in_path(fetch(:shared_path)) do
     command %[mkdir -p config]
+    command %[mkdir -p pids]
 
     # Remove others-permission for config directory
     command %[chmod -R o-rwx config]
+    command %[chmod -R o-rwx pids]
   end
-
 end
 
 desc "Deploys the current version to the server."
 task :deploy do
   # uncomment this line to make sure you pushed your local branch to the remote origin
-  # invoke :'git:ensure_pushed'
+  invoke :'git:ensure_pushed'
   deploy do
     # Put things that will set up an empty directory into a fully set-up
     # instance of your project.
     invoke :'git:clone'
+    invoke :'sidekiq:quiet'
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
@@ -65,6 +61,7 @@ task :deploy do
 
     on :launch do
       command "sudo service johannita restart"
+      invoke :'sidekiq:restart'
     end
   end
   # you can use `run :local` to run tasks on local machine before of after the deploy scripts
