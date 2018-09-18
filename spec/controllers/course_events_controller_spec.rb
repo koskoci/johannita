@@ -335,12 +335,9 @@ RSpec.describe CourseEventsController, type: :request do
           .from("posted").to("confirmed")
     end
 
-    it "uses the correct mailer" do
-      allow(EventConfirmedMailer)
-        .to receive(:with).with(user: current_user, event: course_event)
-        .and_return(mailer)
-
-      expect(mailer).to receive(:call).once
+    it "uses the correct worker" do
+      expect(EventConfirmedWorker)
+        .to receive(:perform_async).with(course_event.id)
 
       subject
     end

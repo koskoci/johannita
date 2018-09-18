@@ -61,9 +61,7 @@ class CourseEventsController < ApplicationController
     render status: 200, jsonapi: @course_event and return if @course_event.status == "confirmed"
 
     @course_event.update_attribute(:status, "confirmed")
-    @course_event.participants.includes(:user).each do |participant|
-      EventConfirmedMailer.with(user: participant.user, event: @course_event).call.deliver_now
-    end
+    EventConfirmedWorker.perform_async(@course_event.id)
 
     render status: 200, jsonapi: @course_event
   end

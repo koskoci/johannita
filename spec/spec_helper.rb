@@ -56,6 +56,10 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
+
   if Bullet.enable?
     config.before(:each) { Bullet.start_request }
     config.after(:each)  { Bullet.end_request }
