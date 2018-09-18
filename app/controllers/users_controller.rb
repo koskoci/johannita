@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     authorize!
 
     if @user.destroy
-      render status: 204, json: {}
+      head 204
     else
       render status: 400, json: { error: @user.errors }
     end

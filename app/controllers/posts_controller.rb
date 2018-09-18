@@ -43,7 +43,7 @@ class PostsController < ApplicationController
     authorize!
 
     if @post.destroy
-      render status: 204, json: {}
+      head 204
     else
       render status: 400, json: { error: @post.errors }
     end

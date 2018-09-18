@@ -50,7 +50,7 @@ class CourseCategoriesController < ApplicationController
     authorize!
 
     if @course_category.destroy
-      render status: 204, json: {}
+      head 204
     else
       render status: 400, json: { error: @course_category.errors }
     end
