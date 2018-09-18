@@ -6,7 +6,7 @@ module Request
 
       {
         'Authorization': "Bearer #{token}",
-        'Accept': 'application/json'
+        'Accept': 'application/vnd.api+json'
       }
     end
 
@@ -16,7 +16,7 @@ module Request
 
       {
         'Authorization': "Bearer #{token}",
-        'Accept': 'application/json',
+        'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json'
       }
     end
