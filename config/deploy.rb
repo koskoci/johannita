@@ -60,6 +60,7 @@ task :deploy do
     invoke :'deploy:cleanup'
 
     on :launch do
+      invoke :'remote_environment'
       command "sudo service johannita restart"
       invoke :'sidekiq:restart'
     end
