@@ -94,23 +94,15 @@ RSpec.describe PostsController, type: :request do
     context "when current user is an admin" do
       let(:current_user) { create(:user, admin: true) }
 
-      it "returns 201" do
+      it "returns 204" do
         subject
 
-        expect(response.status).to eq 201
+        expect(response.status).to eq 204
       end
 
       it "creates a Post in the database" do
         expect { subject }
           .to change(Post, :count).by(+1)
-      end
-
-      it "returns the created Post" do
-        subject
-
-        expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
-        expect(json_response['data']).to have_type("posts")
-        expect(json_response['data']['id']).not_to be nil
       end
     end
   end

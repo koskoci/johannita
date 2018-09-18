@@ -23,7 +23,7 @@ class CourseEventsController < ApplicationController
     update_category
 
     if @course_event.save
-      render status: 201, jsonapi: @course_event, expose: { user: current_user }
+      head 204
     else
       render status: 400, json: { error: @course_event.errors }
     end

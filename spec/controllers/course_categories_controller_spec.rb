@@ -83,23 +83,15 @@ RSpec.describe CourseCategoriesController, type: :request do
     context "when current user is an admin" do
       let(:current_user) { create(:user, admin: true) }
 
-      it "returns 201" do
+      it "returns 204" do
         subject
 
-        expect(response.status).to eq 201
+        expect(response.status).to eq 204
       end
 
       it "creates a CourseCategory in the database" do
         expect { subject }
           .to change(CourseCategory, :count).by(+1)
-      end
-
-      it "returns the created CourseCategory" do
-        subject
-
-        expect(json_response['data']).to have_attributes(:category, :title, :prerequisite_course_category_id, :last_date, :created_at, :updated_at)
-        expect(json_response['data']).to have_type("course_categories")
-        expect(json_response['data']['id']).not_to be nil
       end
     end
   end

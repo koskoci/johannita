@@ -127,27 +127,15 @@ RSpec.describe CourseEventsController, type: :request do
     context "when current user is an admin" do
       let(:current_user) { create(:user, admin: true) }
 
-      it "returns 201", :aggregate_failures do
+      it "returns 204", :aggregate_failures do
         subject
 
-        expect(response.status).to eq 201
-        expect(json_response['error']).to be nil
+        expect(response.status).to eq 204
       end
 
       it "creates a CourseEvent in the database" do
         expect { subject }
           .to change(CourseEvent, :count).by(+1)
-      end
-
-      it "returns the created CourseEvent" do
-        subject
-
-        expect(json_response['data']).to have_type("course_events")
-        expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
-        expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
-        expect(json_response['data']).to have_attribute(:category).with_value("kismama")
-        expect(json_response['data']).to have_relationship(:participants)
-        expect(json_response['data']['id']).not_to be nil
       end
 
       context "when the course category does not exist" do

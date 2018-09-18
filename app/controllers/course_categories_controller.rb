@@ -26,7 +26,7 @@ class CourseCategoriesController < ApplicationController
     @course_category = CourseCategory.new(course_category_params)
 
     if @course_category.save
-      render status: 201, jsonapi: @course_category
+      head 204
     else
       render status: 400, json: { error: @course_category.errors }
     end

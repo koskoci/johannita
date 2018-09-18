@@ -21,7 +21,7 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
 
     if @post.save
-      render status: 201, jsonapi: @post
+      head 204
     else
       render status: 400, json: { error: @post.errors }
     end
