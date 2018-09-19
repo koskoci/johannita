@@ -73,9 +73,7 @@ class CourseEventsController < ApplicationController
     render status: 200, jsonapi: @course_event and return if @course_event.status == "cancelled"
 
     @course_event.update_attribute(:status, "cancelled")
-    @course_event.participants.includes(:user).each do |participant|
-      EventCancelledMailer.with(user: participant.user, event: @course_event).call.deliver_now
-    end
+    EventCancelledWorker.perform_async(@course_event.id)
 
     render status: 200, jsonapi: @course_event
   end
