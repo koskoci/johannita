@@ -22,6 +22,8 @@ class CourseEventsController < ApplicationController
     verify_course_category_exists; return if performed?
     update_category
 
+    CourseCategories::UpdateLastDate.new(course_category.id).call
+
     if @course_event.save
       head 204
     else
@@ -35,10 +37,15 @@ class CourseEventsController < ApplicationController
 
     @course_event.update_columns(course_event_params.except(:category).to_h)
 
+    old_category = @course_event.course_category
+
     if course_event_params[:category]
       verify_course_category_exists; return if performed?
       update_category
+      CourseCategories::UpdateLastDate.new(old_category.id).call
     end
+
+    CourseCategories::UpdateLastDate.new(course_category.id).call
 
     if @course_event.save
       render status: 200, jsonapi: @course_event, expose: { user: current_user }
@@ -102,11 +109,15 @@ class CourseEventsController < ApplicationController
     params[:id]
   end
 
-  def update_category
-    @course_event.course_category = CourseCategory.find_by(category: course_event_params[:category])
+  def verify_course_category_exists
+    render status: 400, json: { error: I18n.t('course_categories.not_found') } and return unless course_category
   end
 
-  def verify_course_category_exists
-    render status: 400, json: { error: I18n.t('course_categories.not_found') } and return unless CourseCategory.where(category: course_event_params[:category]).exists?
+  def course_category
+    @_course_category ||= CourseCategory.find_by_category(course_event_params[:category])
+  end
+
+  def update_category
+    @course_event.course_category = course_category
   end
 end

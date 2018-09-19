@@ -1,12 +1,9 @@
 class CourseCategoriesController < ApplicationController
   deserializable_resource :course_category, only: %i[create update]
-  before_action :set_course_category, only: %i[update destroy images]
+  before_action :set_course_category, only: %i[show update destroy images]
 
   # GET /course_categories
   def index
-    CourseCategory.all do |course_category|
-      CourseCategories::UpdateLastDate.new(course_category.id).call
-    end
     @course_categories = CourseCategory.all
 
     render status: 200, jsonapi: @course_categories
@@ -14,11 +11,6 @@ class CourseCategoriesController < ApplicationController
 
   # GET /course_categories/1
   def show
-    render status: 404, json: { error: I18n.t('course_categories.not_found') } and return unless CourseCategory.exists?(id)
-
-    CourseCategories::UpdateLastDate.new(params[:id]).call
-    @course_category = CourseCategory.find(id)
-
     render status: 200, jsonapi: @course_category, include: :images
   end
 
@@ -38,8 +30,6 @@ class CourseCategoriesController < ApplicationController
   # PATCH/PUT /course_categories/1
   def update
     authorize!
-
-    CourseCategories::UpdateLastDate.new(@course_category.id).call
 
     if @course_category.update(course_category_params)
       render status: 200, jsonapi: @course_category

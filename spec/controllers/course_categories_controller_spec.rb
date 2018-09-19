@@ -20,8 +20,6 @@ RSpec.describe CourseCategoriesController, type: :request do
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_attributes(:category, :title, :prerequisite_course_category_id, :last_date, :created_at, :updated_at)
-      # expect(json_response['data'].first).to have_attribute(:last_date).with_value("2020-01-01")
-      # expect(json_response['data'].last).to have_attribute(:last_date).with_value(nil)
       expect(json_response['data']).to all have_type("course_categories")
     end
   end
@@ -40,14 +38,7 @@ RSpec.describe CourseCategoriesController, type: :request do
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("course_categories")
-        expect(json_response['data']).to have_attributes(:category, :last_date, :created_at, :updated_at)
-        expect(json_response['data']).to have_attribute(:last_date).with_value("2018-01-01")
-      end
-
-      it "updates last_date in the database" do
-        expect { get '/course_categories/1', headers: headers }
-          .to change { CourseCategory.find(1).last_date }
-          .from(nil).to(Date.parse("2018-01-01"))
+        expect(json_response['data']).to have_attributes(:category, :last_date, :created_at, :updated_at, :last_date)
       end
     end
 

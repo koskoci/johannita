@@ -117,8 +117,9 @@ RSpec.describe CourseEventsController, type: :request do
       }
     end
     let(:headers) { post_headers(current_user) }
+    let(:course_category) { create(:course_category) }
 
-    before { create(:course_category) }
+    before { course_category }
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -136,6 +137,15 @@ RSpec.describe CourseEventsController, type: :request do
       it "creates a CourseEvent in the database" do
         expect { subject }
           .to change(CourseEvent, :count).by(+1)
+      end
+
+      it "uses the correct service" do
+        expect(CourseCategories::UpdateLastDate)
+          .to receive(:new).with(course_category.id).and_call_original
+        expect_any_instance_of(CourseCategories::UpdateLastDate)
+          .to receive(:call)
+
+        subject
       end
 
       context "when the course category does not exist" do
@@ -177,9 +187,11 @@ RSpec.describe CourseEventsController, type: :request do
       }
     end
     let(:current_user) { create(:user, admin: true) }
-    let(:course_event) { create(:course_event, id: 1) }
     let(:headers) { post_headers(current_user) }
+    let(:course_event) { create(:course_event, id: 1, course_category: course_category) }
+    let(:course_category) { create(:course_category) }
     let(:another_course_category) { create(:course_category, category: "Mentoapolo-tanfolyam") }
+    let(:service_object) { instance_double(CourseCategories::UpdateLastDate, call: OpenStruct.new(deliver_now: true)) }
 
     before do
       current_user
@@ -199,10 +211,20 @@ RSpec.describe CourseEventsController, type: :request do
 
     it "changes the CourseEvent in the database" do
       expect { subject }
-        .to change { CourseEvent.find(1).title }
-        .from("My course_event").to("Updated course_event title")
+        .to change { CourseEvent.find(1).course_category.category }
+        .from("kismama").to("Mentoapolo-tanfolyam")
       expect { subject }
         .not_to change { CourseEvent.find(1).apply_by }
+    end
+
+    it "uses the correct service to update last_date on the course categories" do
+      expect(CourseCategories::UpdateLastDate)
+        .to receive(:new).with(course_category.id).and_return(service_object)
+      expect(CourseCategories::UpdateLastDate)
+        .to receive(:new).with(another_course_category.id).and_return(service_object)
+      expect(service_object).to receive(:call).twice
+
+      subject
     end
 
     it "returns the updated CourseEvent" do
@@ -312,7 +334,6 @@ RSpec.describe CourseEventsController, type: :request do
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
     let(:course_event) { create(:course_event, id: 1) }
-    let(:mailer) { instance_double(EventConfirmedMailer, call: OpenStruct.new(deliver_now: true)) }
 
     before do
       Participant.create(course_event: course_event, user: current_user)
@@ -384,7 +405,6 @@ RSpec.describe CourseEventsController, type: :request do
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
     let(:course_event) { create(:course_event, id: 1) }
-    let(:mailer) { instance_double(EventCancelledMailer, call: OpenStruct.new(deliver_now: true)) }
 
     before do
       Participant.create(course_event: course_event, user: current_user)
