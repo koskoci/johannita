@@ -1,7 +1,7 @@
 module CourseCategories
   class UpdateLastDate
-    def initialize(course_category)
-      @course_category = course_category
+    def initialize(id)
+      @id = id
     end
 
     def call
@@ -10,7 +10,7 @@ module CourseCategories
 
     private
 
-    attr_reader :course_category
+    attr_reader :course_category, :id
 
     def last_date
       @_last_date ||= course_category
@@ -19,6 +19,10 @@ module CourseCategories
         .order(:date)
         .last
         &.date
+    end
+
+    def course_category
+      @_course_category ||= CourseCategory.find(id)
     end
   end
 end

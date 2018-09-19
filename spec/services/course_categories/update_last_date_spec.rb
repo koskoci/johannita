@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe CourseCategories::UpdateLastDate do
-  subject { described_class.new(course_category) }
+  subject { described_class.new(1) }
 
-  let(:course_category) { create :course_category, last_date: "2019-01-01" }
+  let(:course_category) { create :course_category, id: 1, last_date: "2019-01-01" }
 
   before { course_category }
 
@@ -22,7 +22,7 @@ RSpec.describe CourseCategories::UpdateLastDate do
       end
 
       it "correctly updates last_date" do
-        expect { subject.call }.to change { course_category.last_date }
+        expect { subject.call }.to change { CourseCategory.find(1).last_date }
           .from(Date.parse("2019-01-01")).to(Date.parse("2019-06-01"))
       end
     end
