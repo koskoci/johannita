@@ -225,10 +225,10 @@ RSpec.describe PostsController, type: :request do
       my_post
     end
 
-    it "returns 201" do
+    it "returns 204" do
       subject
 
-      expect(response.status).to eq 201
+      expect(response.status).to eq 204
     end
 
     it 'attaches the file' do

@@ -63,6 +63,7 @@ RSpec.describe ParticipantsController, type: :request do
             expect(response.status).to eq 200
             expect(json_response['data'].count).to eq(2)
             expect(json_response['data']).to all have_attributes(:name, :email, :attended, :passed)
+            expect(json_response['data']).to all have_attribute(:name).with_value("Bar Foo")
             expect(json_response['data']).to all have_type("participants")
           end
 
@@ -119,6 +120,7 @@ RSpec.describe ParticipantsController, type: :request do
 
       expect(json_response['data']).to have_attributes(:name, :email, :attended, :passed)
       expect(json_response['data']).to have_attribute(:attended).with_value(true)
+      expect(json_response['data']).to have_attribute(:name).with_value("Bar Foo")
       expect(json_response['data']).to have_type("participants")
       expect(json_response['data']).to have_id("1")
     end

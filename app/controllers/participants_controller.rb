@@ -10,7 +10,7 @@ class ParticipantsController < ApplicationController
     render status: 400, json: { error: I18n.t('course_events.not_found') } and return unless CourseEvent.exists?(course_event_id)
     render status: 400, json: { error: I18n.t('participants.course_event_cancelled') } and return if cancelled
 
-    @participants = Participant.all
+    @participants = Participant.includes(:user).all
 
     render status: 200, jsonapi: @participants
   end
@@ -33,7 +33,7 @@ class ParticipantsController < ApplicationController
   def set_participant
     render status: 404, json: { error: I18n.t('participants.not_found') } and return unless Participant.exists?(id)
 
-    @participant = Participant.find(id)
+    @participant = Participant.includes(:user).find(id)
   end
 
   def participant_params

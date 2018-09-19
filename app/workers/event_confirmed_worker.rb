@@ -12,6 +12,6 @@ class EventConfirmedWorker
   private
 
   def course_event(course_event_id)
-    CourseEvent.includes(participants: :user).find(course_event_id)
+    CourseEvent.includes(:users).find(course_event_id)
   end
 end

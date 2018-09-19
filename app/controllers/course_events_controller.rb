@@ -1,6 +1,7 @@
 class CourseEventsController < ApplicationController
   deserializable_resource :course_event, only: %i[create update]
-  before_action :set_course_event, only: %i[show edit update destroy apply confirm cancel]
+  before_action :set_course_event, only: %i[update confirm cancel]
+  before_action :set_course_event_with_users, only: %i[show apply]
 
   def index
     @course_events = CourseEvent.all
@@ -90,7 +91,13 @@ class CourseEventsController < ApplicationController
   def set_course_event
     render status: 404, json: { error: I18n.t('course_events.not_found') } and return unless CourseEvent.exists?(id)
 
-    @course_event = CourseEvent.includes(:users, :course_category).find(id)
+    @course_event = CourseEvent.find(id)
+  end
+
+  def set_course_event_with_users
+    render status: 404, json: { error: I18n.t('course_events.not_found') } and return unless CourseEvent.exists?(id)
+
+    @course_event = CourseEvent.includes(:users).find(id)
   end
 
   def course_event_params
