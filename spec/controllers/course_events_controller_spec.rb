@@ -202,14 +202,14 @@ RSpec.describe CourseEventsController, type: :request do
         .to change { CourseEvent.find(1).title }
         .from("My course_event").to("Updated course_event title")
       expect { subject }
-        .not_to change { CourseEvent.find(1).course_category }
+        .not_to change { CourseEvent.find(1).apply_by }
     end
 
     it "returns the updated CourseEvent" do
       subject
 
       expect(json_response['data']).to have_attributes(:title, :category, :date, :created_at, :updated_at, :status, :apply_by, :can_apply)
-      expect(json_response['data']).to have_attribute(:category).with_value("kismama")
+      expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
       expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
       expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_id("1")
@@ -227,6 +227,27 @@ RSpec.describe CourseEventsController, type: :request do
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course event does not exist"
+      end
+    end
+
+    context "when the course category does not exist" do
+      let(:body) do
+        {
+          "data": {
+            "type": "course_events",
+            "attributes": {
+              "title": "Updated course_event title",
+              "category": "Zsakpakolo-tanfolyam",
+            }
+          }
+        }
+      end
+
+      it "returns 400 with an error message" do
+        subject
+
+        expect(response.status).to eq 400
+        expect(json_response['error']).to eq "This course category does not exist"
       end
     end
   end
