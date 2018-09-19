@@ -35,11 +35,6 @@ class CourseEventsController < ApplicationController
 
     @course_event.update_columns(course_event_params.except(:category).to_h)
 
-    if course_event_params[:category]
-      verify_course_category_exists; return if performed?
-      update_category
-    end
-
     if @course_event.save
       render status: 200, jsonapi: @course_event, expose: { user: current_user }
     else
