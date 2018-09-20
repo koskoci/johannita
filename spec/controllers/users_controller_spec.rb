@@ -31,6 +31,54 @@ RSpec.describe UsersController, type: :request do
     end
   end
 
+  describe 'POST /users' do
+    subject { post '/users', params: body.to_json, headers: headers }
+
+    let(:body) do
+      {
+        "data": {
+          "type": "users",
+          "attributes": {
+            "email": "foo@bar.com",
+            "password": "pwd",
+            "first_name": "Balazs",
+            "last_name": "Koskoci",
+            "pav_until": "2019-01-01",
+            "driving_licence_since": "2000-01-01"
+          }
+        }
+      }
+    end
+    let(:headers) do
+      {
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json'
+      }
+    end
+
+    it "returns 204", :aggregate_failures do
+      subject
+
+      expect(response.status).to eq 204
+    end
+
+    it "creates a User in the database" do
+      expect { subject }
+        .to change(User, :count).by(+1)
+    end
+
+    context "when the email is taken" do
+      before { create :user, email: "foo@bar.com" }
+
+      it "returns 400 with an error message" do
+      subject
+
+      expect(response.status).to eq 400
+      expect(json_response['error']).to eq ["Email has already been taken"]
+      end
+    end
+  end
+
   describe 'GET /users/:id' do
     subject { get '/users/1', headers: headers }
 

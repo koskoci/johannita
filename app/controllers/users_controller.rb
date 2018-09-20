@@ -1,6 +1,9 @@
 class UsersController < ApplicationController
-  deserializable_resource :user, only: %i[update]
-  before_action :set_user, only: %i[show update destroy curriculum_vitaes cover_letters]
+  skip_before_action :authenticate_user, only: [:create]
+
+  deserializable_resource :user, only: %i[create update]
+  before_action :set_user_with_attachments, only: %i[show]
+  before_action :set_user, only: %i[update destroy curriculum_vitaes cover_letters]
 
   # GET /users
   def index
@@ -16,6 +19,16 @@ class UsersController < ApplicationController
     authorize! unless id == "me"
 
     render status: 200, jsonapi: @user, include: %i[curriculum_vitae cover_letter]
+  end
+
+  def create
+    @user = User.new(user_params)
+
+    if @user.save
+      head 204
+    else
+      render status: 400, json: { error: @user.errors.full_messages }
+    end
   end
 
   # PATCH/PUT /users/1
@@ -58,11 +71,18 @@ class UsersController < ApplicationController
 
   private
 
+  def set_user_with_attachments
+    @user = current_user and return if id == "me"
+    render status: 404, json: { error: I18n.t('users.not_found') } and return unless User.exists?(id)
+
+    @user = User.with_attached_curriculum_vitae.with_attached_cover_letter.find(id)
+  end
+
   def set_user
     @user = current_user and return if id == "me"
     render status: 404, json: { error: I18n.t('users.not_found') } and return unless User.exists?(id)
 
-    @user = User.with_attached_curriculum_vitae.find(id)
+    @user = User.find(id)
   end
 
   def user_params
