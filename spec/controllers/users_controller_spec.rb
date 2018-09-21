@@ -55,6 +55,7 @@ RSpec.describe UsersController, type: :request do
         'Content-Type': 'application/vnd.api+json'
       }
     end
+    let(:mailer) { instance_double(EmailConfirmationMailer, call: OpenStruct.new(deliver_now: true)) }
 
     it "returns 204", :aggregate_failures do
       subject
@@ -65,6 +66,14 @@ RSpec.describe UsersController, type: :request do
     it "creates a User in the database" do
       expect { subject }
         .to change(User, :count).by(+1)
+    end
+
+    it "uses the correct service to send an email confirmation request", :aggregate_failures do
+      expect(EmailConfirmationMailer)
+        .to receive(:with).and_return(mailer)
+      expect(mailer).to receive(:call)
+
+      subject
     end
 
     context "when the email is taken" do

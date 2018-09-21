@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_11_112823) do
+ActiveRecord::Schema.define(version: 2018_09_21_110612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 2018_09_11_112823) do
     t.string "last_name", null: false
     t.date "pav_until"
     t.date "driving_licence_since"
+    t.boolean "email_confirmed", default: false
+    t.string "confirm_token"
   end
 
   add_foreign_key "course_events", "course_categories"

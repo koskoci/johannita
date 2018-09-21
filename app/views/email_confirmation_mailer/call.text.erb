@@ -1,0 +1,9 @@
+Kedves <%= @user.first_name %>!
+
+Koszonjuk, hogy regisztraltal! Az emailcimed megerositesehez klikkelj az alabbi linkre:
+
+==========================================
+<%= email_confirmation_url(@user.confirm_token) %>
+==========================================
+
+Szeretettel udvozlunk a csapatban!

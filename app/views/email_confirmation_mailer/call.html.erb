@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Kedves <%= @user.first_name %>!</h1>
+    <p>Koszonjuk, hogy regisztraltal! Az emailcimed megerositesehez klikkelj az alabbi linkre:</p>
+    <p><%= email_confirmation_url(@user.confirm_token) %></p>
+    <p>Szeretettel udvozlunk a csapatban!</p>
+  </body>
+</html>

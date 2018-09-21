@@ -24,4 +24,5 @@ Rails.application.routes.draw do
 
   resources :course_categories, except: %i[new edit]
   resources :participants, only: %i[index update]
+  resources :email_confirmation, only: %i[update]
 end

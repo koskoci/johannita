@@ -39,6 +39,10 @@ en:
     subject: "This event has been confirmed"
   event_cancelled_mailer:
     subject: "This event has been cancelled"
+  email_confirmation_mailer:
+    subject: "Please confirm your email address"
+  auths:
+    email_unconfirmed: "Please confirm your email address"
   posts:
     not_found: "This post does not exist"
   users:
@@ -51,3 +55,5 @@ en:
     course_event_id_missing: "Please specify course event"
     course_event_cancelled: "This course event has been cancelled"
     not_found: "This participant does not exist"
+  email_confirmation:
+    already_confirmed: "This email has already been confirmed. Please log in"

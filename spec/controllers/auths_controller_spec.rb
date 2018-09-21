@@ -26,6 +26,17 @@ RSpec.describe AuthsController, type: :request do
     end
   end
 
+  context "when the email has not been confirmed" do
+    before { create(:user, id: 1, email: "foo@bar.com", password: "abc", email_confirmed: false) }
+
+    it "rejects the user", :aggregate_failures do
+      post '/auth?user=foo@bar.com&password=abc'
+
+      expect(response.status).to eq 422
+      expect(json_response['error']).to eq("Please confirm your email address")
+    end
+  end
+
   context "when the user does not exist" do
     it "rejects the user", :aggregate_failures do
       post '/auth?user=fee@baz.com&password=abc'

@@ -22,9 +22,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    confirm_token = SecureRandom.urlsafe_base64.to_s
+    @user = User.new(user_params.merge(confirm_token: confirm_token))
 
     if @user.save
+      EmailConfirmationMailer.with(user: @user).call.deliver_now
       head 204
     else
       render status: 400, json: { error: @user.errors.full_messages }

@@ -3,15 +3,17 @@
 # Table name: users
 #
 #  id                    :bigint(8)        not null, primary key
-#  email                 :string           not null
-#  password_digest       :string           not null
 #  admin                 :boolean          default(FALSE)
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
+#  confirm_token         :string
+#  driving_licence_since :date
+#  email                 :string           not null
+#  email_confirmed       :boolean          default(FALSE)
 #  first_name            :string           not null
 #  last_name             :string           not null
+#  password_digest       :string           not null
 #  pav_until             :date
-#  driving_licence_since :date
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
 #
 
 class User < ApplicationRecord
@@ -21,4 +23,8 @@ class User < ApplicationRecord
   validates :pav_until_before_type_cast, :driving_licence_since_before_type_cast, date: true
   has_one_attached :curriculum_vitae
   has_one_attached :cover_letter
+
+  def name
+    "#{last_name} #{first_name}"
+  end
 end

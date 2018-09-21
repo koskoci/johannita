@@ -14,7 +14,7 @@ module Authentication
     end
 
     def password_valid?
-      user && user.authenticate(password)
+      user&.authenticate(password)
     end
 
     def payload
