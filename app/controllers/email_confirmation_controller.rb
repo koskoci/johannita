@@ -1,10 +1,12 @@
 class EmailConfirmationController < ApplicationController
   skip_before_action :authenticate_user
 
-  def update
+  def show
     @confirm_token = params[:id]
 
     render status: 418, json: { error: I18n.t('email_confirmation.already_confirmed') } and return unless user
+
+    User.find(user.id).update(email_confirmed: true, confirm_token: nil)
     render status: 200, json: { token: auth_token }
   end
 
