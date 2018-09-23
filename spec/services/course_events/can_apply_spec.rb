@@ -4,11 +4,19 @@ RSpec.describe CourseEvents::CanApply do
   subject { described_class.new(user, course_event) }
 
   let(:user) { create :user, id: 1 }
-  let(:course_event) { create :course_event, course_category: course_category }
+  let(:course_event) { create :course_event, course_category: course_category, apply_by: Date.today + 7 }
 
   before { course_event }
 
   describe 'call' do
+    context "if the apply_by date has passed" do
+      let(:course_category) { create :course_category }
+
+      it "returns false" do
+        expect(Timecop.freeze(Date.today + 8) { subject.call }).to eq false
+      end
+    end
+
     context "if course_event belongs to a course_category without a prerequisite" do
       let(:course_category) { create :course_category, prerequisite_course_category_id: nil }
 

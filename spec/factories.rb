@@ -16,9 +16,9 @@ FactoryBot.define do
 
   factory :course_event do
     title { "My course_event"}
-    date { "2019/1/1" }
+    date { Date.today + 14 }
     status { "posted" }
-    apply_by { "2018/11/1" }
+    apply_by { Date.today + 7 }
     association :course_category, factory: :course_category
   end
 
