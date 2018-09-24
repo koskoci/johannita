@@ -103,13 +103,13 @@ RSpec.describe UsersController, type: :request do
       context "when current user is an admin" do
         let(:current_user) { create(:user, admin: true) }
 
-        xcontext "when at least one of the attachments is missing" do
+        context "when at least one of the attachments is missing" do
           it "sends a single user", :aggregate_failures do
             subject
 
             expect(response.status).to eq 200
             expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-            expect(json_response['data']).to have_relationships(:curriculum_vitae, :cover_letter)
+            expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
             expect(json_response['data']).to have_type('users')
           end
         end
@@ -157,7 +157,7 @@ RSpec.describe UsersController, type: :request do
 
     before { user }
 
-    xcontext "when there is no attachment" do
+    context "when there is no attachment" do
       it "sends a single user", :aggregate_failures do
         subject
 
@@ -165,7 +165,7 @@ RSpec.describe UsersController, type: :request do
         expect(json_response['data']).to have_type('users')
         expect(json_response['data']).to have_id("1000")
         expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
-        expect(json_response['data']).to have_relationships(:curriculum_vitae, :cover_letter)
+        expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
       end
     end
 

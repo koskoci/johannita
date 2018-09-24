@@ -18,7 +18,13 @@ class UsersController < ApplicationController
   def show
     authorize! unless id == "me"
 
-    render status: 200, jsonapi: @user, include: %i[curriculum_vitae cover_letter]
+    render status: 200, jsonapi: @user,
+      include: %i[curriculum_vitae cover_letter] and return if @user.curriculum_vitae.attached? && @user.cover_letter.attached?
+    render status: 200, jsonapi: @user,
+      include: %i[curriculum_vitae] and return if @user.curriculum_vitae.attached?
+    render status: 200, jsonapi: @user,
+      include: %i[cover_letter] and return if @user.cover_letter.attached?
+    render status: 200, jsonapi: @user
   end
 
   def create

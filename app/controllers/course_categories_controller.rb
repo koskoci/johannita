@@ -11,7 +11,7 @@ class CourseCategoriesController < ApplicationController
 
   # GET /course_categories/1
   def show
-    render status: 200, jsonapi: @course_category, include: :images
+    render status: 200, jsonapi: @course_category
   end
 
   # POST /course_categories
