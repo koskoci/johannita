@@ -24,6 +24,7 @@ class CourseEvent < ApplicationRecord
   has_many :participants
   has_many :users, through: :participants
   belongs_to :course_category
+  validates :apply_by, presence: true
 
   VALID_STATUSES = %w[posted cancelled confirmed]
   ACTIVE_STATUSES = VALID_STATUSES.reject { |e| e == "cancelled" }

@@ -31,3 +31,4 @@
 coverage
 
 .coveralls.yml
+spec/.DS_Store
