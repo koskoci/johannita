@@ -111,7 +111,8 @@ RSpec.describe CourseEventsController, type: :request do
           "attributes": {
             "title": "First course_event title",
             "content": "First course_event content",
-            "category": "kismama"
+            "category": "kismama",
+            "apply_by": "2018/01/01"
           }
         }
       }
