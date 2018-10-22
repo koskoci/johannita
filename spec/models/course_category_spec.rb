@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CourseCategory, :type => :model do
+RSpec.describe CourseCategory, type: :model do
   let(:params) { { last_date: "2018-01-01", category: "Elsosegely-tanfolyam" } }
 
   it "is valid with valid the params" do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Post, :type => :model do
+RSpec.describe Post, type: :model do
   let(:params) { { title: "foo", content: "bar" } }
 
   it "is valid with valid the params" do

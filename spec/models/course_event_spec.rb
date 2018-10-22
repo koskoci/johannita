@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CourseEvent, :type => :model do
+RSpec.describe CourseEvent, type: :model do
   let(:params) { { title: "foo", course_category: course_category, date: Date.parse("2000-01-01"), status: "cancelled", apply_by: Date.parse("1999-01-01") } }
   let(:course_category) { create(:course_category) }
   let(:user) { create(:user) }
