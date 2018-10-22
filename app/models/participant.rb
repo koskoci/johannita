@@ -12,12 +12,13 @@
 #
 # Indexes
 #
-#  index_participants_on_course_event_id  (course_event_id)
-#  index_participants_on_user_id          (user_id)
+#  index_participants_on_course_event_id              (course_event_id)
+#  index_participants_on_course_event_id_and_user_id  (course_event_id,user_id) UNIQUE
+#  index_participants_on_user_id                      (user_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (course_event_id => course_events.id)
+#  fk_rails_...  (course_event_id => course_events.id) ON DELETE => cascade
 #  fk_rails_...  (user_id => users.id)
 #
 

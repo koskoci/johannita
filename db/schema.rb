@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_22_170327) do
+ActiveRecord::Schema.define(version: 2018_10_22_111903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,8 +51,8 @@ ActiveRecord::Schema.define(version: 2018_09_22_170327) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "posted"
-    t.date "apply_by"
-    t.bigint "course_category_id"
+    t.date "apply_by", null: false
+    t.bigint "course_category_id", null: false
     t.index ["course_category_id"], name: "index_course_events_on_course_category_id"
   end
 
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 2018_09_22_170327) do
     t.datetime "updated_at", null: false
     t.boolean "attended"
     t.boolean "passed"
+    t.index ["course_event_id", "user_id"], name: "index_participants_on_course_event_id_and_user_id", unique: true
     t.index ["course_event_id"], name: "index_participants_on_course_event_id"
     t.index ["user_id"], name: "index_participants_on_user_id"
   end
@@ -86,6 +87,7 @@ ActiveRecord::Schema.define(version: 2018_09_22_170327) do
     t.date "driving_licence_since"
     t.boolean "email_confirmed", default: false
     t.string "confirm_token"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "course_events", "course_categories"

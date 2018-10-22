@@ -3,13 +3,13 @@
 # Table name: course_events
 #
 #  id                 :bigint(8)        not null, primary key
-#  apply_by           :date
+#  apply_by           :date             not null
 #  date               :date
 #  status             :string           default("posted")
 #  title              :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  course_category_id :bigint(8)
+#  course_category_id :bigint(8)        not null
 #
 # Indexes
 #
@@ -23,7 +23,7 @@
 class CourseEvent < ApplicationRecord
   has_many :participants
   has_many :users, through: :participants
-  belongs_to :course_category
+  belongs_to :course_category, optional: true
   validates :apply_by, presence: true
 
   VALID_STATUSES = %w[posted cancelled confirmed]
