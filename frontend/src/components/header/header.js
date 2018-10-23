@@ -6,8 +6,10 @@ import { HeaderContainer, LogoContainer, Logo, LogoText } from '../../styles/hea
 const Header = ({ }) => (
   <HeaderContainer>
     <LogoContainer>
-      <Logo src="/assets/logo-2.png" />
-      <LogoText>Johannita<br/>Segítő<br/>Szolgálat</LogoText>
+      <a href="/">
+        <Logo src="/assets/logo-2.png" />
+        <LogoText>Johannita<br/>Segítő<br/>Szolgálat</LogoText>
+      </a>
     </LogoContainer>
     <UserDetails />
     <Menu />
