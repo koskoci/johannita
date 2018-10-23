@@ -13,7 +13,7 @@ module Johannita
 
     config.generators do |g|
       g.template_engine nil #to skip views
-      g.test_framework  nil #to skip test framework
+      g.test_framework  :rspec
       g.assets  false
       g.helper false
       g.stylesheets false

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_12_123538) do
+ActiveRecord::Schema.define(version: 2018_10_22_111903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,28 +36,35 @@ ActiveRecord::Schema.define(version: 2018_08_12_123538) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "counters", force: :cascade do |t|
-    t.string "name"
-    t.integer "value"
+  create_table "course_categories", force: :cascade do |t|
+    t.date "last_date"
+    t.string "category", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.integer "prerequisite_course_category_id"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "course_events", force: :cascade do |t|
     t.string "title"
-    t.string "category"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status"
+    t.string "status", default: "posted"
+    t.date "apply_by", null: false
+    t.bigint "course_category_id", null: false
+    t.index ["course_category_id"], name: "index_course_events_on_course_category_id"
   end
 
   create_table "participants", force: :cascade do |t|
-    t.bigint "event_id", null: false
+    t.bigint "course_event_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["event_id"], name: "index_participants_on_event_id"
+    t.boolean "attended"
+    t.boolean "passed"
+    t.index ["course_event_id", "user_id"], name: "index_participants_on_course_event_id_and_user_id", unique: true
+    t.index ["course_event_id"], name: "index_participants_on_course_event_id"
     t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
@@ -76,8 +83,14 @@ ActiveRecord::Schema.define(version: 2018_08_12_123538) do
     t.datetime "updated_at", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
+    t.date "pav_until"
+    t.date "driving_licence_since"
+    t.boolean "email_confirmed", default: false
+    t.string "confirm_token"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "participants", "events"
+  add_foreign_key "course_events", "course_categories"
+  add_foreign_key "participants", "course_events", on_delete: :cascade
   add_foreign_key "participants", "users"
 end

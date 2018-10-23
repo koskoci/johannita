@@ -4,7 +4,7 @@ class SerializablePost < JSONAPI::Serializable::Resource
   attribute :content
   attribute :created_at
   attribute :updated_at
-  attribute :image_url do
-    @url_helpers.url_for(@object.image) if @object.image.attached?
+  has_many :images do
+    @object.images_attachments
   end
 end

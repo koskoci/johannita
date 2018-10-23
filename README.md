@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/koskoci/johannita/badge.svg?branch=master)](https://coveralls.io/github/koskoci/johannita?branch=master)
+
 Johannita Segito szolgalat web app
 
 Regi [wordpress site](http://johannitak.hu/segito-szolgalat)
@@ -33,7 +35,9 @@ Regi [wordpress site](http://johannitak.hu/segito-szolgalat)
       * USER jelentkezik
     * KULSOS is jelentkezhet (<- regisztralni kell)
     * CV + motiv. level feltolt (-> ELKULD)
-    * pszihologiai alkalmassagi vizsga (belsos, 3 ora)
+    * `pszihologiai alkalmassagi vizsga (belsos, 3 ora)`
+      csak admin tudja kipipalni neki es kesz VAGY
+      lesz course_event a pszih. alk. vizsgahoz?
     * -> mehet
 
   * 1.2 Elsosegely-kepzes
@@ -60,14 +64,14 @@ Regi [wordpress site](http://johannitak.hu/segito-szolgalat)
     * 1.2.5 Alapszintu elsosegely-kepzes
       * feltetele nincs
       * Kozepisk, Egyetem, etc.
-        * nem honlapon keresztul jelentkeznek
+        * `nem honlapon keresztul jelentkeznek` -> resztvevok kovetesere szukseg van?
       * MEGHIRD
         * egyeni jelentkezes folyamata mint Kismama
       * -> elvegezheti az Ugyeleti modult
       * statuszok
         * jelentkezett (app csinalja egyeninek, csoportosnak nincs)
         * vizsgat tett
-          * ADMIN regisztralja egyeninek / csoportosnak is (-> HOGYAN?))
+          * ADMIN regisztralja egyeninek / `csoportosnak is (-> HOGYAN?)`)
 
     * 1.2.6 Ugyeleti modul
       * feltetele az Alapszint vizsga
@@ -76,11 +80,11 @@ Regi [wordpress site](http://johannitak.hu/segito-szolgalat)
         * mint Kismama
       * statuszok
         * jelentkezett (app csinalja egyeninek, csoportosnak nincs)
-        * sikeres vizsgat ADMIN regisztralja egyeninek / csoportosnak is (-> HOGYAN?))
-        * aktiv
+        * sikeres vizsgat tett
+        * **aktiv**
           * ugyeleti vizsgat tett 1,5 even belul
-          * ugyeleti ismetlovizsgat tett 1,5 even belul es volt 2-szer ugyeleten
-        * passziv
+          * `ugyeleti ismetlovizsgat` tett 1,5 even belul es volt 2-szer ugyeleten
+        * **passziv**
           * ismetlo vizsgat nem tett idoben (1,5 evvel elso vizsga utan)
           * vagy nem volt 2-szer ugyeletben
 
@@ -88,10 +92,12 @@ Regi [wordpress site](http://johannitak.hu/segito-szolgalat)
       * feltetele az Ugyeleti modul
       * -> Mentõn szekundalhat
       * statuszok
-        * aktiv
+        * `jelentkezett`
+        * `sikeres vizsgat tett`
+        * **aktiv**
           * emelt szintu vizsgat tett 1,5 even belul
-          * emelt ismetlovizsgat tett 1,5 even belul es volt 2-szer ugyeleten es 2-szer szekundalni
-        * passziv
+          * `emelt ismetlovizsgat` tett 1,5 even belul es volt 2-szer ugyeleten es 2-szer szekundalni
+        * **passziv**
           * ismetlo vizsgat nem tett idoben (1,5 evvel elso vizsga utan)
           * vagy nem volt 2-szer ugyeletben es 2-szer szekundalni
 

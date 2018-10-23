@@ -34,11 +34,23 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'jsonapi-rails'
 gem 'rack-cors'
 gem 'jwt'
+gem 'sidekiq'
 
 group :development, :test do
+  gem "pry"
+  gem "pry-byebug"
+  gem "factory_bot_rails"
+end
+
+group :test do
   gem "guard-rspec"
-  gem "pry-rails"
   gem 'rspec-rails', '~> 3.7'
+  gem "jsonapi-rspec"
+  gem 'shoulda-matchers', '~> 3.1'
+  gem 'simplecov', require: false
+  gem 'coveralls', require: false
+  gem 'bullet'
+  gem 'timecop'
 end
 
 group :development do
@@ -48,4 +60,5 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'annotate'
 end

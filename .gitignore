@@ -28,3 +28,7 @@
 .env
 
 .env.development
+coverage
+
+.coveralls.yml
+spec/.DS_Store

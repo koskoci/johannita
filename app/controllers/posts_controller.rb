@@ -1,72 +1,85 @@
 class PostsController < ApplicationController
-  deserializable_resource :post, only: [:create, :update]
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  deserializable_resource :post, only: %i[create update]
+  before_action :set_post_with_images, only: %i[show]
+  before_action :set_post, only: %i[update destroy images]
 
   # GET /posts
   def index
     @posts = Post.all
 
-    respond_to do |format|
-      format.html
-      format.json { render jsonapi: @posts }
-    end
+    render status: 200, jsonapi: @posts
   end
 
   # GET /posts/1
   def show
-    respond_to do |format|
-      format.html
-      format.json { render jsonapi: @post }
-    end
-  end
-
-  # GET /posts/new
-  def new
-    @post = Post.new
-  end
-
-  # GET /posts/1/edit
-  def edit
+    render status: 200, jsonapi: @post, include: :images
   end
 
   # POST /posts
   def create
-    authorize! :create
+    authorize!
 
     @post = Post.new(post_params)
 
     if @post.save
-      redirect_to @post, notice: 'Post was successfully created.'
+      head 204
     else
-      render :new
+      render status: 400, json: { error: @post.errors }
     end
   end
 
   # PATCH/PUT /posts/1
   def update
-    authorize! :update
+    authorize!
 
     if @post.update(post_params)
-      redirect_to @post, notice: 'Post was successfully updated.'
+      render status: 200, jsonapi: @post
     else
-      render :edit
+      render status: 400, json: { error: @post.errors }
     end
   end
 
   # DELETE /posts/1
   def destroy
-    @post.destroy
-    redirect_to posts_url, notice: 'Post was successfully destroyed.'
+    authorize!
+
+    if @post.destroy
+      head 204
+    else
+      render status: 400, json: { error: @post.errors }
+    end
+  end
+
+  # POST /posts/1/images
+  def images
+    authorize!
+
+    if @post.images.attach(params[:post][:image])
+      head 204
+    else
+      render status: 400, json: { error: @post.errors }
+    end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def post_params
-      params.require(:post).permit(:title, :content, :image)
-    end
+  def set_post_with_images
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(id)
+
+    @post = Post.with_attached_images.find(id)
+  end
+
+  def set_post
+    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(id)
+
+    @post = Post.find(id)
+  end
+
+  def post_params
+    params.require(:post).permit(:title, :content)
+  end
+
+  def id
+    params[:id]
+  end
 end
