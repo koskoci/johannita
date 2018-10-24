@@ -49,11 +49,13 @@ en:
     not_found: "This user does not exist"
   course_events:
     not_found: "This course event does not exist"
+  courses:
+    not_found: "This course does not exist"
   course_categories:
     not_found: "This course category does not exist"
   participants:
-    course_event_id_missing: "Please specify course event"
-    course_event_cancelled: "This course event has been cancelled"
+    course_id_missing: "Please specify course"
+    course_cancelled: "This course has been cancelled"
     not_found: "This participant does not exist"
   email_confirmation:
     already_confirmed: "This email has already been confirmed. Please log in"
