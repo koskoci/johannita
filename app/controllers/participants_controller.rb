@@ -6,9 +6,9 @@ class ParticipantsController < ApplicationController
   def index
     authorize!
 
-    render status: 400, json: { error: I18n.t('participants.course_event_id_missing') } and return unless course_event_id
-    render status: 400, json: { error: I18n.t('course_events.not_found') } and return unless CourseEvent.exists?(course_event_id)
-    render status: 400, json: { error: I18n.t('participants.course_event_cancelled') } and return if cancelled
+    render status: 400, json: { error: I18n.t('participants.course_id_missing') } and return unless course_id
+    render status: 400, json: { error: I18n.t('courses.not_found') } and return unless Course.exists?(course_id)
+    render status: 400, json: { error: I18n.t('participants.course_cancelled') } and return if cancelled
 
     @participants = Participant.includes(:user).all
 
@@ -19,7 +19,7 @@ class ParticipantsController < ApplicationController
   def update
     authorize!
 
-    render status: 400, json: { error: I18n.t('participants.course_event_cancelled') } and return if cancelled
+    render status: 400, json: { error: I18n.t('participants.course_cancelled') } and return if cancelled
 
     if @participant.update(participant_params)
       render status: 200, jsonapi: @participant
@@ -44,11 +44,11 @@ class ParticipantsController < ApplicationController
     params[:id]
   end
 
-  def course_event_id
-    params[:course_event_id] || @participant&.course_event&.id
+  def course_id
+    params[:course_id] || @participant&.course&.id
   end
 
   def cancelled
-    CourseEvent.find(course_event_id).status == "cancelled"
+    Course.find(course_id).status == "cancelled"
   end
 end

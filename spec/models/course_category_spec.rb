@@ -11,5 +11,5 @@ RSpec.describe CourseCategory, type: :model do
   end
 
   it { should validate_presence_of(:category) }
-  it { should have_many(:course_events) }
+  it { should have_many(:courses) }
 end

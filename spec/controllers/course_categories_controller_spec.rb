@@ -9,8 +9,7 @@ RSpec.describe CourseCategoriesController, type: :request do
     let(:course_category) { create :course_category }
 
     before do
-      create :course_event, date: "2020-01-01", course_category: course_category
-      create :course_event, date: "2019-01-01", course_category: course_category
+      course_category
       create :course_category, category: "otthonapolas"
     end
 
@@ -30,7 +29,7 @@ RSpec.describe CourseCategoriesController, type: :request do
 
     context "when the course_category exists" do
       before do
-        create(:course_event, course_category: course_category, date: "2018-01-01")
+        course_category
       end
 
       it "sends a single course_category", :aggregate_failures do
