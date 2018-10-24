@@ -1,4 +1,4 @@
-class EventConfirmedMailer < ApplicationMailer
+class CourseConfirmedMailer < ApplicationMailer
   def call
     @user = params[:user]
     @event = params[:event]
