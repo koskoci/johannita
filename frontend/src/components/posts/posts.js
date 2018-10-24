@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { getPosts } from '../../api';
 import { ContentContainer }  from '../../styles/base';
-import Post from './post';
+import PostBlock from './_post';
 
 export default class Posts extends Component {
   constructor() {
@@ -21,7 +21,7 @@ export default class Posts extends Component {
   render({ }, { posts }) {
     return (
       <ContentContainer>
-        {posts.map(post => <Post data={post} />)}
+        {posts.map(post => <PostBlock data={post} />)}
       </ContentContainer>
     );
   }

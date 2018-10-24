@@ -14,6 +14,7 @@ export const PostContainer = styled.div`
 export const PostThumb = styled.img`
   float: left;
   margin-right: 20px;
+  max-width: 300px;
 `;
 
 export const PostData = styled.div`
