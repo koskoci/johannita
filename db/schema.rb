@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_22_111903) do
+ActiveRecord::Schema.define(version: 2018_10_24_202153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,21 +50,29 @@ ActiveRecord::Schema.define(version: 2018_10_22_111903) do
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status", default: "posted"
+    t.bigint "course_id", null: false
+    t.index ["course_id"], name: "index_course_events_on_course_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
     t.date "apply_by", null: false
+    t.string "title"
+    t.string "status", default: "posted", null: false
     t.bigint "course_category_id", null: false
-    t.index ["course_category_id"], name: "index_course_events_on_course_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_category_id"], name: "index_courses_on_course_category_id"
   end
 
   create_table "participants", force: :cascade do |t|
-    t.bigint "course_event_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "attended"
     t.boolean "passed"
-    t.index ["course_event_id", "user_id"], name: "index_participants_on_course_event_id_and_user_id", unique: true
-    t.index ["course_event_id"], name: "index_participants_on_course_event_id"
+    t.bigint "course_id", null: false
+    t.index ["course_id", "user_id"], name: "idx_course_user_unique", unique: true
+    t.index ["course_id"], name: "index_participants_on_course_id"
     t.index ["user_id"], name: "index_participants_on_user_id"
   end
 
@@ -90,7 +98,8 @@ ActiveRecord::Schema.define(version: 2018_10_22_111903) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "course_events", "course_categories"
-  add_foreign_key "participants", "course_events", on_delete: :cascade
+  add_foreign_key "course_events", "courses"
+  add_foreign_key "courses", "course_categories"
+  add_foreign_key "participants", "courses", on_delete: :cascade
   add_foreign_key "participants", "users"
 end
