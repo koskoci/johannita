@@ -23,7 +23,6 @@ class CourseEventsController < ApplicationController
     verify_course_category_exists; return if performed?
     update_category
 
-    CourseCategories::UpdateLastDate.new(course_category.id).call
 
     if @course_event.save
       head 204
@@ -43,10 +42,8 @@ class CourseEventsController < ApplicationController
     if course_event_params[:category]
       verify_course_category_exists; return if performed?
       update_category
-      CourseCategories::UpdateLastDate.new(old_category.id).call
     end
 
-    CourseCategories::UpdateLastDate.new(course_category.id).call
 
     if @course_event.save
       render status: 200, jsonapi: @course_event, expose: { user: current_user }

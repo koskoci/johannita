@@ -140,15 +140,6 @@ RSpec.describe CourseEventsController, type: :request do
           .to change(CourseEvent, :count).by(+1)
       end
 
-      it "uses the correct service" do
-        expect(CourseCategories::UpdateLastDate)
-          .to receive(:new).with(course_category.id).and_call_original
-        expect_any_instance_of(CourseCategories::UpdateLastDate)
-          .to receive(:call)
-
-        subject
-      end
-
       context "when the course category does not exist" do
         let(:body) do
           {
