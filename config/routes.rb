@@ -22,7 +22,6 @@ Rails.application.routes.draw do
     end
   end
 
-  root 'welcome#index'
   resource :auth, only: %i[create]
   resources :attachments, only: %i[destroy]
   resources :course_categories, except: %i[new edit]
