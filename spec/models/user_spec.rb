@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe User, :type => :model do
+RSpec.describe User, type: :model do
   let(:minimum_params) { { password: "abc", email: "foo@bar.com", first_name: "Foo", last_name: "Bar" } }
 
   it { should validate_presence_of(:first_name) }

@@ -15,11 +15,9 @@ FactoryBot.define do
   end
 
   factory :course_event do
-    title { "My course_event"}
+    title { "My course_event" }
     date { Date.today + 14 }
-    status { "posted" }
-    apply_by { Date.today + 7 }
-    association :course_category, factory: :course_category
+    association :course, factory: :course
   end
 
   factory :course_category do
@@ -30,7 +28,14 @@ FactoryBot.define do
   factory :participant do
     attended { nil }
     passed { nil }
-    association :course_event, factory: :course_event
+    association :course, factory: :course
     association :user, factory: :user
+  end
+
+  factory :course do
+    title { nil }
+    apply_by { Date.today + 7 }
+    status { "posted" }
+    association :course_category, factory: :course_category
   end
 end

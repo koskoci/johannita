@@ -13,5 +13,5 @@
 
 class CourseCategory < ApplicationRecord
   validates :category, presence: true
-  has_many :course_events
+  has_many :courses
 end

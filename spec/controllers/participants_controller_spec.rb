@@ -6,42 +6,42 @@ RSpec.describe ParticipantsController, type: :request do
   before { current_user }
 
   describe 'GET /participants' do
-    context "when the course_event_id is missing" do
+    context "when the course_id is missing" do
       subject { get '/participants', headers: get_headers(current_user) }
 
       it "returns 400 with an error message" do
         subject
 
         expect(response.status).to eq 400
-        expect(json_response['error']).to eq "Please specify course event"
+        expect(json_response['error']).to eq "Please specify course"
       end
     end
 
-    context "when the course_event_id is given" do
-      subject { get '/participants?course_event_id=1', headers: get_headers(current_user) }
+    context "when the course_id is given" do
+      subject { get '/participants?course_id=1', headers: get_headers(current_user) }
 
-      context "when the course_event does not exist" do
+      context "when the course does not exist" do
         it "returns 400 with an error message" do
           subject
 
           expect(response.status).to eq 400
-          expect(json_response['error']).to eq "This course event does not exist"
+          expect(json_response['error']).to eq "This course does not exist"
         end
       end
 
-      context "when the course_event exists" do
-        let(:course_event) { create :course_event, id: 1 }
+      context "when the course exists" do
+        let(:course) { create :course, id: 1 }
 
-        before { course_event }
+        before { course }
 
-        context "when the course event is cancelled" do
-          let(:course_event) { create :course_event, id: 1, status: "cancelled" }
+        context "when the course is cancelled" do
+          let(:course) { create :course, id: 1, status: "cancelled" }
 
           it "returns 400 with an error message" do
             subject
 
             expect(response.status).to eq 400
-            expect(json_response['error']).to eq "This course event has been cancelled"
+            expect(json_response['error']).to eq "This course has been cancelled"
           end
         end
 
@@ -55,7 +55,7 @@ RSpec.describe ParticipantsController, type: :request do
         end
 
         context "when there are participants" do
-          before { create_list :participant, 2, course_event: course_event }
+          before { create_list :participant, 2, course: course }
 
           it "sends the list of participants", :aggregate_failures do
             subject
@@ -140,15 +140,15 @@ RSpec.describe ParticipantsController, type: :request do
       end
     end
 
-    context "when the course event is cancelled" do
-      let(:participant) { create :participant, id: 1, course_event: course_event }
-      let(:course_event) { create :course_event, id: 1, status: "cancelled" }
+    context "when the course is cancelled" do
+      let(:participant) { create :participant, id: 1, course: course }
+      let(:course) { create :course, id: 1, status: "cancelled" }
 
       it "returns 400 with an error message" do
         subject
 
         expect(response.status).to eq 400
-        expect(json_response['error']).to eq "This course event has been cancelled"
+        expect(json_response['error']).to eq "This course has been cancelled"
       end
     end
   end
