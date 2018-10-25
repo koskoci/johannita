@@ -4,6 +4,7 @@ export const AppContainer = styled.div`
   width: 960px;
   padding: 0 20px;
   margin: 0 auto;
+  font-size: 14px;
 
   a {
     color: black;
@@ -17,7 +18,7 @@ export const AppContainer = styled.div`
 
 export const ContentContainer = styled.div`
   margin: 60px 0;
-  min-height: 300px;
+  min-height: calc(100vh - 195px - 150px - 120px);
 
   ${props => props.centered && css`
     width: 400px;
@@ -36,18 +37,6 @@ export const FooterContainer = styled.div`
   p {
     margin: 2px 0;
   }
-`;
-
-export const Overlay = styled.div`
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0, 0.4);
-  left: 0;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const StyledInput = styled.input`
@@ -97,23 +86,4 @@ export const StyledButton = styled.button`
   color: #FAFAFA;
   padding: 10px 20px;
   cursor: pointer;
-`;
-
-export const OverlayContent = styled.div`
-  width: 320px;
-  background-color: white;
-  text-align: center;
-  padding: 40px 25px;
-  box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.25);
-
-  label {
-    font-size: 14px;
-    text-align: center;
-    display: block;
-    margin: 0 auto;
-  }
-
-  h3 {
-    margin-top: 0;
-  }
 `;

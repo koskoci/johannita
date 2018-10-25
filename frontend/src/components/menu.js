@@ -1,16 +1,16 @@
 import { h } from 'preact';
-import { MenuList, SubMenu } from '../../styles/header';
+import { MenuList, SubMenu } from '../styles/header';
 
 const Menu = ({ }) => (
   <MenuList>
     <li>
       <a href="">A segítő szolgálat</a>
       <SubMenu>
-        <li><a href="">Elnöki köszöntő</a></li>
-        <li><a href="">Rólunk</a></li>
-        <li><a href="">Helyi szervezetek</a></li>
-        <li><a href="">Közhasznúságú jelentések</a></li>
-        <li><a href="">Johanniter international</a></li>
+        <li><a href="/oldal/elnoki-koszonto">Elnöki köszöntő</a></li>
+        <li><a href="/oldal/rolunk">Rólunk</a></li>
+        <li><a href="/oldal/szervezetek">Helyi szervezetek</a></li>
+        <li><a href="/oldal/jelentesek">Közhasznúságú jelentések</a></li>
+        <li><a href="/oldal/johanniter">Johanniter international</a></li>
       </SubMenu>
     </li>
     <li>

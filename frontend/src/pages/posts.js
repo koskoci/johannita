@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
-import { getPosts } from '../../api';
-import { ContentContainer }  from '../../styles/base';
-import PostBlock from './_post';
+import { getPosts } from '../helpers/api';
+import { ContentContainer }  from '../styles/base';
+import PostBlock from '../components/_post';
 
 export default class Posts extends Component {
   constructor() {

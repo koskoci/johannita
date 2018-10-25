@@ -5,6 +5,7 @@ export const HeaderContainer = styled.div`
   text-align: center;
   padding: 10px 0;
   position: relative;
+  height: 150px;
 `;
 
 export const LogoContainer = styled.div`
