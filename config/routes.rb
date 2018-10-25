@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root to: redirect('/index.html')
+
   resources :course_events, except: %i[new edit destroy]
 
   resources :courses, except: %i[new edit destroy] do
