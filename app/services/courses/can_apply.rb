@@ -7,6 +7,7 @@ module Courses
 
     def call
       return false if after_apply_by
+      return false if no_more_seats
       return true unless prereq_id
       passed?(user, prereq_id)
     end
@@ -29,6 +30,10 @@ module Courses
 
     def after_apply_by
       Date.today > course.apply_by
+    end
+
+    def no_more_seats
+      course.participants.count >= course.max_participants
     end
   end
 end

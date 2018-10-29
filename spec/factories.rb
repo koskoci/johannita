@@ -36,6 +36,7 @@ FactoryBot.define do
     title { nil }
     apply_by { Date.today + 7 }
     status { "posted" }
+    max_participants { 20 }
     association :course_category, factory: :course_category
   end
 end
