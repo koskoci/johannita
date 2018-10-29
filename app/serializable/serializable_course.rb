@@ -8,6 +8,7 @@ class SerializableCourse < JSONAPI::Serializable::Resource
   attribute :updated_at
   attribute :status
   attribute :apply_by
+  attribute :max_participants
   attribute :can_apply do
     @object.can_apply(@user)
   end

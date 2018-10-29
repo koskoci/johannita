@@ -32,7 +32,7 @@ RSpec.describe CoursesController, type: :request do
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_type("courses")
-      expect(json_response['data']).to all have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to all have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to all have_relationship(:participants)
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe CoursesController, type: :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("courses")
-          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
           expect(json_response['data']).to have_relationship(:participants)
         end
       end
@@ -82,7 +82,7 @@ RSpec.describe CoursesController, type: :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("courses")
-          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
           expect(json_response['included'])
@@ -211,7 +211,7 @@ RSpec.describe CoursesController, type: :request do
     it "returns the updated Course" do
       subject
 
-      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
       expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
       expect(json_response['data']).to have_type("courses")
@@ -271,7 +271,7 @@ RSpec.describe CoursesController, type: :request do
 
       expect(response.status).to eq 200
       expect(json_response['data']).to have_type("courses")
-      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
       expect(json_response['included'])
@@ -291,7 +291,7 @@ RSpec.describe CoursesController, type: :request do
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("courses")
-        expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+        expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
         expect(json_response['included'])

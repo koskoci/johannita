@@ -4,6 +4,7 @@
 #
 #  id                 :bigint(8)        not null, primary key
 #  apply_by           :date             not null
+#  max_participants   :integer          default(20)
 #  status             :string           default("posted"), not null
 #  title              :string
 #  created_at         :datetime         not null
