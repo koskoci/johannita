@@ -10,7 +10,7 @@ RSpec.describe AuthsController, type: :request do
     end
 
     it "authenticates the user", :aggregate_failures do
-      post '/auth?user=foo@bar.com&password=abc'
+      post '/api/auth?user=foo@bar.com&password=abc'
 
       expect(response.status).to eq 200
       expect(json_response['token']).to eq(token)
@@ -18,7 +18,7 @@ RSpec.describe AuthsController, type: :request do
 
     context "when the password is incorrect" do
       it "rejects the user", :aggregate_failures do
-        post '/auth?user=foo_1@bar.com&password=123'
+        post '/api/auth?user=foo_1@bar.com&password=123'
 
         expect(response.status).to eq 401
         expect(json_response['error']).to eq({ "base" => ["User credentials invalid!"] })
@@ -30,7 +30,7 @@ RSpec.describe AuthsController, type: :request do
     before { create(:user, id: 1, email: "foo@bar.com", password: "abc", email_confirmed: false) }
 
     it "rejects the user", :aggregate_failures do
-      post '/auth?user=foo@bar.com&password=abc'
+      post '/api/auth?user=foo@bar.com&password=abc'
 
       expect(response.status).to eq 422
       expect(json_response['error']).to eq("Please confirm your email address")
@@ -39,7 +39,7 @@ RSpec.describe AuthsController, type: :request do
 
   context "when the user does not exist" do
     it "rejects the user", :aggregate_failures do
-      post '/auth?user=fee@baz.com&password=abc'
+      post '/api/auth?user=fee@baz.com&password=abc'
 
       expect(response.status).to eq 401
       expect(json_response['error']).to eq({ "base" => ["User credentials invalid!"] })

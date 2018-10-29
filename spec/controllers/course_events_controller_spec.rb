@@ -6,7 +6,7 @@ RSpec.describe CourseEventsController, type: :request do
   before { current_user }
 
   describe 'GET /course_events' do
-    subject { get '/course_events', headers: get_headers(current_user) }
+    subject { get '/api/course_events', headers: get_headers(current_user) }
 
     let(:course_event) { create(:course_event) }
     let(:another_course_event) { create(:course_event) }
@@ -31,7 +31,7 @@ RSpec.describe CourseEventsController, type: :request do
     let(:headers) { get_headers(current_user) }
 
     context "when the course_event exists" do
-      subject { get '/course_events/1', headers: headers }
+      subject { get '/api/course_events/1', headers: headers }
 
       let(:course_event) { create(:course_event, id: 1) }
 
@@ -52,7 +52,7 @@ RSpec.describe CourseEventsController, type: :request do
 
     context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/course_events/1337', headers: headers
+        get '/api/course_events/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course event does not exist"
@@ -61,7 +61,7 @@ RSpec.describe CourseEventsController, type: :request do
   end
 
   describe 'POST /course_events' do
-    subject { post '/course_events', params: body.to_json, headers: headers }
+    subject { post '/api/course_events', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -137,7 +137,7 @@ RSpec.describe CourseEventsController, type: :request do
   end
 
   describe 'PATCH /course_events/:id' do
-    subject { patch '/course_events/1', params: body.to_json, headers: headers }
+    subject { patch '/api/course_events/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -194,7 +194,7 @@ RSpec.describe CourseEventsController, type: :request do
 
     context "when the course event does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/course_events/1337', params: body.to_json, headers: headers
+        patch '/api/course_events/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course event does not exist"
