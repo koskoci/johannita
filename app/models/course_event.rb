@@ -20,4 +20,5 @@
 
 class CourseEvent < ApplicationRecord
   belongs_to :course, optional: true
+  has_many :participants, through: :course
 end

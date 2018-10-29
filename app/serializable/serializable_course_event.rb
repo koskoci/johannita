@@ -7,4 +7,7 @@ class SerializableCourseEvent < JSONAPI::Serializable::Resource
   belongs_to :course do
     linkage always: true
   end
+  has_many :participants do
+    linkage always: true
+  end
 end

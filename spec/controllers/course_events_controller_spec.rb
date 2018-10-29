@@ -33,9 +33,12 @@ RSpec.describe CourseEventsController, type: :request do
     context "when the course_event exists" do
       subject { get '/api/course_events/1', headers: headers }
 
-      let(:course_event) { create(:course_event, id: 1) }
+      let(:course) { create(:course) }
+      let(:course_event) { create(:course_event, id: 1, course_id: course.id) }
+      let(:participant) { create(:participant, course_id: course.id) }
 
       before do
+        participant
         course_event
       end
 
@@ -45,8 +48,11 @@ RSpec.describe CourseEventsController, type: :request do
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attributes(:date, :title, :created_at, :updated_at)
-        expect(json_response['data']).to have_relationship(:course)
+        expect(json_response['data']).to have_relationships("course")
+        expect(json_response['data']).to have_relationships("participants")
         expect(json_response.dig('data', 'relationships', 'course', 'data', 'id')).not_to be_nil
+        expect(json_response.dig('data', 'relationships', 'participants', 'data').first.fetch('id')).not_to be_nil
+        expect(json_response['included'].first.dig('attributes', 'name')).not_to be_nil
       end
     end
 

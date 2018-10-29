@@ -1,6 +1,7 @@
 class CourseEventsController < ApplicationController
   deserializable_resource :course_event, only: %i[create update]
-  before_action :set_course_event, only: %i[update show]
+  before_action :set_course_event, only: %i[update]
+  before_action :set_course_event_with_participants, only: %i[show]
 
   def index
     @course_events = CourseEvent.all
@@ -10,7 +11,7 @@ class CourseEventsController < ApplicationController
 
   # GET /course_events/1
   def show
-    render status: 200, jsonapi: @course_event
+    render status: 200, jsonapi: @course_event_with_participants, include: :participants, fields: { participants: [:name] }
   end
 
   # POST /course_events
@@ -48,6 +49,14 @@ class CourseEventsController < ApplicationController
     end
 
     @course_event = CourseEvent.find(id)
+  end
+
+  def set_course_event_with_participants
+    unless CourseEvent.exists?(id)
+      render status: 404, json: { error: I18n.t('course_events.not_found') } and return
+    end
+
+    @course_event_with_participants = CourseEvent.includes(:participants).find(id)
   end
 
   def course_event_params
