@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_29_074309) do
+ActiveRecord::Schema.define(version: 2018_10_29_111713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(version: 2018_10_29_074309) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "attendances", force: :cascade do |t|
+    t.bigint "course_event_id"
+    t.bigint "participant_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_event_id"], name: "index_attendances_on_course_event_id"
+    t.index ["participant_id"], name: "index_attendances_on_participant_id"
   end
 
   create_table "course_categories", force: :cascade do |t|
@@ -99,6 +108,8 @@ ActiveRecord::Schema.define(version: 2018_10_29_074309) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "attendances", "course_events"
+  add_foreign_key "attendances", "participants"
   add_foreign_key "course_events", "courses"
   add_foreign_key "courses", "course_categories"
   add_foreign_key "participants", "courses", on_delete: :cascade

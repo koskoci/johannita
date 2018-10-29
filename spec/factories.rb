@@ -1,4 +1,8 @@
 FactoryBot.define do
+  factory :attendance do
+    course_event { nil }
+    participant { nil }
+  end
 
   factory :user do
     password { "abc" }
