@@ -1,6 +1,4 @@
-class CatchAllController < ApplicationController
-  skip_before_action :authenticate_user
-
+class CatchAllController < ActionController::Base
   def index
     render file: '/public/index.html', layout: false
   end
