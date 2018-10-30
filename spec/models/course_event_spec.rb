@@ -8,6 +8,7 @@ RSpec.describe CourseEvent, type: :model do
 
   describe "Associations" do
     it { should belong_to(:course) }
+    it { should have_many(:participants) }
   end
 
   describe "Validations" do

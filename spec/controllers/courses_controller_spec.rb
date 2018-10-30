@@ -6,7 +6,7 @@ RSpec.describe CoursesController, type: :request do
   before { current_user }
 
   describe 'GET /courses' do
-    subject { get '/courses', headers: get_headers(current_user) }
+    subject { get '/api/courses', headers: get_headers(current_user) }
 
     let(:course) { create(:course) }
     let(:another_course) { create(:course) }
@@ -32,7 +32,7 @@ RSpec.describe CoursesController, type: :request do
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_type("courses")
-      expect(json_response['data']).to all have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to all have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to all have_relationship(:participants)
     end
   end
@@ -41,7 +41,7 @@ RSpec.describe CoursesController, type: :request do
     let(:headers) { get_headers(current_user) }
 
     context "when the course exists" do
-      subject { get '/courses/1', headers: headers }
+      subject { get '/api/courses/1', headers: headers }
 
       let(:course) { create(:course, id: 1) }
       let(:service_object) { instance_double(Courses::CanApply, call: true) }
@@ -64,7 +64,7 @@ RSpec.describe CoursesController, type: :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("courses")
-          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
           expect(json_response['data']).to have_relationship(:participants)
         end
       end
@@ -82,7 +82,7 @@ RSpec.describe CoursesController, type: :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("courses")
-          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+          expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
           expect(json_response['data']).to have_relationship(:participants)
           expect(json_response['included'].size).to eq 2
           expect(json_response['included'])
@@ -93,7 +93,7 @@ RSpec.describe CoursesController, type: :request do
 
     context "when the course does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/courses/1337', headers: headers
+        get '/api/courses/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"
@@ -102,7 +102,7 @@ RSpec.describe CoursesController, type: :request do
   end
 
   describe 'POST /courses' do
-    subject { post '/courses', params: body.to_json, headers: headers }
+    subject { post '/api/courses', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -164,7 +164,7 @@ RSpec.describe CoursesController, type: :request do
   end
 
   describe 'PATCH /courses/:id' do
-    subject { patch '/courses/1', params: body.to_json, headers: headers }
+    subject { patch '/api/courses/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -211,7 +211,7 @@ RSpec.describe CoursesController, type: :request do
     it "returns the updated Course" do
       subject
 
-      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to have_attribute(:category).with_value("Mentoapolo-tanfolyam")
       expect(json_response['data']).to have_attribute(:can_apply).with_value(true)
       expect(json_response['data']).to have_type("courses")
@@ -226,7 +226,7 @@ RSpec.describe CoursesController, type: :request do
 
     context "when the course does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/courses/1337', params: body.to_json, headers: headers
+        patch '/api/courses/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"
@@ -256,7 +256,7 @@ RSpec.describe CoursesController, type: :request do
   end
 
   describe 'POST /courses/:id/apply' do
-    subject { post '/courses/1/apply', headers: headers }
+    subject { post '/api/courses/1/apply', headers: headers }
 
     let(:headers) { post_headers(current_user) }
     let(:course) { create(:course, id: 1) }
@@ -271,7 +271,7 @@ RSpec.describe CoursesController, type: :request do
 
       expect(response.status).to eq 200
       expect(json_response['data']).to have_type("courses")
-      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+      expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to have_relationship(:participants)
       expect(json_response['included'].size).to eq 1
       expect(json_response['included'])
@@ -291,7 +291,7 @@ RSpec.describe CoursesController, type: :request do
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("courses")
-        expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply)
+        expect(json_response['data']).to have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
         expect(json_response['data']).to have_relationship(:participants)
         expect(json_response['included'].size).to eq 1
         expect(json_response['included'])
@@ -301,7 +301,7 @@ RSpec.describe CoursesController, type: :request do
 
     context "when the course does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/courses/1337/apply', headers: headers
+        post '/api/courses/1337/apply', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"
@@ -310,7 +310,7 @@ RSpec.describe CoursesController, type: :request do
   end
 
   describe 'PATCH /courses/:id/confirm' do
-    subject { patch '/courses/1/confirm', headers: headers }
+    subject { patch '/api/courses/1/confirm', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
@@ -366,7 +366,7 @@ RSpec.describe CoursesController, type: :request do
 
     context "when the course does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/courses/1337/apply', headers: headers
+        post '/api/courses/1337/apply', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"
@@ -381,7 +381,7 @@ RSpec.describe CoursesController, type: :request do
   end
 
   describe 'PATCH /courses/:id/cancel' do
-    subject { patch '/courses/1/cancel', headers: headers }
+    subject { patch '/api/courses/1/cancel', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:headers) { post_headers(current_user) }
@@ -437,7 +437,7 @@ RSpec.describe CoursesController, type: :request do
 
     context "when the course does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/courses/1337/apply', headers: headers
+        post '/api/courses/1337/apply', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"

@@ -96,7 +96,7 @@ class CoursesController < ApplicationController
   end
 
   def course_params
-    params.require(:course).permit(:title, :category, :date, :apply_by)
+    params.require(:course).permit(:title, :category, :date, :apply_by, :max_participants)
   end
 
   def already_applied?

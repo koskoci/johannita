@@ -1,4 +1,8 @@
 FactoryBot.define do
+  factory :attendance do
+    course_event { nil }
+    participant { nil }
+  end
 
   factory :user do
     password { "abc" }
@@ -36,6 +40,7 @@ FactoryBot.define do
     title { nil }
     apply_by { Date.today + 7 }
     status { "posted" }
+    max_participants { 20 }
     association :course_category, factory: :course_category
   end
 end

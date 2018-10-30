@@ -9,6 +9,19 @@ RSpec.describe Courses::CanApply do
   before { course }
 
   describe "call" do
+    context "if there are no more seats left" do
+      let(:course) { create :course, apply_by: Date.today + 7, max_participants: 2 }
+
+      before do
+        create :participant, course_id: course.id
+        create :participant, course_id: course.id
+      end
+
+      it "returns false" do
+        expect(subject.call).to eq false
+      end
+    end
+
     context "if the apply_by date has passed" do
       let(:course_category) { create :course_category }
 

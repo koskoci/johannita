@@ -14,7 +14,7 @@ RSpec.describe CourseCategoriesController, type: :request do
     end
 
     it "sends a list of course_categories", :aggregate_failures do
-      get '/course_categories', headers: get_headers(current_user)
+      get '/api/course_categories', headers: get_headers(current_user)
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
@@ -33,7 +33,7 @@ RSpec.describe CourseCategoriesController, type: :request do
       end
 
       it "sends a single course_category", :aggregate_failures do
-        get '/course_categories/1', headers: headers
+        get '/api/course_categories/1', headers: headers
 
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("course_categories")
@@ -43,7 +43,7 @@ RSpec.describe CourseCategoriesController, type: :request do
 
     context "when the course_category does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/course_categories/1337', headers: headers
+        get '/api/course_categories/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course category does not exist"
@@ -52,7 +52,7 @@ RSpec.describe CourseCategoriesController, type: :request do
   end
 
   describe 'POST /course_categories' do
-    subject { post '/course_categories', params: body.to_json, headers: headers }
+    subject { post '/api/course_categories', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -87,7 +87,7 @@ RSpec.describe CourseCategoriesController, type: :request do
   end
 
   describe 'PATCH /course_categories/:id' do
-    subject { patch '/course_categories/1', params: body.to_json, headers: headers }
+    subject { patch '/api/course_categories/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -142,7 +142,7 @@ RSpec.describe CourseCategoriesController, type: :request do
 
     context "when the course_category does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/course_categories/1337', params: body.to_json, headers: headers
+        patch '/api/course_categories/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course category does not exist"
@@ -151,7 +151,7 @@ RSpec.describe CourseCategoriesController, type: :request do
   end
 
   describe 'DELETE /course_categories/:id' do
-    subject { delete '/course_categories/1', headers: headers }
+    subject { delete '/api/course_categories/1', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:course_category) { create(:course_category, id: 1) }
@@ -180,7 +180,7 @@ RSpec.describe CourseCategoriesController, type: :request do
 
     context "when the course_category does not exist" do
       it "returns 404", :aggregate_failures do
-        delete '/course_categories/1337', headers: headers
+        delete '/api/course_categories/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course category does not exist"

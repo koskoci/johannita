@@ -6,7 +6,7 @@ RSpec.describe UsersController, type: :request do
   before { current_user }
 
   describe 'GET /users' do
-    subject { get '/users', headers: get_headers(current_user) }
+    subject { get '/api/users', headers: get_headers(current_user) }
 
     before do
       create_list(:user, 2)
@@ -32,7 +32,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'POST /users' do
-    subject { post '/users', params: body.to_json, headers: headers }
+    subject { post '/api/users', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -89,7 +89,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'GET /users/:id' do
-    subject { get '/users/1', headers: headers }
+    subject { get '/api/users/1', headers: headers }
 
     let(:headers) { get_headers(current_user) }
 
@@ -141,7 +141,7 @@ RSpec.describe UsersController, type: :request do
 
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/users/1337', headers: headers
+        get '/api/users/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"
@@ -150,7 +150,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'GET /users/me' do
-    subject { get '/users/me', headers: headers }
+    subject { get '/api/users/me', headers: headers }
 
     let(:headers) { get_headers(user) }
     let(:user) { create(:user, id: 1000) }
@@ -194,7 +194,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'PATCH /users/:id' do
-    subject { patch '/users/1', params: body.to_json, headers: headers }
+    subject { patch '/api/users/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -247,7 +247,7 @@ RSpec.describe UsersController, type: :request do
 
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/users/1337', params: body.to_json, headers: headers
+        patch '/api/users/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"
@@ -256,7 +256,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'PATCH /users/me' do
-    subject { patch '/users/me', params: body.to_json, headers: headers }
+    subject { patch '/api/users/me', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -302,7 +302,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'DELETE /users/:id' do
-    subject { delete '/users/1', headers: headers }
+    subject { delete '/api/users/1', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:user) { create(:user, id: 1) }
@@ -331,7 +331,7 @@ RSpec.describe UsersController, type: :request do
 
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
-        delete '/users/1337', headers: headers
+        delete '/api/users/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"
@@ -340,7 +340,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'POST /users/:id/curriculum_vitaes' do
-    subject { post '/users/1/curriculum_vitaes', params: body, headers: headers }
+    subject { post '/api/users/1/curriculum_vitaes', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:user) { create(:user, id: 1) }
@@ -375,7 +375,7 @@ RSpec.describe UsersController, type: :request do
 
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/users/1337/curriculum_vitaes', params: body.to_json, headers: headers
+        post '/api/users/1337/curriculum_vitaes', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"
@@ -384,7 +384,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'POST /users/:id/cover_letters' do
-    subject { post '/users/1/cover_letters', params: body, headers: headers }
+    subject { post '/api/users/1/cover_letters', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:user) { create(:user, id: 1) }
@@ -419,7 +419,7 @@ RSpec.describe UsersController, type: :request do
 
     context "when the user does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/users/1337/cover_letters', params: body.to_json, headers: headers
+        post '/api/users/1337/cover_letters', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This user does not exist"

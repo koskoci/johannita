@@ -7,7 +7,7 @@ RSpec.describe ParticipantsController, type: :request do
 
   describe 'GET /participants' do
     context "when the course_id is missing" do
-      subject { get '/participants', headers: get_headers(current_user) }
+      subject { get '/api/participants', headers: get_headers(current_user) }
 
       it "returns 400 with an error message" do
         subject
@@ -18,7 +18,7 @@ RSpec.describe ParticipantsController, type: :request do
     end
 
     context "when the course_id is given" do
-      subject { get '/participants?course_id=1', headers: get_headers(current_user) }
+      subject { get '/api/participants?course_id=1', headers: get_headers(current_user) }
 
       context "when the course does not exist" do
         it "returns 400 with an error message" do
@@ -78,7 +78,7 @@ RSpec.describe ParticipantsController, type: :request do
   end
 
   describe 'PATCH /participants/:id' do
-    subject { patch '/participants/1', params: body.to_json, headers: headers }
+    subject { patch '/api/participants/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -133,7 +133,7 @@ RSpec.describe ParticipantsController, type: :request do
 
     context "when the participant does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/participants/1337', params: body.to_json, headers: headers
+        patch '/api/participants/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This participant does not exist"

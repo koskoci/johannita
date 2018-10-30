@@ -6,7 +6,7 @@ RSpec.describe CourseEventsController, type: :request do
   before { current_user }
 
   describe 'GET /course_events' do
-    subject { get '/course_events', headers: get_headers(current_user) }
+    subject { get '/api/course_events', headers: get_headers(current_user) }
 
     let(:course_event) { create(:course_event) }
     let(:another_course_event) { create(:course_event) }
@@ -31,11 +31,14 @@ RSpec.describe CourseEventsController, type: :request do
     let(:headers) { get_headers(current_user) }
 
     context "when the course_event exists" do
-      subject { get '/course_events/1', headers: headers }
+      subject { get '/api/course_events/1', headers: headers }
 
-      let(:course_event) { create(:course_event, id: 1) }
+      let(:course) { create(:course) }
+      let(:course_event) { create(:course_event, id: 1, course_id: course.id) }
+      let(:participant) { create(:participant, course_id: course.id) }
 
       before do
+        participant
         course_event
       end
 
@@ -45,14 +48,17 @@ RSpec.describe CourseEventsController, type: :request do
         expect(response.status).to eq 200
         expect(json_response['data']).to have_type("course_events")
         expect(json_response['data']).to have_attributes(:date, :title, :created_at, :updated_at)
-        expect(json_response['data']).to have_relationship(:course)
+        expect(json_response['data']).to have_relationships("course")
+        expect(json_response['data']).to have_relationships("participants")
         expect(json_response.dig('data', 'relationships', 'course', 'data', 'id')).not_to be_nil
+        expect(json_response.dig('data', 'relationships', 'participants', 'data').first.fetch('id')).not_to be_nil
+        expect(json_response['included'].first.dig('attributes', 'name')).not_to be_nil
       end
     end
 
     context "when the course_event does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/course_events/1337', headers: headers
+        get '/api/course_events/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course event does not exist"
@@ -61,7 +67,7 @@ RSpec.describe CourseEventsController, type: :request do
   end
 
   describe 'POST /course_events' do
-    subject { post '/course_events', params: body.to_json, headers: headers }
+    subject { post '/api/course_events', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -137,7 +143,7 @@ RSpec.describe CourseEventsController, type: :request do
   end
 
   describe 'PATCH /course_events/:id' do
-    subject { patch '/course_events/1', params: body.to_json, headers: headers }
+    subject { patch '/api/course_events/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -194,7 +200,7 @@ RSpec.describe CourseEventsController, type: :request do
 
     context "when the course event does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/course_events/1337', params: body.to_json, headers: headers
+        patch '/api/course_events/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course event does not exist"

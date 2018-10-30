@@ -11,7 +11,7 @@ RSpec.describe PostsController, type: :request do
     end
 
     it "sends a list of posts", :aggregate_failures do
-      get '/posts', headers: get_headers(current_user)
+      get '/api/posts', headers: get_headers(current_user)
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
@@ -30,7 +30,7 @@ RSpec.describe PostsController, type: :request do
 
       context "when there is no attachment" do
         it "sends a single post", :aggregate_failures do
-          get '/posts/1', headers: headers
+          get '/api/posts/1', headers: headers
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("posts")
@@ -49,7 +49,7 @@ RSpec.describe PostsController, type: :request do
         end
 
         it "sends a single post with all included images", :aggregate_failures do
-          get '/posts/1', headers: headers
+          get '/api/posts/1', headers: headers
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("posts")
@@ -63,7 +63,7 @@ RSpec.describe PostsController, type: :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/posts/1337', headers: headers
+        get '/api/posts/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"
@@ -72,7 +72,7 @@ RSpec.describe PostsController, type: :request do
   end
 
   describe 'POST /posts' do
-    subject { post '/posts', params: body.to_json, headers: headers }
+    subject { post '/api/posts', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -108,7 +108,7 @@ RSpec.describe PostsController, type: :request do
   end
 
   describe 'PATCH /posts/:id' do
-    subject { patch '/posts/1', params: body.to_json, headers: headers }
+    subject { patch '/api/posts/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
@@ -163,7 +163,7 @@ RSpec.describe PostsController, type: :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        patch '/posts/1337', params: body.to_json, headers: headers
+        patch '/api/posts/1337', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"
@@ -172,7 +172,7 @@ RSpec.describe PostsController, type: :request do
   end
 
   describe 'DELETE /posts/:id' do
-    subject { delete '/posts/1', headers: headers }
+    subject { delete '/api/posts/1', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:post) { create(:post, id: 1) }
@@ -201,7 +201,7 @@ RSpec.describe PostsController, type: :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        delete '/posts/1337', headers: headers
+        delete '/api/posts/1337', headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"
@@ -210,7 +210,7 @@ RSpec.describe PostsController, type: :request do
   end
 
   describe 'POST /posts/:id/images' do
-    subject { post '/posts/1/images', params: body, headers: headers }
+    subject { post '/api/posts/1/images', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:my_post) { create(:post, id: 1) }
@@ -243,7 +243,7 @@ RSpec.describe PostsController, type: :request do
 
     context "when the post does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/posts/1337/images', params: body.to_json, headers: headers
+        post '/api/posts/1337/images', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This post does not exist"

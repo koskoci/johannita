@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EmailConfirmationController, type: :request do
   describe 'GET /email_confirmation/:conf_token' do
-    subject { get "/email_confirmation/abc_123", headers: headers }
+    subject { get '/api/email_confirmation/abc_123', headers: headers }
 
     let(:auth_token) { "authentication_token" }
     let(:conf_token) { "abc_123" }
@@ -20,7 +20,7 @@ RSpec.describe EmailConfirmationController, type: :request do
 
     context "when the conf token does not belong to a user" do
       it "returns 418 and an error" do
-        get "/email_confirmation/foo", headers: headers
+        get '/api/email_confirmation/foo', headers: headers
 
         expect(response.status).to eq 418
         expect(json_response['error']).to eq "This email has already been confirmed. Please log in"
