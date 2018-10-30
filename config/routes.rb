@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  root to: redirect('/index.html')
-
   scope '/api' do
     resources :course_events, except: %i[new edit destroy]
 
@@ -30,5 +28,9 @@ Rails.application.routes.draw do
     resources :course_categories, except: %i[new edit]
     resources :participants, only: %i[index update]
     resources :email_confirmation, only: %i[show]
+  end
+
+  get '*path', to: 'catch_all#index', constraints: ->(request) do
+    !request.xhr? && request.format.html?
   end
 end
