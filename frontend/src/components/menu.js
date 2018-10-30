@@ -6,7 +6,7 @@ const Menu = ({ }) => (
     <li>
       <a href="">A segítő szolgálat</a>
       <SubMenu>
-        <li><a href="/oldal/elnoki-koszonto">Elnöki köszöntő</a></li>
+        <li><a href="/oldal/elnoki_koszonto">Elnöki köszöntő</a></li>
         <li><a href="/oldal/rolunk">Rólunk</a></li>
         <li><a href="/oldal/szervezetek">Helyi szervezetek</a></li>
         <li><a href="/oldal/jelentesek">Közhasznúságú jelentések</a></li>

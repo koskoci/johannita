@@ -1,7 +1,9 @@
 import { post } from './api';
 
 export const login = (user, pass) => {
-  return post(`auth?user=${user}&password=${pass}`, null).then(res => {
+  return post(`auth?user=${user}&password=${pass}`, null)
+  .then(res => res.json())
+  .then(res => {
     if (res.token) {
       window.localStorage.setItem('userName',user);
       window.localStorage.setItem('token', res.token);

@@ -1,4 +1,4 @@
-const apiUrl = 'http://206.189.55.142/';
+const apiUrl = 'http://206.189.55.142/api/';
 
 const parseGetResponse = (res) => {
   if (res.status === 200)
@@ -27,7 +27,7 @@ export const destroy = (url) => query('DELETE', url);
 const uploadFile = (url, data) => {
   const formData = new FormData();
 
-  formData.append('post[image]', data);
+  formData.append('attachment', data);
 
   return fetch(`${apiUrl}${url}`, {
     method: 'POST',
