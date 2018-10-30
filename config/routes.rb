@@ -30,7 +30,8 @@ Rails.application.routes.draw do
     resources :email_confirmation, only: %i[show]
   end
 
-  get '*path', to: 'catch_all#index', constraints: ->(request) do
+  root to: "catch_all#index", via: :all
+  get '*path', to: 'catch_all#index', via: :all, constraints: ->(request) do
     !request.xhr? && request.format.html?
   end
 end
