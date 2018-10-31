@@ -59,3 +59,6 @@ en:
     not_found: "This participant does not exist"
   email_confirmation:
     already_confirmed: "This email has already been confirmed. Please log in"
+  pages:
+    short_name_not_unique: "This short name is already taken"
+    not_found: "No page exists with this short name"

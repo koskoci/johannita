@@ -43,4 +43,9 @@ FactoryBot.define do
     max_participants { 20 }
     association :course_category, factory: :course_category
   end
+
+  factory :page do
+    sequence(:short_name) { |n| "short_name_#{n}" }
+    content { "My little content\nIn two rows" }
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_29_111713) do
+ActiveRecord::Schema.define(version: 2018_10_31_143752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,12 @@ ActiveRecord::Schema.define(version: 2018_10_29_111713) do
     t.datetime "updated_at", null: false
     t.integer "max_participants", default: 20
     t.index ["course_category_id"], name: "index_courses_on_course_category_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.string "short_name"
+    t.text "content"
+    t.index ["short_name"], name: "index_pages_on_short_name", unique: true
   end
 
   create_table "participants", force: :cascade do |t|
