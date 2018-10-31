@@ -18,7 +18,9 @@ RSpec.describe ParticipantsController, type: :request do
     end
 
     context "when the course_id is given" do
-      subject { get '/api/participants?course_id=1', headers: get_headers(current_user) }
+      subject { get '/api/participants?course_id=1', headers: headers }
+
+      let(:headers) { get_headers(current_user) }
 
       context "when the course does not exist" do
         it "returns 400 with an error message" do
@@ -65,6 +67,12 @@ RSpec.describe ParticipantsController, type: :request do
             expect(json_response['data']).to all have_attributes(:name, :email, :attended, :passed)
             expect(json_response['data']).to all have_attribute(:name).with_value("Bar Foo")
             expect(json_response['data']).to all have_type("participants")
+          end
+
+          context "when the user is not logged in" do
+            let(:headers) { get_headers_without_token }
+
+            it_behaves_like "returns 401 unauthenticated with error message"
           end
 
           context "when current user is not an admin" do
@@ -123,6 +131,12 @@ RSpec.describe ParticipantsController, type: :request do
       expect(json_response['data']).to have_attribute(:name).with_value("Bar Foo")
       expect(json_response['data']).to have_type("participants")
       expect(json_response['data']).to have_id("1")
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do

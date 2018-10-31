@@ -31,7 +31,7 @@ class Course < ApplicationRecord
   ACTIVE_STATUSES = VALID_STATUSES.reject { |e| e == "cancelled" }
 
   def can_apply(user)
-    return unless user
+    return false unless user
     Courses::CanApply.new(user, self).call
   end
 end

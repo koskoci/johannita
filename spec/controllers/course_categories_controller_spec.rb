@@ -14,7 +14,7 @@ RSpec.describe CourseCategoriesController, type: :request do
     end
 
     it "sends a list of course_categories", :aggregate_failures do
-      get '/api/course_categories', headers: get_headers(current_user)
+      get '/api/course_categories', headers: get_headers_without_token
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
@@ -24,7 +24,7 @@ RSpec.describe CourseCategoriesController, type: :request do
   end
 
   describe 'GET /course_categories/:id' do
-    let(:headers) { get_headers(current_user) }
+    let(:headers) { get_headers_without_token }
     let(:course_category) { create :course_category, id: 1 }
 
     context "when the course_category exists" do
@@ -65,6 +65,12 @@ RSpec.describe CourseCategoriesController, type: :request do
       }
     end
     let(:headers) { post_headers(current_user) }
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -134,6 +140,12 @@ RSpec.describe CourseCategoriesController, type: :request do
       expect(json_response['data']).to have_id("1")
     end
 
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
@@ -170,6 +182,12 @@ RSpec.describe CourseCategoriesController, type: :request do
 
     it "deletes the CourseCategory from the database" do
       expect { subject }.to change(CourseCategory, :count).by(-1)
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { get_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do

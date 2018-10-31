@@ -1,37 +1,39 @@
 require 'rails_helper'
 
-RSpec.describe PostsController, type: :request do
+RSpec.describe PagesController, type: :request do
   let(:current_user) { create(:user) }
 
   before { current_user }
 
-  describe 'GET /posts' do
+  describe 'GET /pages' do
     before do
-      create_list(:post, 2)
+      create_list(:page, 2)
     end
 
-    it "sends a list of posts", :aggregate_failures do
-      get '/api/posts'
+    it "sends a list of pages", :aggregate_failures do
+      get '/api/pages', headers: get_headers(current_user)
 
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_attributes(:title, :content, :created_at, :updated_at)
-      expect(json_response['data']).to all have_type("posts")
+      expect(json_response['data']).to all have_type("pages")
     end
   end
 
-  describe 'GET /posts/:id' do
-    context "when the post exists" do
+  describe 'GET /pages/:id' do
+    let(:headers) { get_headers(current_user) }
+
+    context "when the page exists" do
       before do
-        create(:post, id: 1)
+        create(:page, id: 1)
       end
 
       context "when there is no attachment" do
-        it "sends a single post", :aggregate_failures do
-          get '/api/posts/1'
+        it "sends a single page", :aggregate_failures do
+          get '/api/pages/1', headers: headers
 
           expect(response.status).to eq 200
-          expect(json_response['data']).to have_type("posts")
+          expect(json_response['data']).to have_type("pages")
           expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
           expect(json_response['data']).to have_relationship(:images)
         end
@@ -46,11 +48,11 @@ RSpec.describe PostsController, type: :request do
           Post.find(1).images.attach(image_fixture)
         end
 
-        it "sends a single post with all included images", :aggregate_failures do
-          get '/api/posts/1'
+        it "sends a single page with all included images", :aggregate_failures do
+          get '/api/pages/1', headers: headers
 
           expect(response.status).to eq 200
-          expect(json_response['data']).to have_type("posts")
+          expect(json_response['data']).to have_type("pages")
           expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
           expect(json_response['data']).to have_relationship(:images)
           expect(json_response['included'])
@@ -59,37 +61,31 @@ RSpec.describe PostsController, type: :request do
       end
     end
 
-    context "when the post does not exist" do
+    context "when the page does not exist" do
       it "returns 404", :aggregate_failures do
-        get '/api/posts/1337'
+        get '/api/pages/1337', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This post does not exist"
+        expect(json_response['error']).to eq "This page does not exist"
       end
     end
   end
 
-  describe 'POST /posts' do
-    subject { post '/api/posts', params: body.to_json, headers: headers }
+  describe 'POST /pages' do
+    subject { page '/api/pages', params: body.to_json, headers: headers }
 
     let(:body) do
       {
         "data": {
-          "type": "posts",
+          "type": "pages",
           "attributes": {
-            "title": "First post title",
-            "content": "First post content"
+            "title": "First page title",
+            "content": "First page content"
           }
         }
       }
     end
-    let(:headers) { post_headers(current_user) }
-
-    context "when the user is not logged in" do
-      subject { post '/api/posts', params: body.to_json }
-
-      it_behaves_like "returns 401 unauthenticated with error message"
-    end
+    let(:headers) { page_headers(current_user) }
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -111,47 +107,26 @@ RSpec.describe PostsController, type: :request do
     end
   end
 
-  describe 'PATCH /posts/:id' do
-    subject { patch '/api/posts/1', params: body.to_json, headers: headers }
+  describe 'PATCH /pages/:id' do
+    subject { patch '/api/pages/1', params: body.to_json, headers: headers }
 
     let(:body) do
       {
         "data": {
-          "type": "posts",
+          "type": "pages",
           "attributes": {
-            "title": "Updated post title",
+            "title": "Updated page title",
           }
         }
       }
     end
     let(:current_user) { create(:user, admin: true) }
-    let(:post) { create(:post, id: 1) }
-    let(:headers) { post_headers(current_user) }
+    let(:page) { create(:page, id: 1) }
+    let(:headers) { page_headers(current_user) }
 
     before do
       current_user
-      post
-    end
-
-    context "when the user is not logged in" do
-      subject { patch '/api/posts/1', params: body.to_json }
-
-      it_behaves_like "returns 401 unauthenticated with error message"
-    end
-
-    context "when current user is not an admin" do
-      let(:current_user) { create(:user) }
-
-      it_behaves_like "returns 403 unauthorized with error message"
-    end
-
-    context "when the post does not exist" do
-      it "returns 404", :aggregate_failures do
-        patch '/api/posts/1337', params: body.to_json, headers: headers
-
-        expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This post does not exist"
-      end
+      page
     end
 
     it "returns 200" do
@@ -167,7 +142,7 @@ RSpec.describe PostsController, type: :request do
     it "changes the Post in the database" do
       expect { subject }
         .to change { Post.find(1).title }
-        .from("My post").to("Updated post title")
+        .from("My page").to("Updated page title")
       expect { subject }
         .not_to change { Post.find(1).content }
     end
@@ -176,21 +151,36 @@ RSpec.describe PostsController, type: :request do
       subject
 
       expect(json_response['data']).to have_attributes(:title, :content, :created_at, :updated_at)
-      expect(json_response['data']).to have_type("posts")
+      expect(json_response['data']).to have_type("pages")
       expect(json_response['data']).to have_id("1")
+    end
+
+    context "when current user is not an admin" do
+      let(:current_user) { create(:user) }
+
+      it_behaves_like "returns 403 unauthorized with error message"
+    end
+
+    context "when the page does not exist" do
+      it "returns 404", :aggregate_failures do
+        patch '/api/pages/1337', params: body.to_json, headers: headers
+
+        expect(response.status).to eq 404
+        expect(json_response['error']).to eq "This page does not exist"
+      end
     end
   end
 
-  describe 'DELETE /posts/:id' do
-    subject { delete '/api/posts/1', headers: headers }
+  describe 'DELETE /pages/:id' do
+    subject { delete '/api/pages/1', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
-    let(:post) { create(:post, id: 1) }
+    let(:page) { create(:page, id: 1) }
     let(:headers) { get_headers(current_user) }
 
     before do
       current_user
-      post
+      page
     end
 
     it "returns 204" do
@@ -203,42 +193,36 @@ RSpec.describe PostsController, type: :request do
       expect { subject }.to change(Post, :count).by(-1)
     end
 
-    context "when the user is not logged in" do
-      subject { delete '/api/posts/1' }
-
-      it_behaves_like "returns 401 unauthenticated with error message"
-    end
-
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
       it_behaves_like "returns 403 unauthorized with error message"
     end
 
-    context "when the post does not exist" do
+    context "when the page does not exist" do
       it "returns 404", :aggregate_failures do
-        delete '/api/posts/1337', headers: headers
+        delete '/api/pages/1337', headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This post does not exist"
+        expect(json_response['error']).to eq "This page does not exist"
       end
     end
   end
 
-  describe 'POST /posts/:id/images' do
-    subject { post '/api/posts/1/images', params: body, headers: headers }
+  describe 'POST /pages/:id/images' do
+    subject { page '/api/pages/1/images', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
-    let(:my_post) { create(:post, id: 1) }
-    let(:headers) { post_headers(current_user) }
-    let(:body) { { "post": { "image": image_fixture } } }
+    let(:my_page) { create(:page, id: 1) }
+    let(:headers) { page_headers(current_user) }
+    let(:body) { { "page": { "image": image_fixture } } }
     let(:image_fixture) do
       fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
     end
 
     before do
       current_user
-      my_post
+      my_page
     end
 
     it "returns 204" do
@@ -251,24 +235,18 @@ RSpec.describe PostsController, type: :request do
       expect { subject }.to change(ActiveStorage::Attachment, :count).by(1)
     end
 
-    context "when the user is not logged in" do
-      subject { post '/api/posts/1/images', params: body }
-
-      it_behaves_like "returns 401 unauthenticated with error message"
-    end
-
     context "when current user is not an admin", :aggregate_failures do
       let(:current_user) { create(:user) }
 
       it_behaves_like "returns 403 unauthorized with error message"
     end
 
-    context "when the post does not exist" do
+    context "when the page does not exist" do
       it "returns 404", :aggregate_failures do
-        post '/api/posts/1337/images', params: body.to_json, headers: headers
+        page '/api/pages/1337/images', params: body.to_json, headers: headers
 
         expect(response.status).to eq 404
-        expect(json_response['error']).to eq "This post does not exist"
+        expect(json_response['error']).to eq "This page does not exist"
       end
     end
   end

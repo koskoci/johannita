@@ -1,8 +1,8 @@
 class PostsController < ApplicationController
+  skip_before_action :authenticate_user, only: %i[index show]
   deserializable_resource :post, only: %i[create update]
   before_action :set_post_with_images, only: %i[show]
   before_action :set_post, only: %i[update destroy images]
-  skip_before_action :authenticate_user, only: %i[index show]
 
   # GET /posts
   def index

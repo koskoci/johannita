@@ -6,8 +6,9 @@ RSpec.describe CoursesController, type: :request do
   before { current_user }
 
   describe 'GET /courses' do
-    subject { get '/api/courses', headers: get_headers(current_user) }
+    subject { get '/api/courses', headers: headers }
 
+    let(:headers) { get_headers(current_user) }
     let(:course) { create(:course) }
     let(:another_course) { create(:course) }
     let(:service_object) { instance_double(Courses::CanApply, call: true) }
@@ -34,6 +35,12 @@ RSpec.describe CoursesController, type: :request do
       expect(json_response['data']).to all have_type("courses")
       expect(json_response['data']).to all have_attributes(:title, :category, :created_at, :updated_at, :status, :apply_by, :can_apply, :max_participants)
       expect(json_response['data']).to all have_relationship(:participants)
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { get_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
   end
 
@@ -88,6 +95,12 @@ RSpec.describe CoursesController, type: :request do
           expect(json_response['included'])
             .to include(have_type('participants').and have_attributes(:name, :email, :attended, :passed))
         end
+
+        context "when the user is not logged in" do
+          let(:headers) { get_headers_without_token }
+
+          it_behaves_like "returns 401 unauthenticated with error message"
+        end
       end
     end
 
@@ -120,6 +133,12 @@ RSpec.describe CoursesController, type: :request do
     let(:course_category) { create(:course_category) }
 
     before { course_category }
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -218,6 +237,12 @@ RSpec.describe CoursesController, type: :request do
       expect(json_response['data']).to have_id("1")
     end
 
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
@@ -281,6 +306,12 @@ RSpec.describe CoursesController, type: :request do
     it "creates a participant in the database" do
       expect { subject }
         .to change(Participant, :count).by(+1)
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when the same participant already exists" do
@@ -373,6 +404,12 @@ RSpec.describe CoursesController, type: :request do
       end
     end
 
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
@@ -442,6 +479,12 @@ RSpec.describe CoursesController, type: :request do
         expect(response.status).to eq 404
         expect(json_response['error']).to eq "This course does not exist"
       end
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do

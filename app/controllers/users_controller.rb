@@ -27,6 +27,7 @@ class UsersController < ApplicationController
     render status: 200, jsonapi: @user
   end
 
+  # POST /users
   def create
     confirm_token = SecureRandom.urlsafe_base64.to_s
     @user = User.new(user_params.merge(confirm_token: confirm_token))

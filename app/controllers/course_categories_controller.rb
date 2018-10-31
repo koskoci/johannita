@@ -1,4 +1,6 @@
 class CourseCategoriesController < ApplicationController
+
+  skip_before_action :authenticate_user, only: %i[index show]
   deserializable_resource :course_category, only: %i[create update]
   before_action :set_course_category, only: %i[show update destroy images]
 
