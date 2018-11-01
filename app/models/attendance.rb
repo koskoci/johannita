@@ -23,4 +23,6 @@
 class Attendance < ApplicationRecord
   belongs_to :course_event
   belongs_to :participant
+
+  scope :with_course_id, lambda {|id| joins(:course_event).where('course_events.course_id = ?', id) }
 end

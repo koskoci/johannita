@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   scope '/api' do
-    resources :attendances, only: %i[create destroy]
+    resources :attendances, only: %i[index create destroy]
     resources :course_events, except: %i[new edit destroy]
 
     resources :courses, except: %i[new edit destroy] do

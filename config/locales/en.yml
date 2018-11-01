@@ -64,3 +64,4 @@ en:
     not_found: "No page exists with this short name"
   attendances:
     not_found: "This attendance does not exist"
+    signature_trouble: "Please specify either course_id or course_event_id"
