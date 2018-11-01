@@ -62,3 +62,5 @@ en:
   pages:
     short_name_not_unique: "This short name is already taken"
     not_found: "No page exists with this short name"
+  attendances:
+    not_found: "This attendance does not exist"
