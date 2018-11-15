@@ -225,13 +225,13 @@ RSpec.describe PostsController, type: :request do
     end
   end
 
-  describe 'POST /posts/:id/images' do
+  fdescribe 'POST /posts/:id/images' do
     subject { post '/api/posts/1/images', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
     let(:my_post) { create(:post, id: 1) }
     let(:headers) { post_headers(current_user) }
-    let(:body) { { "post": { "image": image_fixture } } }
+    let(:body) { { "image": image_fixture } }
     let(:image_fixture) do
       fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
     end

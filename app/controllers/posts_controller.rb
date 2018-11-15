@@ -55,7 +55,7 @@ class PostsController < ApplicationController
   def images
     authorize!
 
-    if @post.images.attach(params[:post][:image])
+    if @post.images.attach(params[:image])
       head 204
     else
       render status: 400, json: { error: @post.errors }
