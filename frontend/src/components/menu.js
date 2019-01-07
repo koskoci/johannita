@@ -14,9 +14,6 @@ const Menu = ({ }) => (
       </SubMenu>
     </li>
     <li>
-      <a href="">Hírlevél</a>
-    </li>
-    <li>
       <a href="">Kiemelt tevékenységeink</a>
       <SubMenu>
         <li><a href="">Elsősegélynyújtás</a></li>
@@ -54,6 +51,9 @@ const Menu = ({ }) => (
     </li>
     <li>
       <a href="">Kapcsolat</a>
+      <SubMenu>
+        <li><a href="">Hírlevél</a></li>
+      </SubMenu>
     </li>
   </MenuList>
 );

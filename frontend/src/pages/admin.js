@@ -3,6 +3,7 @@ import { getPosts, getUsers, getCourses, getCourseEvents, getCourseCategories } 
 import { ContentContainer }  from '../styles/base';
 import { StyledTable } from '../styles/admin';
 
+import PagesTable from '../components/admin/pagesTable';
 import PostsTable from '../components/admin/postsTable';
 import UsersTable from '../components/admin/usersTable';
 import CourseCategoriesTable from '../components/admin/courseCategoriesTable';
@@ -23,6 +24,7 @@ export default class Admin extends Component {
   render({ path }, { }) {
     return (
       <ContentContainer>
+        {path === '/admin/pages' ? <PagesTable /> : null}
         {path === '/admin/posts' ? <PostsTable /> : null}
         {path === '/admin/users' ? <UsersTable /> : null}
         {path === '/admin/course_categories' ? <CourseCategoriesTable /> : null}

@@ -36,8 +36,9 @@ const uploadFile = (url, data) => {
   }).then(res => res);
 }
 
-export const getPage = (id) => get(`pages/${id}`).then(parseGetResponse);
 export const getProfile = () => get('users/me').then(parseGetResponse);
+export const getPage = (id) => get(`pages/${id}`).then(parseGetResponse);
+export const getPages = () => get('pages').then(parseGetResponse);
 export const getPost = (id) => get(`posts/${id}`).then(parseGetResponse);
 export const getPosts = () => get('posts').then(parseGetResponse);
 export const getUsers = () => get('users').then(parseGetResponse);

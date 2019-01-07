@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const AppContainer = styled.div`
-  width: 960px;
+  max-width: 1320px;
   padding: 0 20px;
   margin: 0 auto;
   font-size: 14px;

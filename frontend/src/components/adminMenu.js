@@ -7,6 +7,9 @@ const AdminMenu = ({ }) => (
       <a href="/admin">Dashboard</a>
     </li>
     <li>
+      <a href="/admin/pages">Oldalak</a>
+    </li>
+    <li>
       <a href="/admin/posts">Hírek</a>
     </li>
     <li>

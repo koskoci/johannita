@@ -13,6 +13,7 @@ import Posts from './posts';
 import Post from './post';
 import Page from './page';
 import Admin from './admin';
+import Calendar from './calendar';
 
 export default class App extends Component {
   constructor() {
@@ -39,12 +40,14 @@ export default class App extends Component {
           <Admin path="/admin/posts" />
           <Post path="/admin/posts/new" newPost />
           <Post path="/admin/posts/:id/edit" editable />
+          <Admin path="/admin/pages" />
           <Admin path="/admin/users" />
           <Admin path="/admin/course_categories" />
           <Admin path="/admin/course_events" />
           <Admin path="/admin/courses" />
 
           <Profile path="/profil" />
+          <Calendar path="/naptar" />
           <Login path="/bejelentkezes" />
           <Register path="/regisztracio" />
 

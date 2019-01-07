@@ -9,30 +9,30 @@ export const HeaderContainer = styled.div`
 `;
 
 export const LogoContainer = styled.div`
-  height: 50px;
-  width: 120px;
-  margin: 20px auto 0;
+  height: 80px;
+  width: 180px;
+  margin: 20px 0 20px 40px;
+  float: left;
 `;
 
 export const Logo = styled.img`
   float: left;
-  height: 50px;
+  height: 80px;
 `;
 
 export const LogoText = styled.p`
   display: inline-block;
   margin: 0;
-  padding: 0;
-  font-size: 14px;
+  padding: 5px;
+  font-size: 20px;
 `;
 
 export const UserContainer = styled.div`
-  position: absolute;
+  float: right;
   text-align: right;
-  right: 0;
-  top: 10px;
-  width: 200px;
-  height: 50px;
+  font-size: 16px;
+  width: 800px;
+  height: 30px;
   margin: 20px 0;
 `;
 
@@ -49,9 +49,11 @@ export const ProfilBlock = styled.div`
     margin: 10px 0 0 0;
     background-color: white;
     box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.25);
+    z-index: 100;
+    position: relative;
 
     li {
-      font-size: 14px;
+      font-size: 16px;
       text-transform: uppercase;
       padding: 3px 0;
     }
@@ -63,8 +65,10 @@ export const ProfilBlock = styled.div`
 `;
 
 export const MenuList = styled.ul`
+  max-width: calc(100% - 250px);
+  float: right;
   list-style: none;
-  margin: 40px 0 0 0;
+  margin: 10px 0 0 0;
   padding: 0;
 
   li {
@@ -73,7 +77,7 @@ export const MenuList = styled.ul`
     a {
       text-decoration: none;
       color: black;
-      font-size: 14px;
+      font-size: 16px;
       text-transform: uppercase;
       padding: 10px;
 
