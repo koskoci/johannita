@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_29_111713) do
+ActiveRecord::Schema.define(version: 2018_11_01_125056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,10 +37,11 @@ ActiveRecord::Schema.define(version: 2018_10_29_111713) do
   end
 
   create_table "attendances", force: :cascade do |t|
-    t.bigint "course_event_id"
-    t.bigint "participant_id"
+    t.bigint "course_event_id", null: false
+    t.bigint "participant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["course_event_id", "participant_id"], name: "index_attendances_on_course_event_id_and_participant_id", unique: true
     t.index ["course_event_id"], name: "index_attendances_on_course_event_id"
     t.index ["participant_id"], name: "index_attendances_on_participant_id"
   end
@@ -72,6 +73,12 @@ ActiveRecord::Schema.define(version: 2018_10_29_111713) do
     t.datetime "updated_at", null: false
     t.integer "max_participants", default: 20
     t.index ["course_category_id"], name: "index_courses_on_course_category_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.string "short_name"
+    t.text "content"
+    t.index ["short_name"], name: "index_pages_on_short_name", unique: true
   end
 
   create_table "participants", force: :cascade do |t|

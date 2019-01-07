@@ -1,4 +1,4 @@
-class NotAuthneticatedException < StandardError; end
+class NotAuthenticatedException < StandardError; end
 
 module TokenAuthenticatable
   extend ActiveSupport::Concern
@@ -8,14 +8,14 @@ module TokenAuthenticatable
 
     before_action :authenticate_user
 
-    rescue_from NotAuthneticatedException, with: -> { render status: 401, json: { error: command.errors } }
+    rescue_from NotAuthenticatedException, with: -> { render status: 401, json: { error: command.errors } }
   end
 
   private
 
   def authenticate_user
     @current_user = command.result
-    raise NotAuthneticatedException unless @current_user
+    raise NotAuthenticatedException unless @current_user
   end
 
   def command

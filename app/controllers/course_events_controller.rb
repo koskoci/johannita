@@ -1,4 +1,5 @@
 class CourseEventsController < ApplicationController
+  skip_before_action :authenticate_user, only: %i[index]
   deserializable_resource :course_event, only: %i[create update]
   before_action :set_course_event, only: %i[update]
   before_action :set_course_event_with_participants, only: %i[show]

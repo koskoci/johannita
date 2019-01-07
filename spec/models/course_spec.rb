@@ -44,4 +44,8 @@ RSpec.describe Course, type: :model do
 
     subject.can_apply(user)
   end
+
+  it "returns false if user not logged in" do
+    expect(subject.can_apply(nil)).to be false
+  end
 end

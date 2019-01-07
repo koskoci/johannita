@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   scope '/api' do
+    resources :attendances, only: %i[index create destroy]
     resources :course_events, except: %i[new edit destroy]
 
     resources :courses, except: %i[new edit destroy] do
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
     resources :course_categories, except: %i[new edit]
     resources :participants, only: %i[index update]
     resources :email_confirmation, only: %i[show]
+    resources :pages, except: %i[new edit]
   end
 
   root to: "catch_all#index", via: :all

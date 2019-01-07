@@ -2,16 +2,10 @@ require 'rails_helper'
 
 RSpec.describe EmailConfirmationController, type: :request do
   describe 'GET /email_confirmation/:conf_token' do
-    subject { get '/api/email_confirmation/abc_123', headers: headers }
+    subject { get '/api/email_confirmation/abc_123', headers: get_headers_without_token }
 
     let(:auth_token) { "authentication_token" }
     let(:conf_token) { "abc_123" }
-    let(:headers) do
-      {
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json'
-      }
-    end
 
     before do
       allow(Authentication::Jwt).to receive(:encode).and_return(auth_token)

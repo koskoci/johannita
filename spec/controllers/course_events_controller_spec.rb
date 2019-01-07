@@ -6,8 +6,9 @@ RSpec.describe CourseEventsController, type: :request do
   before { current_user }
 
   describe 'GET /course_events' do
-    subject { get '/api/course_events', headers: get_headers(current_user) }
+    subject { get '/api/course_events', headers: headers }
 
+    let(:headers) { get_headers_without_token }
     let(:course_event) { create(:course_event) }
     let(:another_course_event) { create(:course_event) }
 
@@ -54,6 +55,12 @@ RSpec.describe CourseEventsController, type: :request do
         expect(json_response.dig('data', 'relationships', 'participants', 'data').first.fetch('id')).not_to be_nil
         expect(json_response['included'].first.dig('attributes', 'name')).not_to be_nil
       end
+
+      context "when the user is not logged in" do
+        let(:headers) { get_headers_without_token }
+
+        it_behaves_like "returns 401 unauthenticated with error message"
+      end
     end
 
     context "when the course_event does not exist" do
@@ -92,6 +99,12 @@ RSpec.describe CourseEventsController, type: :request do
     let(:course) { create(:course) }
 
     before { course }
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
 
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
@@ -190,6 +203,12 @@ RSpec.describe CourseEventsController, type: :request do
       expect(json_response['data']).to have_attribute(:title).with_value("Updated course_event title")
       expect(json_response['data']).to have_type("course_events")
       expect(json_response['data']).to have_id("1")
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do

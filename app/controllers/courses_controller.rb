@@ -3,6 +3,7 @@ class CoursesController < ApplicationController
   before_action :set_course, only: %i[update confirm cancel]
   before_action :set_course_with_users, only: %i[show apply]
 
+  # GET /courses
   def index
     @courses = Course.all
 

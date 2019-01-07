@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user, only: [:create]
-
   deserializable_resource :user, only: %i[create update]
   before_action :set_user_with_attachments, only: %i[show]
   before_action :set_user, only: %i[update destroy curriculum_vitaes cover_letters]
@@ -27,6 +26,7 @@ class UsersController < ApplicationController
     render status: 200, jsonapi: @user
   end
 
+  # POST /users
   def create
     confirm_token = SecureRandom.urlsafe_base64.to_s
     @user = User.new(user_params.merge(confirm_token: confirm_token))

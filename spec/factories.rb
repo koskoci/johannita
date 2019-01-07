@@ -1,9 +1,4 @@
 FactoryBot.define do
-  factory :attendance do
-    course_event { nil }
-    participant { nil }
-  end
-
   factory :user do
     password { "abc" }
     first_name { "Foo" }
@@ -42,5 +37,15 @@ FactoryBot.define do
     status { "posted" }
     max_participants { 20 }
     association :course_category, factory: :course_category
+  end
+
+  factory :page do
+    sequence(:short_name) { |n| "short_name_#{n}" }
+    content { "My little content\nIn two rows" }
+  end
+
+  factory :attendance do
+    association :course_event, factory: :course_event
+    association :participant, factory: :participant
   end
 end

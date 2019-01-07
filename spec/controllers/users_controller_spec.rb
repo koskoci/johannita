@@ -12,6 +12,12 @@ RSpec.describe UsersController, type: :request do
       create_list(:user, 2)
     end
 
+    context "when the user is not logged in" do
+      subject { get '/api/users' }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       it_behaves_like "returns 403 unauthorized with error message"
     end
@@ -32,7 +38,7 @@ RSpec.describe UsersController, type: :request do
   end
 
   describe 'POST /users' do
-    subject { post '/api/users', params: body.to_json, headers: headers }
+    subject { post '/api/users', params: body.to_json, headers: post_headers_without_token }
 
     let(:body) do
       {
@@ -96,6 +102,12 @@ RSpec.describe UsersController, type: :request do
     context "when the user exists" do
       before { create(:user, id: 1) }
 
+      context "when the user is not logged in" do
+        let(:headers) { get_headers_without_token }
+
+        it_behaves_like "returns 401 unauthenticated with error message"
+      end
+
       context "when current user is not an admin" do
         it_behaves_like "returns 403 unauthorized with error message"
       end
@@ -156,6 +168,12 @@ RSpec.describe UsersController, type: :request do
     let(:user) { create(:user, id: 1000) }
 
     before { user }
+
+    context "when the user is not logged in" do
+      let(:headers) { get_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
 
     context "when there is no attachment" do
       it "sends a single user", :aggregate_failures do
@@ -239,6 +257,12 @@ RSpec.describe UsersController, type: :request do
       expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
     end
 
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
@@ -299,6 +323,12 @@ RSpec.describe UsersController, type: :request do
       expect(json_response['data']).to have_attributes(:first_name, :last_name, :email, :pav_until, :driving_licence_since)
       expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
     end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
   end
 
   describe 'DELETE /users/:id' do
@@ -321,6 +351,12 @@ RSpec.describe UsersController, type: :request do
 
     it "deletes the User from the database" do
       expect { subject }.to change(User, :count).by(-1)
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { get_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do
@@ -367,6 +403,12 @@ RSpec.describe UsersController, type: :request do
         .and change { User.find(1).curriculum_vitae.attached? }.from(false).to(true)
     end
 
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
+    end
+
     context "when current user is not an admin" do
       let(:current_user) { create(:user) }
 
@@ -409,6 +451,12 @@ RSpec.describe UsersController, type: :request do
     it 'attaches the file' do
       expect { subject }.to change(ActiveStorage::Attachment, :count).by(1)
         .and change { User.find(1).cover_letter.attached? }.from(false).to(true)
+    end
+
+    context "when the user is not logged in" do
+      let(:headers) { post_headers_without_token }
+
+      it_behaves_like "returns 401 unauthenticated with error message"
     end
 
     context "when current user is not an admin" do
