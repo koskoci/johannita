@@ -17,6 +17,8 @@
 /storage/*
 
 /node_modules
+/frontend-vue/node_modules
+
 /yarn-error.log
 
 .byebug_history
@@ -25,11 +27,10 @@
 /config/master.key
 
 .env
-
 .env.development
+
 coverage
-
 .coveralls.yml
-spec/.DS_Store
 
+.DS_Store
 .idea
