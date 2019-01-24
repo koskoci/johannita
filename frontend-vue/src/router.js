@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
+import AdminPosts from './components/admin/Posts.vue';
+import AdminPost from './components/admin/Post.vue';
 
 Vue.use(Router);
 
@@ -12,6 +14,16 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/admin/posts',
+      name: 'admin-posts',
+      component: AdminPosts,
+    },
+    {
+      path: '/admin/posts/:id/edit',
+      name: 'admin-posts-edit',
+      component: AdminPost,
     },
     {
       path: '/about',
