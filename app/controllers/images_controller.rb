@@ -17,10 +17,11 @@ class ImagesController < ApplicationController
   def create_thumbnail
     authorize!
 
-    image = current_user.images.attach(params[:image])
+    image = current_user.images.attach(params[:image]).first
+    thumbnail = image.variant(resize: '100x100').processed
 
-    if image
-      render status: 201, json: { url: url_for(image) }
+    if thumbnail
+      render status: 201, json: { url: url_for(thumbnail) }
     else
       render status: 400, json: { error: current_user.errors }
     end

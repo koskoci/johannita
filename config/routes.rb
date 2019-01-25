@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :email_confirmation, only: %i[show]
     resources :pages, except: %i[new edit]
     post '/embedded_image', to: 'images#create_embedded'
+    post '/thumbnail', to: 'images#create_thumbnail'
   end
 
   root to: "catch_all#index", via: :all
