@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resources :participants, only: %i[index update]
     resources :email_confirmation, only: %i[show]
     resources :pages, except: %i[new edit]
+    resources :images, only: %i[create]
   end
 
   root to: "catch_all#index", via: :all
