@@ -225,7 +225,7 @@ RSpec.describe PostsController, type: :request do
     end
   end
 
-  fdescribe 'POST /posts/:id/images' do
+  describe 'POST /posts/:id/images' do
     subject { post '/api/posts/1/images', params: body, headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
