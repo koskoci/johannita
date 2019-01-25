@@ -4,44 +4,44 @@
       <v-text-field
         v-model="post.attributes.title"
         :counter="100"
-        label="Title"
+        label="Cím"
         required
       ></v-text-field>
 
       <editor-menu-bar :editor="editor">
         <div slot-scope="{ commands, isActive }">
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.bold() }"
-            @click="commands.bold"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.bold() }"
+                 @click="commands.bold"
           >
             <v-icon>format_bold</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.italic() }"
-            @click="commands.italic"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.italic() }"
+                 @click="commands.italic"
           >
             <v-icon>format_italic</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.strike() }"
-            @click="commands.strike"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.strike() }"
+                 @click="commands.strike"
           >
             <v-icon>strikethrough_s</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.underline() }"
-            @click="commands.underline"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.underline() }"
+                 @click="commands.underline"
           >
             <v-icon>format_underline</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-            @click="commands.heading({ level: 1 })"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.heading({ level: 1 }) }"
+                 @click="commands.heading({ level: 1 })"
           >
             H1
           </v-btn>
@@ -60,83 +60,124 @@
             H3
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            @click="showImagePrompt(commands.image)"
-          >
-            <v-icon>image</v-icon>
-          </v-btn>
-          <v-btn icon
                  class="menubar__button"
                  @click="commands.horizontal_rule"
           >
             <v-icon>remove</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.bullet_list() }"
-            @click="commands.bullet_list"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.bullet_list() }"
+                 @click="commands.bullet_list"
           >
             <v-icon>format_list_bulleted</v-icon>
           </v-btn>
 
           <v-btn icon
-            class="menubar__button"
-            :class="{ 'is-active': isActive.ordered_list() }"
-            @click="commands.ordered_list"
+                 class="menubar__button"
+                 :class="{ 'is-active': isActive.ordered_list() }"
+                 @click="commands.ordered_list"
           >
             <v-icon>format_list_numbered</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            @click="commands.undo"
+                 class="menubar__button"
+                 @click="commands.undo"
           >
             <v-icon>undo</v-icon>
           </v-btn>
           <v-btn icon
-            class="menubar__button"
-            @click="commands.redo"
+                 class="menubar__button"
+                 @click="commands.redo"
           >
             <v-icon>redo</v-icon>
           </v-btn>
-          <v-dialog
-            v-model="dialog"
-            width="500"
-          >
-            <v-btn icon
-              slot="activator"
-              color="red lighten-2"
-              dark
-            >
+          <v-dialog v-model="dialog" width="800">
+            <v-btn icon slot="activator">
               <v-icon>image</v-icon>
             </v-btn>
 
             <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >
-                Privacy Policy
+              <v-card-title>
+                <h2>
+                  Kép beillesztés
+                </h2>
               </v-card-title>
+              <v-form>
+                <v-container>
+                  <v-layout row wrap>
+                    <v-flex xs6>
+                      <v-text-field
+                        v-model="image.title"
+                        label="Kép leirás"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs6>
+                      <v-text-field
+                        v-model="image.alt"
+                        label="Kép alt szöveg"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex xs4>
+                      <v-checkbox
+                        v-model="image.fix_width"
+                        label="Fix szélesség"
+                      ></v-checkbox>
+                    </v-flex>
+                    <v-flex xs8>
+                      <v-slider
+                        max="800"
+                        inverse-label
+                        v-model="image.width"
+                        v-bind:label="image.width+'px'"
+                      >
+                      </v-slider>
+                    </v-flex>
+                    <v-flex xs4>
+                      <v-checkbox v-model="image.fix_height" label="Fix magasság"></v-checkbox>
+                    </v-flex>
+                    <v-flex xs8>
+                      <v-slider
+                        inverse-label
+                        max="400"
+                        v-model="image.height"
+                        v-bind:label="image.height+'px'"
+                      ></v-slider>
+                    </v-flex>
 
-              <v-card-text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                uis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-                eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-                in culpa qui officia deserunt mollit anim id est laborum.
-              </v-card-text>
-
-              <v-divider></v-divider>
+                    <v-flex
+                      xs12
+                      class="text-xs-center text-sm-center text-md-center text-lg-center"
+                    >
+                      <img :src="image.url" height="250" v-if="image.url"/>
+                      <v-text-field
+                        label="Kép kiválasztása"
+                        @click='pickFile'
+                        v-model='image.name'
+                        prepend-icon='attach_file'></v-text-field>
+                      <input
+                        type="file"
+                        style="display: none"
+                        ref="image"
+                        accept="image/*"
+                        @change="onFilePicked"
+                      >
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-form>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
+                <v-btn flat @click=" cancelInsertImage()
+                      ">Mégsem
+                </v-btn>
                 <v-btn
                   color="primary"
                   flat
-                  @click="insertImage(commands.image)"
+                  @click="insertImage(commands.image_ext)"
                 >
-                  I accept
+                  Beillesztés
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -144,7 +185,7 @@
 
         </div>
       </editor-menu-bar>
-      <editor-content :editor="editor" />
+      <editor-content id="my-editor" :editor="editor"/>
 
       <div class="meta">
         <p>Létrehozva: <span>{{createdAt}}</span></p>
@@ -167,8 +208,9 @@ import { Editor, EditorContent, EditorMenuBar } from 'tiptap';
 import {
   Bold, Italic, Strike, Underline, Heading,
   BulletList, OrderedList, ListItem, TodoItem, TodoList,
-  HorizontalRule, History, Image,
+  HorizontalRule, History,
 } from 'tiptap-extensions';
+import ImageExtension from '../../lib/image-extension';
 
 export default {
   name: 'Post',
@@ -178,6 +220,18 @@ export default {
   },
   data() {
     return {
+      active: true,
+      image: {
+        url: '',
+        name: '',
+        file: '',
+        width: 400,
+        height: 0,
+        alt: '',
+        title: '',
+        fix_width: true,
+        fix_height: false,
+      },
       dialog: false,
       html: '',
       editor: new Editor({
@@ -194,11 +248,11 @@ export default {
           new TodoList(),
           new HorizontalRule(),
           new History(),
-          new Image(),
+          new ImageExtension(),
         ],
         content: `
-          <h1>Yay Headlines!</h1>
-          <p>All these <strong>cool tags</strong> are working now.</p>
+          <h1>Példa címsor</h1>
+          <p>Valami szöveg <strong>bold</strong> is működik</p>
         `,
         onUpdate: ({ getHTML }) => {
           this.html = getHTML();
@@ -214,20 +268,85 @@ export default {
   },
   methods: {
     insertImage(command) {
+      const apiUrl = 'http://206.189.55.142/api/';
+      // console.log(this.image.file);
+
+      const formData = new FormData();
+      formData.append('image', this.image.file);
+
+      axios.post(
+        `${apiUrl}/embedded_image`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      ).then((res) => {
+        console.log('SUCCESS!!');
+        console.log(res.data.url);
+
+        const commandOptions = {
+          src: res.data.url,
+          title: this.image.title,
+          alt: this.image.alt,
+          class: 'content-image-right',
+        };
+        if (this.image.fix_width) {
+          commandOptions.width = `${this.image.width}`;
+        }
+        if (this.image.fix_height) {
+          commandOptions.height = `${this.image.height}`;
+        }
+        console.log(commandOptions);
+        command(commandOptions);
+        this.dialog = false;
+        this.image = {
+          url: '',
+          name: '',
+          file: '',
+          width: 400,
+          height: 0,
+          alt: '',
+          title: '',
+          fix_width: true,
+          fix_height: false,
+        };
+      }).catch((err) => {
+        console.log('FAILURE!!');
+        console.log(err);
+      });
+    },
+    cancelInsertImage() {
       this.dialog = false;
-      const src = 'http://zoltan.pro/static/logo.png';
-      const title = 'imagetitle';
-      const alt = 'alt sentence';
-      console.log(command);
-      command({ src, title, alt });
-      return null;
     },
-    showImagePrompt() {
-      this.dialog = true;
-      // if (src !== null) {
-      //   command({ src });
-      // }
+    pickFile() {
+      this.$refs.image.click();
     },
+    onFilePicked(e) {
+      console.log('file picked');
+      const { files } = e.target;
+      if (files[0] !== undefined) {
+        this.image.name = files[0].name;
+        if (this.image.name.lastIndexOf('.') <= 0) {
+          this.image.name = '';
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener('load', () => {
+          this.image.url = fr.result;
+          [this.image.file] = files; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.image.name = '';
+        this.image.file = '';
+        this.image.url = '';
+      }
+    }
+    ,
   },
   computed: {
     createdAt() {
@@ -251,13 +370,24 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   #post-edit {
     max-width: 1320px;
     margin: 60px auto;
   }
+
+  #my-editor {
+    // border: 1px dotted lightgrey;
+  }
+
   img {
-    height: 50px;
-    max-height: 50px;
+    .content-image-right {
+    }
+
+    .content-image-left {
+    }
+
+    .content-image-center {
+    }
   }
 </style>
