@@ -41,6 +41,9 @@ task :setup do
     # Remove others-permission for config directory
     command %[chmod -R o-rwx config]
     command %[chmod -R o-rwx pids]
+
+    # install imagemagick
+    command %[sudo apt-get install imagemagick -y]
   end
 end
 
