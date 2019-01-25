@@ -5,6 +5,7 @@ class ImagesController < ApplicationController
     authorize!
 
     image = current_user.images.attach(params[:image]).first
+    processed = image.variant(resize: '800').processed
 
     if image
       render status: 201, json: { url: url_for(image) }
@@ -18,7 +19,7 @@ class ImagesController < ApplicationController
     authorize!
 
     image = current_user.images.attach(params[:image]).first
-    thumbnail = image.variant(resize: '100x100').processed
+    thumbnail = image.variant(thumbnail: '100x100').processed
 
     if thumbnail
       render status: 201, json: { url: url_for(thumbnail) }
