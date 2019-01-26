@@ -76,6 +76,23 @@ RSpec.describe User, type: :model do
     end
   end
 
+  context "when it has images attached" do
+    let(:user) { described_class.create(minimum_params) }
+    let(:image_fixture) do
+      fixture_file_upload(Rails.root.join('spec', 'fixtures', 'Geranium sanguineum.jpg'), 'image/jpg')
+    end
+
+    before { user.images.attach(image_fixture) }
+
+    it "has an attached image" do
+      images = user.images
+      expect(images).to be_an_instance_of(ActiveStorage::Attached::Many)
+      expect(images.attached?).to be true
+      expect(images.count).to eq 1
+      expect(images.first.filename).to eq "Geranium sanguineum.jpg"
+    end
+  end
+
   describe "#name" do
     let(:user) { described_class.new(first_name: "Bela", last_name: "Kun") }
 

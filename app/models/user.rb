@@ -27,6 +27,7 @@ class User < ApplicationRecord
   validates :pav_until_before_type_cast, :driving_licence_since_before_type_cast, date: true
   has_one_attached :curriculum_vitae
   has_one_attached :cover_letter
+  has_many_attached :images
 
   def name
     "#{last_name} #{first_name}"

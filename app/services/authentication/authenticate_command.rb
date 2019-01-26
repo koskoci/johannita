@@ -28,6 +28,7 @@ module Authentication
     def contents
       {
         user_id: user.id,
+        is_admin: user.admin,
         exp: 24.years.from_now.to_i
       }
     end
