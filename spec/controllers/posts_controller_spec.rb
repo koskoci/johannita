@@ -78,7 +78,8 @@ RSpec.describe PostsController, type: :request do
           "type": "posts",
           "attributes": {
             "title": "First post title",
-            "content": "First post content"
+            "content": "First post content",
+            "thumbnail_url": "foo.bar.com",
           }
         }
       }

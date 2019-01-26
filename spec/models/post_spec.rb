@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  let(:params) { { title: "foo", content: "bar" } }
+  let(:params) { { title: "foo", content: "bar", thumbnail_url: "foo.bar.com" } }
 
   it "is valid with valid the params" do
     user = Post.new(params)

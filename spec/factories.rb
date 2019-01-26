@@ -11,6 +11,7 @@ FactoryBot.define do
   factory :post do
     title { "My post" }
     content { "This is where I talk about everything that needs to be talked about." }
+    thumbnail_url { "foo.bar.com" }
   end
 
   factory :course_event do
