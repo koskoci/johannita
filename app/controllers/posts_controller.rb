@@ -1,8 +1,7 @@
 class PostsController < ApplicationController
   skip_before_action :authenticate_user, only: %i[index show]
   deserializable_resource :post, only: %i[create update]
-  before_action :set_post_with_images, only: %i[show]
-  before_action :set_post, only: %i[update destroy images]
+  before_action :set_post, only: %i[update destroy show]
 
   # GET /posts
   def index
@@ -13,7 +12,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1
   def show
-    render status: 200, jsonapi: @post, include: :images
+    render status: 200, jsonapi: @post
   end
 
   # POST /posts
@@ -51,24 +50,7 @@ class PostsController < ApplicationController
     end
   end
 
-  # POST /posts/1/images
-  def images
-    authorize!
-
-    if @post.images.attach(params[:image])
-      head 204
-    else
-      render status: 400, json: { error: @post.errors }
-    end
-  end
-
   private
-
-  def set_post_with_images
-    render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(id)
-
-    @post = Post.with_attached_images.find(id)
-  end
 
   def set_post
     render status: 404, json: { error: I18n.t('posts.not_found') } and return unless Post.exists?(id)

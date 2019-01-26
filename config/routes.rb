@@ -11,12 +11,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :posts, except: %i[new edit] do
-      member do
-        post 'images'
-      end
-    end
-
+    resources :posts, except: %i[new edit]
     resources :users, except: %i[new edit] do
       member do
         post 'curriculum_vitaes'
