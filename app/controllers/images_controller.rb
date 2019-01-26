@@ -8,7 +8,7 @@ class ImagesController < ApplicationController
     processed = image.variant(resize: '800').processed
 
     if image
-      render status: 201, json: { url: url_for(image) }
+      render status: 201, json: { url: url_for(processed) }
     else
       render status: 400, json: { error: current_user.errors }
     end
