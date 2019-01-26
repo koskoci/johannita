@@ -43,6 +43,7 @@ task :setup do
     command %[chmod -R o-rwx pids]
 
     # install imagemagick
+    command %[sudo apt-get update]
     command %[sudo apt-get install imagemagick -y]
   end
 end
