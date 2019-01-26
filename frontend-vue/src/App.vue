@@ -1,9 +1,7 @@
 <template>
   <v-app>
-    <div class="nav" v-if=isAdminRoute>
-      <AdminNavigation />
-    </div>
-    <v-content>
+    <v-content class="wrapper">
+      <Navigation/>
       <router-view/>
     </v-content>
     <Footer/>
@@ -12,23 +10,57 @@
 
 <script>
 import Footer from './components/Footer.vue';
-import AdminNavigation from './components/admin/Navigation.vue';
+import Navigation from './components/Navigation.vue';
 
 export default {
   name: 'App',
   components: {
     Footer,
-    AdminNavigation,
+    Navigation,
   },
   data() {
     return {
       //
     };
   },
-  computed: {
-    isAdminRoute() {
-      return this.$route.path.startsWith('/admin');
-    },
-  },
 };
 </script>
+
+<style lang="scss">
+  body, html {
+    background-color: white;
+  }
+
+  .theme--light.application {
+    background-color: white;
+  }
+
+  .wrapper {
+    width: 1200px;
+    align-self: center;
+  }
+  .active-item {
+    color: red;
+  }
+  .content-image-right {
+    float: right;
+    margin: 0 20px 10px 10px;
+  }
+  .content-image-left {
+    float: left;
+    margin: 10px 20px 10px 0;
+  }
+  .content-image-center {
+    display: block;
+    margin: 10px auto;
+  }
+  #my-editor:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .v-toolbar__content {
+    padding-right: 0;
+  }
+</style>

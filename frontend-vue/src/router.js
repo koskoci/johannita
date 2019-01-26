@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Home from './components/Home.vue';
+import Login from './components/Login.vue';
 import AdminPosts from './components/admin/Posts.vue';
 import AdminPost from './components/admin/Post.vue';
+import Registration from './components/Registration.vue';
 
 Vue.use(Router);
 
@@ -14,6 +16,16 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/bejelentkezes',
+      name: 'login',
+      component: Login,
+    },
+    {
+      path: '/regisztracio',
+      name: 'registration',
+      component: Registration,
     },
     {
       path: '/admin/posts',
