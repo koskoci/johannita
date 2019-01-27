@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './components/Home.vue';
 import Login from './components/Login.vue';
+import Page from './components/Page.vue';
 import AdminPosts from './components/admin/Posts.vue';
 import AdminPost from './components/admin/Post.vue';
 import Registration from './components/Registration.vue';
@@ -31,6 +32,11 @@ export default new Router({
       path: '/admin/posts',
       name: 'admin-posts',
       component: AdminPosts,
+    },
+    {
+      path: '/oldal/:id',
+      name: 'page',
+      component: Page,
     },
     {
       path: '/admin/posts/:id/edit',
