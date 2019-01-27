@@ -25,12 +25,7 @@
           ></span>
           <div class="">
             <h2 :class="`headline font-weight-light mb-3 red--text`">{{post.attributes.title}}</h2>
-            <div>
-              {{post.attributes.content}} ---
-              Lorem ipsum dolor sit amet, no nam oblique veritus.
-              Commune scaevola imperdiet nec ut, sed euismod convenire
-              principes at. Est et nobis iisque percipit,
-              an vim zril disputando voluptatibus, vix an salutandi sententiae.
+            <div v-html="post.attributes.blurb">
             </div>
           </div>
         </v-timeline-item>

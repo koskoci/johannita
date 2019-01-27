@@ -8,6 +8,14 @@
         required
       ></v-text-field>
 
+      <v-text-field
+        v-model="post.attributes.blurb"
+        :counter="2000"
+        label="Rövid leírás"
+        hint="megjelenik a főoldalon"
+        required
+      ></v-text-field>
+
       <editor-menu-bar :editor="editor">
         <div slot-scope="{ commands, isActive }">
           <v-btn icon
@@ -215,7 +223,7 @@
         <p>Létrehozva: <span>{{createdAt}}</span></p>
         <p>Utolsó frissítés: <span>{{updatedAt}}</span></p>
       </div>
-      <v-btn color="success">Mentés</v-btn>
+      <v-btn @click="sendToServer()" color="success">Mentés</v-btn>
     </v-form>
 
     <div>
@@ -275,18 +283,18 @@ export default {
           new History(),
           new ImageExtension(),
         ],
-        content: `
-          <h1>Példa címsor</h1>
-          <p>Valami szöveg <strong>bold</strong> is működik</p>
-        `,
         onUpdate: ({ getHTML }) => {
           this.html = getHTML();
+          this.post.attributes.content = getHTML();
         },
       }),
       post: {
         id: 0,
         attributes: {
           title: '',
+          blurb: '',
+          content: '',
+          thumbnail_url: '',
         },
       },
     };
@@ -304,7 +312,7 @@ export default {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+            Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
             Accept: 'application/json',
             'Content-Type': 'multipart/form-data',
           },
@@ -371,8 +379,38 @@ export default {
         this.image.file = '';
         this.image.url = '';
       }
-    }
-    ,
+    },
+    sendToServer() {
+      const apiUrl = 'http://206.189.55.142/api/';
+
+      const data = {
+        type: 'posts',
+        attributes: {
+          title: this.post.attributes.title,
+          blurb: this.post.attributes.blurb,
+          content: this.post.attributes.content,
+          thumbnail_url: this.post.attributes.thumbnail_url,
+        },
+      };
+
+      console.log(data);
+
+      axios.patch(
+        `${apiUrl}posts/${this.post.id}`,
+        { data },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
+            Accept: 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json',
+          },
+        },
+      ).then(() => {
+        this.$router.push('/admin/posts');
+      }).catch((res) => {
+        console.log(res.data);
+      });
+    },
   },
   computed: {
     createdAt() {
@@ -386,8 +424,8 @@ export default {
     axios
       .get(`http://206.189.55.142/api/posts/${this.$route.params.id}`)
       .then((response) => {
-        // console.log(response.data.data);
         this.post = response.data.data;
+        this.editor.setContent(response.data.data.attributes.content);
       });
   },
   beforeDestroy() {
