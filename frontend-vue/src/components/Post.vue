@@ -63,6 +63,8 @@ export default {
 
 <style lang="scss" scoped>
   .content {
+    max-width: 800px;
+    margin: 20px auto;
     .header {
       color: red;
     }

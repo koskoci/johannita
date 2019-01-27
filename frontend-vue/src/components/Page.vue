@@ -7,7 +7,7 @@
       {{ error }}
     </div>
     <div v-if="page" class="content">
-      {{page.attributes.content}}
+      <div v-html="page.attributes.content"></div>
     </div>
   </div>
 </template>
@@ -57,6 +57,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .content {
+    max-width: 800px;
+    margin: 20px auto;
 
+    .header {
+      color: red;
+    }
+  }
 </style>
