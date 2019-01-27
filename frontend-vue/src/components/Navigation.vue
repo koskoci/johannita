@@ -82,8 +82,8 @@ export default {
         tevekenyseg: [
           { title: 'Elsősegélynújtás', to: '/oldal/elnoki_koszonto' },
           { title: 'Eszközkölcsönzés', to: '/oldal/eszkozkolcsonzes' },
-          { title: 'Hedrehelzi idősek klubja', to: '/oldal/helyi_szervezetek' },
-          { title: 'Humanitárius segélyezés', to: '/oldal/kozhasznu_jelentesek' },
+          { title: 'Hedrehelyi idősek klubja', to: '/oldal/hedrelyi_idosek_kluja' },
+          { title: 'Humanitárius segélyezés', to: '/oldal/humanitarius_segelyezes' },
           { title: 'Ifjúsági munka', to: '/oldal/ifjusagi_munka' },
           { title: 'Katasztrófavédelem', to: '/oldal/katasztrofavedelem' },
           { title: 'Mentőszolgálat', to: '/oldal/mentoszolgalat' },
