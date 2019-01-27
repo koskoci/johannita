@@ -98,7 +98,7 @@ export default {
           { title: 'Guti Óvoda', to: '/oldal/helyi_szervezetek' },
           { title: 'Háromkút Iskolatűz', to: '/oldal/kozhasznu_jelentesek' },
           { title: 'Kárpátalja', to: '/oldal/karpatalja' },
-          { title: 'Táti gázrobbanás', to: '/oldal/gayrobbanas_tat' },
+          { title: 'Táti gázrobbanás', to: '/oldal/gazrobbanas_tat' },
           { title: 'Terényi tűz', to: '/oldal/terenyi_tuz' },
           { title: 'Zólyomi család', to: '/oldal/zolyomi_csalad' },
         ],
