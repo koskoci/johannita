@@ -108,7 +108,7 @@ export default {
           { title: 'A tábor története', to: '/oldal/tabor_tortenet' },
         ],
         kapcsolat: [
-          { title: 'Hírlevel', to: '/oldal/hirlevel' },
+          { title: 'Hírlevel', to: '/oldal/foo_bar' },
         ],
       },
     };
