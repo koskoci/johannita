@@ -9,27 +9,38 @@
     </div>
 
     <div v-if="posts" class="content">
-      <v-timeline>
-        <v-timeline-item
-          color="red"
-          v-for="post in posts"
-          :key="post.id"
-          class="mb-3"
-          right
-          small
-        >
+      <v-content>
+        <v-layout row>
+          <v-flex xs2></v-flex>
+          <v-flex xs8>
+            <v-timeline dense>
+              <v-timeline-item
+                to="/hirek/1"
+                color="red"
+                v-for="post in posts"
+                :key="post.id"
+                right
+                small
+              >
           <span
             slot="opposite"
-            :class="`font-weight-bold red--text`"
+            :class="`font-weight-bold red--text xs3 post-date-wrapper`"
             v-text="new Date(post.attributes.created_at).toLocaleDateString('hu-HU')"
           ></span>
-          <div class="">
-            <h2 :class="`headline font-weight-light mb-3 red--text`">{{post.attributes.title}}</h2>
-            <div v-html="post.attributes.blurb">
-            </div>
-          </div>
-        </v-timeline-item>
-      </v-timeline>
+                <router-link :to="'/hirek/'+post.id">
+                    <h2
+                      :class="`headline font-weight-light mb-3 red--text`"
+                    >{{post.attributes.title}}
+                    </h2>
+                    <div class="blurb" v-html="post.attributes.blurb">
+                    </div>
+                </router-link>
+              </v-timeline-item>
+            </v-timeline>
+          </v-flex>
+          <v-flex xs2></v-flex>
+        </v-layout>
+      </v-content>
     </div>
   </div>
 </template>
@@ -72,6 +83,11 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  a {
+    text-decoration: none;
+    .blurb {
+      color: black;
+    }
+  }
 </style>

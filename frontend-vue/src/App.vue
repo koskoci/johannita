@@ -63,4 +63,8 @@ export default {
   .v-toolbar__content {
     padding-right: 0;
   }
+  .v-timeline-item__opposite {
+    margin-left: -200px;
+    display: block !important;
+  }
 </style>
