@@ -120,12 +120,14 @@
                     </v-flex>
                     <v-flex xs4>
                       <v-checkbox
+                        color="red"
                         v-model="image.fix_width"
                         label="Fix szélesség"
                       ></v-checkbox>
                     </v-flex>
                     <v-flex xs8>
                       <v-slider
+                        color="red"
                         max="800"
                         inverse-label
                         v-model="image.width"
@@ -134,17 +136,40 @@
                       </v-slider>
                     </v-flex>
                     <v-flex xs4>
-                      <v-checkbox v-model="image.fix_height" label="Fix magasság"></v-checkbox>
+                      <v-checkbox
+                        color="red"
+                        v-model="image.fix_height"
+                        label="Fix magasság">
+                      </v-checkbox>
                     </v-flex>
                     <v-flex xs8>
                       <v-slider
+                        color="red"
                         inverse-label
                         max="400"
                         v-model="image.height"
                         v-bind:label="image.height+'px'"
                       ></v-slider>
                     </v-flex>
-
+                    <v-flex xs12 text-sx-center>
+                      <v-radio-group v-model="image.align" row>
+                        <v-radio
+                          color="red"
+                          label="Igazítás balra"
+                          value="content-image-left">
+                        </v-radio>
+                        <v-radio
+                          color="red"
+                          label="Igazítás középre"
+                          value="content-image-center">
+                        </v-radio>
+                        <v-radio
+                          color="red"
+                          label="Igazítás jobbra"
+                          value="content-image-right">
+                        </v-radio>
+                      </v-radio-group>
+                    </v-flex>
                     <v-flex
                       xs12
                       class="text-xs-center text-sm-center text-md-center text-lg-center"
@@ -169,12 +194,11 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn flat @click=" cancelInsertImage()
+                <v-btn @click=" cancelInsertImage()
                       ">Mégsem
                 </v-btn>
                 <v-btn
-                  color="primary"
-                  flat
+                  color="success"
                   @click="insertImage(commands.image_ext)"
                 >
                   Beillesztés
@@ -222,6 +246,7 @@ export default {
     return {
       active: true,
       image: {
+        align: 'content-image-left',
         url: '',
         name: '',
         file: '',
@@ -292,7 +317,7 @@ export default {
           src: res.data.url,
           title: this.image.title,
           alt: this.image.alt,
-          class: 'content-image-right',
+          class: this.image.align,
         };
         if (this.image.fix_width) {
           commandOptions.width = `${this.image.width}`;
@@ -304,6 +329,7 @@ export default {
         command(commandOptions);
         this.dialog = false;
         this.image = {
+          align: 'content-image-left',
           url: '',
           name: '',
           file: '',
@@ -374,20 +400,5 @@ export default {
   #post-edit {
     max-width: 1320px;
     margin: 60px auto;
-  }
-
-  #my-editor {
-    // border: 1px dotted lightgrey;
-  }
-
-  img {
-    .content-image-right {
-    }
-
-    .content-image-left {
-    }
-
-    .content-image-center {
-    }
   }
 </style>
