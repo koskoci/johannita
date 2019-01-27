@@ -3,6 +3,7 @@
 # Table name: posts
 #
 #  id            :bigint(8)        not null, primary key
+#  blurb         :string
 #  content       :text
 #  thumbnail_url :string           not null
 #  title         :string

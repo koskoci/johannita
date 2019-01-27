@@ -56,6 +56,7 @@ RSpec.describe PostsController, type: :request do
             "title": "First post title",
             "content": "First post content",
             "thumbnail_url": "foo.bar.com",
+            "blurb": "This is the first post",
           }
         }
       }
