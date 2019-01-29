@@ -69,6 +69,12 @@ export default {
   }
 
   #my-editor {
-    min-height: 200px;
+    background-color: #f5f5f5;
+    // min-height: 200px;
+    /*img:after {*/
+      /*content: '';*/
+      /*display: block;*/
+      /*clear: both;*/
+    /*}*/
   }
 </style>

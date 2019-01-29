@@ -13,7 +13,7 @@
         <v-toolbar flat color="white" v-if=isAdminRoute>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn to="/admin/dashboard" flat>Dashboard</v-btn>
+            <!--<v-btn to="/admin/dashboard" flat>Dashboard</v-btn>-->
             <v-btn to="/admin/pages" flat>Oldalak</v-btn>
             <v-btn to="/admin/posts" flat>Hirek</v-btn>
             <v-btn to="/admin/users" flat>Felhasznalok</v-btn>

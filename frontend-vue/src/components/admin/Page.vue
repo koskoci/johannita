@@ -216,7 +216,7 @@
         <!--<p>Utolsó frissítés: <span>{{updatedAt}}</span></p>-->
       <!--</div>-->
 
-      <v-btn to="/admin/posts">Mégsem</v-btn>
+      <v-btn to="/admin/pages">Mégsem</v-btn>
       <v-btn
         @click="sendToServer()"
         color="success"

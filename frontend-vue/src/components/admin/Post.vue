@@ -221,10 +221,11 @@
       </editor-menu-bar>
       <editor-content id="my-editor" :editor="editor"/>
 
-      <div class="meta">
-        <p>Létrehozva: <span>{{createdAt}}</span></p>
-        <p>Utolsó frissítés: <span>{{updatedAt}}</span></p>
-      </div>
+      <!--<div class="meta">-->
+        <!--<p>Létrehozva: <span>{{createdAt}}</span></p>-->
+        <!--<p>Utolsó frissítés: <span>{{updatedAt}}</span></p>-->
+      <!--</div>-->
+
       <v-btn to="/admin/posts">Mégsem</v-btn>
       <v-btn
         @click="sendToServer()"
