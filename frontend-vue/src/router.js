@@ -37,6 +37,21 @@ export default new Router({
       component: Post,
     },
     {
+      path: '/admin/pages/new',
+      name: 'admin-page-new',
+      component: () => import('./components/admin/Page.vue'),
+    },
+    {
+      path: '/admin/pages/:id/edit',
+      name: 'admin-page',
+      component: () => import('./components/admin/Page.vue'),
+    },
+    {
+      path: '/admin/pages',
+      name: 'admin-pages',
+      component: () => import('./components/admin/Pages.vue'),
+    },
+    {
       path: '/admin/posts',
       name: 'admin-posts',
       component: () => import('./components/admin/Posts.vue'),
@@ -44,6 +59,11 @@ export default new Router({
     {
       path: '/admin/posts/:id/edit',
       name: 'admin-post',
+      component: () => import('./components/admin/Post.vue'),
+    },
+    {
+      path: '/admin/posts/new',
+      name: 'admin-post-new',
       component: () => import('./components/admin/Post.vue'),
     },
   ],
