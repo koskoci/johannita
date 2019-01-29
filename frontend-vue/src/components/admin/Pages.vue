@@ -2,7 +2,7 @@
 <div>
   <v-toolbar flat color="white">
     <v-spacer></v-spacer>
-    <v-btn color="success">új oldal</v-btn>
+    <v-btn to="/admin/pages/new" color="success">új oldal</v-btn>
   </v-toolbar>
   <v-data-table
       :headers="headers"
@@ -48,8 +48,18 @@ export default {
       });
   },
   methods: {
-    deletePage(id) {
-      console.log('Delete page ID:', id);
+    deletePage(slug) {
+      // eslint-disable-next-line
+      if (confirm(`Tényleg törölni szeretnéd a(z) ${slug} odalt?`)) {
+        console.log('Delete page', slug);
+        axios
+          .delete(`http://206.189.55.142/api/pages/${slug}`)
+          .then((response) => {
+            console.log(response);
+          });
+      } else {
+        // Do nothing!
+      }
     },
   },
 };

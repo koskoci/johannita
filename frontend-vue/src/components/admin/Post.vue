@@ -1,8 +1,9 @@
 <template>
   <div id="post-edit">
-    <v-form>
+    <v-form v-model="valid">
       <v-text-field
         v-model="post.attributes.title"
+        :rules="[v => !!v || 'megadása kötelező!']"
         :counter="100"
         label="Cím"
         required
@@ -10,6 +11,7 @@
 
       <v-text-field
         v-model="post.attributes.blurb"
+        :rules="[v => !!v || 'megadása kötelező!']"
         :counter="2000"
         label="Rövid leírás"
         hint="megjelenik a főoldalon"
@@ -223,13 +225,14 @@
         <p>Létrehozva: <span>{{createdAt}}</span></p>
         <p>Utolsó frissítés: <span>{{updatedAt}}</span></p>
       </div>
-      <v-btn @click="sendToServer()" color="success">Mentés</v-btn>
+      <v-btn to="/admin/posts">Mégsem</v-btn>
+      <v-btn
+        @click="sendToServer()"
+        color="success"
+        :disabled="!valid"
+      >Mentés
+      </v-btn>
     </v-form>
-
-    <div>
-      {{html}}
-    </div>
-
 
   </div>
 </template>
@@ -252,6 +255,7 @@ export default {
   },
   data() {
     return {
+      valid: true,
       active: true,
       image: {
         align: 'content-image-left',
@@ -394,22 +398,40 @@ export default {
       };
 
       console.log(data);
-
-      axios.patch(
-        `${apiUrl}posts/${this.post.id}`,
-        { data },
-        {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
-            Accept: 'application/vnd.api+json',
-            'Content-Type': 'application/vnd.api+json',
+      if (this.post.id === 0) {
+        // console.log('create new post');
+        axios.post(
+          `${apiUrl}posts`,
+          { data },
+          {
+            headers: {
+              Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
+              Accept: 'application/vnd.api+json',
+              'Content-Type': 'application/vnd.api+json',
+            },
           },
-        },
-      ).then(() => {
-        this.$router.push('/admin/posts');
-      }).catch((res) => {
-        console.log(res.data);
-      });
+        ).then(() => {
+          this.$router.push('/admin/posts');
+        }).catch((res) => {
+          console.log(res.data);
+        });
+      } else {
+        axios.patch(
+          `${apiUrl}posts/${this.post.id}`,
+          { data },
+          {
+            headers: {
+              Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
+              Accept: 'application/vnd.api+json',
+              'Content-Type': 'application/vnd.api+json',
+            },
+          },
+        ).then(() => {
+          this.$router.push('/admin/posts');
+        }).catch((res) => {
+          console.log(res.data);
+        });
+      }
     },
   },
   computed: {
@@ -421,12 +443,16 @@ export default {
     },
   },
   mounted() {
-    axios
-      .get(`http://206.189.55.142/api/posts/${this.$route.params.id}`)
-      .then((response) => {
-        this.post = response.data.data;
-        this.editor.setContent(response.data.data.attributes.content);
-      });
+    if (this.$route.name === 'admin-post-new') {
+      // console.log('new');
+    } else {
+      axios
+        .get(`http://206.189.55.142/api/posts/${this.$route.params.id}`)
+        .then((response) => {
+          this.post = response.data.data;
+          this.editor.setContent(response.data.data.attributes.content);
+        });
+    }
   },
   beforeDestroy() {
     this.editor.destroy();
