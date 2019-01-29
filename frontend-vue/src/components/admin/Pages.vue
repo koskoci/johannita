@@ -12,10 +12,10 @@
         <td>{{ props.item.id }}</td>
         <td>{{ props.item.attributes.short_name }}</td>
         <td>
-          <v-btn icon v-bind:to="'/admin/pages/'+props.item.id+'/edit'">
+          <v-btn icon v-bind:to="'/admin/pages/'+props.item.attributes.short_name+'/edit'">
             <v-icon>edit</v-icon>
           </v-btn>
-          <v-btn icon @click="deletePage(props.item.id)">
+          <v-btn icon @click="deletePage(props.item.attributes.short_name)">
             <v-icon>delete</v-icon>
           </v-btn>
         </td>
@@ -53,9 +53,19 @@ export default {
       if (confirm(`Tényleg törölni szeretnéd a(z) ${slug} odalt?`)) {
         console.log('Delete page', slug);
         axios
-          .delete(`http://206.189.55.142/api/pages/${slug}`)
+          .delete(
+            `http://206.189.55.142/api/pages/${slug}`,
+            {
+              headers: {
+                Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
+                Accept: 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+              },
+            },
+          )
           .then((response) => {
             console.log(response);
+            window.location.replace('/admin/pages');
           });
       } else {
         // Do nothing!

@@ -67,4 +67,8 @@ export default {
     margin-left: -200px;
     display: block !important;
   }
+
+  #my-editor {
+    min-height: 200px;
+  }
 </style>

@@ -233,7 +233,6 @@
       >Mentés
       </v-btn>
     </v-form>
-
   </div>
 </template>
 
