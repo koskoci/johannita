@@ -22,7 +22,6 @@
             color="red"
             v-model="password"
             :append-icon="show1 ? 'visibility_off' : 'visibility'"
-            :rules="passwordRules"
             :type="show1 ? 'text' : 'password'"
             name="password"
             label="Jelszó"
