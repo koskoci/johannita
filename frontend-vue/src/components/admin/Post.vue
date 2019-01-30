@@ -1,14 +1,79 @@
 <template>
   <div id="post-edit">
     <v-form v-model="valid">
-      <v-text-field
-        v-model="post.attributes.title"
-        :rules="[v => !!v || 'megadása kötelező!']"
-        :counter="100"
-        label="Cím"
-        required
-      ></v-text-field>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex shrink>
+            <v-dialog v-model="thumbnail_dialog" width="800">
+              <div slot="activator">
+                <img
+                  v-if="this.post.attributes.thumbnail_url"
+                  :src="this.post.attributes.thumbnail_url"
+                  height="100" alt="thumbnail"
+                />
+                <v-btn v-else>Előkép hozzáadása</v-btn>
+              </div>
 
+              <v-card>
+                <v-card-title>
+                  <h2>
+                    Előkép beillesztés
+                  </h2>
+                </v-card-title>
+                <v-form>
+                  <v-container>
+                    <v-layout row wrap>
+                      <v-flex
+                        xs12
+                        class="text-xs-center text-sm-center text-md-center text-lg-center"
+                      >
+                        <img
+                          v-if="this.post.attributes.thumbnail_url"
+                          :src="this.post.attributes.thumbnail_url"
+                          height="100" alt="thumbnail"
+                        />
+
+                        <v-text-field
+                          label="Kép kiválasztása"
+                          @click='pickThumbnail'
+                          v-model='thumbnail.name'
+                          prepend-icon='attach_file'></v-text-field>
+                        <input
+                          type="file"
+                          style="display: none"
+                          ref="thumbnail"
+                          accept="image/*"
+                          @change="onFilePickedThumbnail"
+                        >
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-form>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="cancelInsertImage">Mégsem</v-btn>
+                  <v-btn
+                    color="success"
+                    @click="addThumbnail"
+                  >
+                    Beillesztés
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-flex>
+          <v-flex>
+            <v-text-field
+              v-model="post.attributes.title"
+              :rules="[v => !!v || 'megadása kötelező!']"
+              :counter="100"
+              label="Cím"
+              required
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-container>
       <v-text-field
         v-model="post.attributes.blurb"
         :rules="[v => !!v || 'megadása kötelező!']"
@@ -222,8 +287,8 @@
       <editor-content id="my-editor" :editor="editor"/>
 
       <!--<div class="meta">-->
-        <!--<p>Létrehozva: <span>{{createdAt}}</span></p>-->
-        <!--<p>Utolsó frissítés: <span>{{updatedAt}}</span></p>-->
+      <!--<p>Létrehozva: <span>{{createdAt}}</span></p>-->
+      <!--<p>Utolsó frissítés: <span>{{updatedAt}}</span></p>-->
       <!--</div>-->
 
       <v-btn to="/admin/posts">Mégsem</v-btn>
@@ -257,6 +322,12 @@ export default {
     return {
       valid: true,
       active: true,
+      thumbnail_dialog: false,
+      thumbnail: {
+        url: '',
+        name: '',
+        file: '',
+      },
       image: {
         align: 'content-image-left',
         url: '',
@@ -357,11 +428,46 @@ export default {
         console.log(err);
       });
     },
+    addThumbnail() {
+      console.log('add thumb');
+      this.thumbnail_dialog = false;
+      const apiUrl = 'http://206.189.55.142/api/';
+      const formData = new FormData();
+      formData.append('image', this.thumbnail.file);
+
+      axios.post(
+        `${apiUrl}/thumbnail`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('user_token')}`,
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      ).then((res) => {
+        console.log('SUCCESS!!');
+        console.log(res.data.url);
+        this.post.attributes.thumbnail_url = res.data.url;
+        this.thumbnail = {
+          url: '',
+          name: '',
+          file: '',
+        };
+      }).catch((err) => {
+        console.log('FAILURE!!');
+        console.log(err);
+      });
+    },
     cancelInsertImage() {
       this.dialog = false;
+      this.thumbnail_dialog = false;
     },
     pickFile() {
       this.$refs.image.click();
+    },
+    pickThumbnail() {
+      this.$refs.thumbnail.click();
     },
     onFilePicked(e) {
       console.log('file picked');
@@ -382,6 +488,27 @@ export default {
         this.image.name = '';
         this.image.file = '';
         this.image.url = '';
+      }
+    },
+    onFilePickedThumbnail(e) {
+      console.log('Thumbnail file picked');
+      const { files } = e.target;
+      if (files[0] !== undefined) {
+        this.thumbnail.name = files[0].name;
+        if (this.thumbnail.name.lastIndexOf('.') <= 0) {
+          this.thumbnail.name = '';
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener('load', () => {
+          this.thumbnail.url = fr.result;
+          [this.thumbnail.file] = files; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.thumbnail.name = '';
+        this.thumbnail.file = '';
+        this.thumbnail.url = '';
       }
     },
     sendToServer() {
