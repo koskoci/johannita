@@ -11,8 +11,8 @@
     <div v-if="posts" class="content">
       <v-content>
         <v-layout row>
-          <v-flex xs2></v-flex>
-          <v-flex xs8>
+          <v-flex xs3></v-flex>
+          <v-flex xs6>
             <v-timeline dense>
               <v-timeline-item
                 to="/hirek/1"
@@ -27,13 +27,17 @@
             :class="`font-weight-bold red--text xs3 post-date-wrapper`"
             v-text="new Date(post.attributes.created_at).toLocaleDateString('hu-HU')"
           ></span>
-                <router-link :to="'/hirek/'+post.id">
-                    <h2
-                      :class="`headline font-weight-light mb-3 red--text`"
-                    >{{post.attributes.title}}
-                    </h2>
-                    <div class="blurb" v-html="post.attributes.blurb">
-                    </div>
+                <router-link class="post-wrapper" :to="'/hirek/'+post.id">
+                  <img class="thumbnail-image"
+                    v-if="post.attributes.thumbnail_url"
+                    :src="post.attributes.thumbnail_url"
+                    alt="thumb"/>
+                  <h2
+                    :class="`headline font-weight-light mb-3 red--text`"
+                  >{{post.attributes.title}}
+                  </h2>
+                  <div class="blurb" v-html="post.attributes.blurb">
+                  </div>
                 </router-link>
               </v-timeline-item>
             </v-timeline>
@@ -86,8 +90,22 @@ export default {
 <style lang="scss" scoped>
   a {
     text-decoration: none;
+
     .blurb {
       color: black;
     }
+  }
+
+  .thumbnail-image {
+    float: right;
+    max-width: 100px;
+    max-height: 100px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+
+  .post-wrapper {
+    display: block;
+    margin-bottom: 40px;
   }
 </style>
