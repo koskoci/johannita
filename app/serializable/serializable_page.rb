@@ -1,5 +1,5 @@
 class SerializablePage < JSONAPI::Serializable::Resource
   type 'pages'
-  attribute :slug
+  attribute :short_name
   attribute :content
 end

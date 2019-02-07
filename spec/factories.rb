@@ -42,7 +42,7 @@ FactoryBot.define do
   end
 
   factory :page do
-    sequence(:slug) { |n| "slug_#{n}" }
+    sequence(:short_name) { |n| "short_name_#{n}" }
     content { "My little content\nIn two rows" }
   end
 
