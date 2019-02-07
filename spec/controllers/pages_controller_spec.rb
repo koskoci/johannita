@@ -16,16 +16,16 @@ RSpec.describe PagesController, type: :request do
       expect(response.status).to eq 200
       expect(json_response['data'].count).to eq(2)
       expect(json_response['data']).to all have_type("pages")
-      expect(json_response['data']).to all have_attributes(:short_name, :content)
+      expect(json_response['data']).to all have_attributes(:slug, :content)
     end
   end
 
-  describe 'GET /pages/:short_name' do
+  describe 'GET /pages/:slug' do
     let(:headers) { get_headers_without_token }
 
     context "when the page exists" do
       before do
-        create(:page, short_name: "short_foo")
+        create(:page, slug: "short_foo")
       end
 
       context "when there is no attachment" do
@@ -34,7 +34,7 @@ RSpec.describe PagesController, type: :request do
 
           expect(response.status).to eq 200
           expect(json_response['data']).to have_type("pages")
-          expect(json_response['data']).to have_attributes(:short_name, :content)
+          expect(json_response['data']).to have_attributes(:slug, :content)
         end
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe PagesController, type: :request do
         "data": {
           "type": "pages",
           "attributes": {
-            "short_name": "foo_bar",
+            "slug": "foo_bar",
             "content": "First page content"
           }
         }
@@ -78,9 +78,9 @@ RSpec.describe PagesController, type: :request do
     context "when current user is an admin" do
       let(:current_user) { create(:user, admin: true) }
 
-      context "when the short_name is taken" do
+      context "when the slug is taken" do
         before do
-          create(:page, short_name: "foo_bar")
+          create(:page, slug: "foo_bar")
         end
 
         it "returns 400 with an error message" do
@@ -104,7 +104,7 @@ RSpec.describe PagesController, type: :request do
     end
   end
 
-  describe 'PATCH /pages/:short_name' do
+  describe 'PATCH /pages/:slug' do
     subject { patch '/api/pages/short_foo', params: body.to_json, headers: headers }
 
     let(:body) do
@@ -118,7 +118,7 @@ RSpec.describe PagesController, type: :request do
       }
     end
     let(:current_user) { create(:user, admin: true) }
-    let(:page) { create(:page, short_name: "short_foo") }
+    let(:page) { create(:page, slug: "short_foo") }
     let(:headers) { post_headers(current_user) }
 
     before do
@@ -138,14 +138,14 @@ RSpec.describe PagesController, type: :request do
 
     it "changes the Page in the database" do
       expect { subject }
-        .to change { Page.find_by_short_name("short_foo").content }
+        .to change { Page.find_by_slug("short_foo").content }
         .from("My little content\nIn two rows").to("Updated page content")
     end
 
     it "returns the updated Page" do
       subject
 
-      expect(json_response['data']).to have_attributes(:short_name, :content)
+      expect(json_response['data']).to have_attributes(:slug, :content)
       expect(json_response['data']).to have_type("pages")
     end
 
@@ -171,11 +171,11 @@ RSpec.describe PagesController, type: :request do
     end
   end
 
-  describe 'DELETE /pages/:short_name' do
+  describe 'DELETE /pages/:slug' do
     subject { delete '/api/pages/short_foo', headers: headers }
 
     let(:current_user) { create(:user, admin: true) }
-    let(:page) { create(:page, short_name: "short_foo") }
+    let(:page) { create(:page, slug: "short_foo") }
     let(:headers) { get_headers(current_user) }
 
     before do

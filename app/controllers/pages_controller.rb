@@ -10,7 +10,7 @@ class PagesController < ApplicationController
     render status: 200, jsonapi: @pages
   end
 
-  # GET /pages/short_name
+  # GET /pages/slug
   def show
     render status: 200, jsonapi: @page
   end
@@ -21,7 +21,7 @@ class PagesController < ApplicationController
 
     @page = Page.new(page_params)
 
-    verify_short_name_unique; return if performed?
+    verify_slug_unique; return if performed?
 
     if @page.save
       head 204
@@ -30,7 +30,7 @@ class PagesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /pages/short_name
+  # PATCH/PUT /pages/slug
   def update
     authorize!
 
@@ -41,7 +41,7 @@ class PagesController < ApplicationController
     end
   end
 
-  # DELETE /pages/short_name
+  # DELETE /pages/slug
   def destroy
     authorize!
 
@@ -55,24 +55,24 @@ class PagesController < ApplicationController
   private
 
   def set_page
-    unless Page.exists?(short_name: short_name)
+    unless Page.exists?(slug: slug)
       render status: 404, json: { error: I18n.t('pages.not_found') } and return
     end
 
-    @page = Page.find_by_short_name(short_name)
+    @page = Page.find_by_slug(slug)
   end
 
   def page_params
-    params.require(:page).permit(:short_name, :content)
+    params.require(:page).permit(:slug, :content)
   end
 
-  def short_name
+  def slug
     params[:id]
   end
 
-  def verify_short_name_unique
-    if Page.exists?(short_name: page_params[:short_name])
-      render status: 400, json: { error: I18n.t('pages.short_name_not_unique') } and return
+  def verify_slug_unique
+    if Page.exists?(slug: page_params[:slug])
+      render status: 400, json: { error: I18n.t('pages.slug_not_unique') } and return
     end
   end
 end

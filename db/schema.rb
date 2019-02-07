@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_27_171249) do
+ActiveRecord::Schema.define(version: 2019_02_07_162953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,9 +76,9 @@ ActiveRecord::Schema.define(version: 2019_01_27_171249) do
   end
 
   create_table "pages", force: :cascade do |t|
-    t.string "short_name"
+    t.string "slug"
     t.text "content"
-    t.index ["short_name"], name: "index_pages_on_short_name", unique: true
+    t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
   create_table "participants", force: :cascade do |t|
