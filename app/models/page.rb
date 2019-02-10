@@ -14,4 +14,5 @@
 class Page < ApplicationRecord
   validates :short_name, presence: true, uniqueness: true
   validates :content, presence: true
+  has_many_attached :attachments
 end

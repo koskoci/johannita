@@ -24,7 +24,11 @@ Rails.application.routes.draw do
     resources :course_categories, except: %i[new edit]
     resources :participants, only: %i[index update]
     resources :email_confirmation, only: %i[show]
-    resources :pages, except: %i[new edit]
+    resources :pages, except: %i[new edit] do
+      member do
+        post 'attachments'
+      end
+    end
     post '/embedded_image', to: 'images#create_embedded'
     post '/thumbnail', to: 'images#create_thumbnail'
   end

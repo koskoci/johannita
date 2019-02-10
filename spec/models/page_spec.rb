@@ -24,5 +24,29 @@ RSpec.describe Page, type: :model do
         expect(subject).not_to be_valid
       end
     end
+
+    context "when it has attachments" do
+      let(:page) { described_class.create(params) }
+      let(:pdf_fixture) do
+        fixture_file_upload(Rails.root.join('spec', 'fixtures', 'pdf.pdf'), 'application/pdf')
+      end
+
+      before do
+        page.attachments.attach(pdf_fixture)
+        page.attachments.last.update(description: "My family tree")
+        page.attachments.attach(pdf_fixture)
+        page.attachments.last.update(description: "My shopping list")
+      end
+
+      it "has attachments" do
+        attachments = page.attachments
+        expect(attachments).to be_an_instance_of(ActiveStorage::Attached::Many)
+        expect(attachments.attached?).to be true
+        expect(attachments.count).to eq 2
+        expect(attachments.first.filename).to eq "pdf.pdf"
+        expect(attachments.first.description).to eq "My family tree"
+        expect(attachments.last.description).to eq "My shopping list"
+      end
+    end
   end
 end

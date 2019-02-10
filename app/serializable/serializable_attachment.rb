@@ -10,4 +10,5 @@ class SerializableAttachment < JSONAPI::Serializable::Resource
   end
   attribute :content_type
   attribute :byte_size
+  attribute :description
 end

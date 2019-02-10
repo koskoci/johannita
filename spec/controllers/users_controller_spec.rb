@@ -144,8 +144,8 @@ RSpec.describe UsersController, type: :request do
             expect(json_response['data']).to have_type('users')
             expect(json_response['data']).to have_relationships('curriculum_vitae', 'cover_letter')
             expect(json_response['included'])
-              .to include(have_type('curriculum_vitaes').and have_attributes(:id, :url, :content_type, :byte_size))
-              .and include(have_type('cover_letters').and have_attributes(:id, :url, :content_type, :byte_size))
+              .to include(have_type('curriculum_vitaes').and have_attributes(:id, :url, :content_type, :byte_size, :description))
+              .and include(have_type('cover_letters').and have_attributes(:id, :url, :content_type, :byte_size, :description))
           end
         end
       end

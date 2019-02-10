@@ -1,7 +1,8 @@
 class PagesController < ApplicationController
   skip_before_action :authenticate_user, only: %i[index show]
   deserializable_resource :page, only: %i[create update]
-  before_action :set_page, only: %i[show update destroy]
+  before_action :set_page, only: %i[update destroy attachments]
+  before_action :set_page_with_attachments, only: %i[show]
 
   # GET /pages
   def index
@@ -12,6 +13,8 @@ class PagesController < ApplicationController
 
   # GET /pages/short_name
   def show
+    render status: 200, jsonapi: @page,
+      include: %i[attachments] and return if @page.attachments.attached?
     render status: 200, jsonapi: @page
   end
 
@@ -52,7 +55,20 @@ class PagesController < ApplicationController
     end
   end
 
+  # POST /pages/short_name/attachments
+  def attachments
+    authorize!
+
+    @page.attachments.attach(params[:file])
+
+    head 201 if save_description
+  end
+
   private
+
+  def save_description
+    ActiveStorageAttachment.last.update(description: params[:description])
+  end
 
   def set_page
     unless Page.exists?(short_name: short_name)
@@ -60,6 +76,14 @@ class PagesController < ApplicationController
     end
 
     @page = Page.find_by_short_name(short_name)
+  end
+
+  def set_page_with_attachments
+    unless Page.exists?(short_name: short_name)
+      render status: 404, json: { error: I18n.t('pages.not_found') } and return
+    end
+
+    @page = Page.with_attached_attachments.find_by_short_name(short_name)
   end
 
   def page_params
