@@ -41,6 +41,15 @@
         </v-flex>
       </v-form>
     </v-layout>
+    <v-layout align-center justify-center column>
+      <v-btn
+        align-self-center
+        color="success"
+        to="/regisztracio"
+      >
+        Regisztráció
+      </v-btn>
+    </v-layout>
   </v-container>
 </template>
 
