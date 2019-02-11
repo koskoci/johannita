@@ -77,4 +77,13 @@ export default {
       /*clear: both;*/
     /*}*/
   }
+
+  .secondary-menu .v-btn__content,
+  .secondary-menu .v-btn {
+    font-size: 12px !important;
+    color: grey;
+  }
+  .secondary-submenu-item a {
+    font-size: 12px !important;
+  }
 </style>

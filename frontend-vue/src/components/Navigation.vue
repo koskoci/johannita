@@ -1,7 +1,32 @@
 <template>
   <v-container id="header">
     <v-layout row justify-end>
-      <Profile />
+    </v-layout>
+    <v-layout row justify-end>
+      <template v-if=!isAdminRoute>
+        <MenuItem class="secondary-menu"
+                  :secondary="true"
+                  v-for="item in secondaryMenu"
+                  :key="item.to"
+                  :title="item.title"
+                  :to="item.to"
+                  :items="item.items"/>
+      </template>
+      <MenuItem v-if="getToken()" class="secondary-menu"
+                :secondary="true"
+                v-bind:title="getEmail()"
+                to="/bejelentkezes"
+                :items="[
+                { title: 'Admin', to: '/admin' },
+                { title: 'Profil', to: '#' },
+                { title: 'Kilepes', click: this.onLogout }
+                ]"
+      />
+      <MenuItem v-else class="secondary-menu"
+                :secondary="true"
+                title="Bejelentkezes"
+                to="/bejelentkezes"
+      />
     </v-layout>
     <v-layout row align-center>
       <v-flex shrink>
@@ -25,30 +50,12 @@
         <v-toolbar id="public-menu" flat color="white" v-else>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">A segítő szolgálat</v-btn>
-              <SubMenu v-bind:items="menu.rolunk"/>
-            </v-menu>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">Tevékenységeink</v-btn>
-              <SubMenu v-bind:items="menu.tevekenyseg"/>
-            </v-menu>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">Számítunk rád!</v-btn>
-              <SubMenu v-bind:items="menu.jelentkezes"/>
-            </v-menu>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">Támogatás</v-btn>
-              <SubMenu v-bind:items="menu.tamogatas"/>
-            </v-menu>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">Johannita Tábor</v-btn>
-              <SubMenu v-bind:items="menu.tabor"/>
-            </v-menu>
-            <v-menu open-on-hover offset-y>
-              <v-btn flat slot="activator">Kapcsolat</v-btn>
-              <SubMenu v-bind:items="menu.kapcsolat"/>
-            </v-menu>
+            <MenuItem
+              v-for="item in primaryMenu"
+              :key="item.to"
+              :title="item.title"
+              :to="item.to"
+              :items="item.items"/>
           </v-toolbar-items>
         </v-toolbar>
       </v-flex>
@@ -58,60 +65,34 @@
 
 <script>
 import Logo from './Logo.vue';
-import SubMenu from './SubMenu.vue';
-import Profile from './Profile.vue';
+import MenuItem from './MenuItem.vue';
+import primaryMenu from '../config/primary_menu';
+import secondaryMenu from '../config/secondary_menu';
 
 export default {
   name: 'Navigation',
   components: {
     Logo,
-    SubMenu,
-    Profile,
+    MenuItem,
   },
   data() {
     return {
-      menu: {
-        rolunk: [
-          { title: 'Elnöki köszöntő', to: '/oldal/elnoki_koszonto' },
-          { title: 'Rólunk', to: '/oldal/rolunk' },
-          { title: 'Helyi szervezetek', to: '/oldal/helyi_szervezetek' },
-          { title: 'Közhasznúságú jelentések', to: '/oldal/kozhasznu_jelentesek' },
-          { title: 'Aktuális projektek', to: '/oldal/projektek' },
-          { title: 'Johanniter International', to: '/oldal/johanniter' },
-        ],
-        tevekenyseg: [
-          { title: 'Elsősegélynújtás', to: '/oldal/elnoki_koszonto' },
-          { title: 'Eszközkölcsönzés', to: '/oldal/eszkozkolcsonzes' },
-          { title: 'Hedrehelyi idősek klubja', to: '/oldal/hedrelyi_idosek_kluja' },
-          { title: 'Humanitárius segélyezés', to: '/oldal/humanitarius_segelyezes' },
-          { title: 'Ifjúsági munka', to: '/oldal/ifjusagi_munka' },
-          { title: 'Katasztrófavédelem', to: '/oldal/katasztrofavedelem' },
-          { title: 'Mentőszolgálat', to: '/oldal/mentoszolgalat' },
-        ],
-        jelentkezes: [
-          { title: 'Jelentkezés Képzésre', to: '/oldal/jelentkezes_kepzes' },
-          { title: 'Jelentkezes Onkentes Lehetosegekre', to: '/oldal/jelentkezes_onkentes' },
-        ],
-        tamogatas: [
-          { title: 'Báróti háztűz', to: '/oldal/elnoki_koszonto' },
-          { title: 'Elsősegély program', to: '/oldal/rolunk1' },
-          { title: 'Guti Óvoda', to: '/oldal/helyi_szervezetek' },
-          { title: 'Háromkút Iskolatűz', to: '/oldal/kozhasznu_jelentesek' },
-          { title: 'Kárpátalja', to: '/oldal/karpatalja' },
-          { title: 'Táti gázrobbanás', to: '/oldal/gazrobbanas_tat' },
-          { title: 'Terényi tűz', to: '/oldal/terenyi_tuz' },
-          { title: 'Zólyomi család', to: '/oldal/zolyomi_csalad' },
-        ],
-        tabor: [
-          { title: 'Tábor információk', to: '/oldal/tabor_informaciok' },
-          { title: 'Jelentkezés a táborba', to: '/oldal/tabor_jelentkezes' },
-          { title: 'A tábor története', to: '/oldal/tabor_tortenet' },
-        ],
-        kapcsolat: [
-          { title: 'Hírlevel', to: '/oldal/foo_bar' },
-        ],
-      },
+      primaryMenu,
+      secondaryMenu,
     };
+  },
+  methods: {
+    getToken() {
+      return window.localStorage.getItem('user_token');
+    },
+    getEmail() {
+      return window.localStorage.getItem('user_email');
+    },
+    onLogout() {
+      window.localStorage.removeItem('user_token');
+      window.localStorage.removeItem('user_email');
+      window.location.href = '/';
+    },
   },
   computed: {
     isAdminRoute() {
@@ -125,6 +106,7 @@ export default {
   a {
     text-decoration: none;
   }
+
   button:hover {
     color: red;
     background-color: transparent;
@@ -134,9 +116,4 @@ export default {
     margin: 0;
     padding: 10px;
   }
-
-  /*menu {*/
-    /*padding-right: 0;*/
-  /*}*/
-
 </style>
