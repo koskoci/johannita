@@ -1,13 +1,12 @@
 <template>
     <v-layout align-center>
       <v-flex>
-          <img src="../assets/logo.png" alt="johannita logo">
+          <img src="../assets/logo2.png" alt="johannita logo" height="100">
       </v-flex>
       <v-flex>
         <div class="logo-text">
-          <div>Johannita</div>
-          <div>Segítő</div>
-          <div>Szolgálat</div>
+          <div>A hit védelme és a rászorulók támogatása</div>
+          <div>Defensio Fidei et Obsequium Pauperum</div>
         </div>
       </v-flex>
     </v-layout>
