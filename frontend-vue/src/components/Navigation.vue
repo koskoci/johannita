@@ -1,33 +1,5 @@
 <template>
   <v-container id="header">
-    <v-layout row justify-end>
-    </v-layout>
-    <v-layout row justify-end>
-      <template v-if=!isAdminRoute>
-        <MenuItem class="secondary-menu"
-                  :secondary="true"
-                  v-for="item in secondaryMenu"
-                  :key="item.to"
-                  :title="item.title"
-                  :to="item.to"
-                  :items="item.items"/>
-      </template>
-      <MenuItem v-if="getToken()" class="secondary-menu"
-                :secondary="true"
-                v-bind:title="getEmail()"
-                to="/bejelentkezes"
-                :items="[
-                { title: 'Admin', to: '/admin' },
-                { title: 'Profil', to: '#' },
-                { title: 'Kilepes', click: this.onLogout }
-                ]"
-      />
-      <MenuItem v-else class="secondary-menu"
-                :secondary="true"
-                title="Bejelentkezes"
-                to="/bejelentkezes"
-      />
-    </v-layout>
     <v-layout row align-center>
       <v-flex shrink>
         <router-link to="/">
@@ -35,6 +7,32 @@
         </router-link>
       </v-flex>
       <v-flex grow class="menu">
+        <v-layout row justify-end>
+          <template v-if=!isAdminRoute>
+            <MenuItem class="secondary-menu"
+                      :secondary="true"
+                      v-for="item in secondaryMenu"
+                      :key="item.to"
+                      :title="item.title"
+                      :to="item.to"
+                      :items="item.items"/>
+          </template>
+          <MenuItem v-if="getToken()" class="secondary-menu"
+                    :secondary="true"
+                    v-bind:title="getEmail()"
+                    to="/bejelentkezes"
+                    :items="[
+                { title: 'Admin', to: '/admin' },
+                { title: 'Profil', to: '#' },
+                { title: 'Kilepes', click: this.onLogout }
+                ]"
+          />
+          <MenuItem v-else class="secondary-menu" style="margin-right: 0;"
+                    :secondary="true"
+                    title="Bejelentkezes"
+                    to="/bejelentkezes"
+          />
+        </v-layout>
         <v-toolbar flat color="white" v-if=isAdminRoute>
           <v-spacer></v-spacer>
           <v-toolbar-items>
@@ -113,7 +111,7 @@ export default {
   }
 
   #header {
-    margin: 0;
     padding: 10px;
+    margin-bottom: 20px;
   }
 </style>

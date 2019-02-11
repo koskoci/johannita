@@ -24,6 +24,7 @@ export default {
     text-decoration: none;
     color: black;
     text-align: center;
+    margin-left: 10px;
   }
   img {
     display: block;
