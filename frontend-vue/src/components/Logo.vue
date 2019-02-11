@@ -21,6 +21,7 @@ export default {
 <style scoped>
   div.logo-text {
     text-decoration: none;
+    font-style: italic;
     color: black;
     text-align: center;
     margin-left: 10px;
